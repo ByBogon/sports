@@ -7,31 +7,26 @@
 	<title>Home</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Bootstrap CSS -->
-<!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/css/bootstrap_3.3.7.min.css">
     <!-- Themify Icons -->
     <link rel="stylesheet" href="resources/css/themify-icons.css">
-    <!-- Owl carousel -->
-    <link rel="stylesheet" href="resources/css/owl.carousel.min.css">
-    <!-- Main css -->
-    <link href="resources/css/style.css" rel="stylesheet">
-
-  <style>
-  .container {
-      padding: 80px 120px;
-  }
-  .person {
-      border: 10px solid transparent;
-      margin-bottom: 25px;
-      width: 80%;
-      height: 80%;
-      opacity: 0.7;
-  }
-  .person:hover {
-      border-color: #f1f1f1;
-  }
-  </style>
+    
+	<!-- jQuery and Bootstrap -->
+	<script src="resources/js/jquery-3.3.1.min.js"></script>
+	<script src="resources/js/bootstrap_3.3.7.min.js"></script>
+	
 </head>
+<style>
+	.nav-menu fixed-top {
+		position: fixed;
+		right: 0;
+		left: 0;
+		z-index: 999;
+	}
+	body {
+		padding-top: 75px;
+	}
+</style>
 <body data-spy="scroll" data-target="#navbar" data-offset="30">
 
 
@@ -87,7 +82,7 @@
 		 <!-- Wrapper for slides -->
 		<div class="carousel-inner" role="listbox">
 			<div class="item active">
-				<img src="resources/images/squash.jpg" style="height: 70%"alt="squash">
+				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" alt="squash">
 				<div class="carousel-caption">
 					<h3>스쿼시</h3>
 					<p>스쿼시 설명</p>
@@ -95,7 +90,7 @@
 			</div>
 		
 			<div class="item">
-				<img src="resources/images/basketball.jpg" style="height: 70%" alt="basketball">
+				<img src="resources/images/basketball.jpg" style="width: 100%; height: 70%" alt="basketball">
 				<div class="carousel-caption">
 					<h3>농구</h3>
 					<p>농구 설명</p>
@@ -103,7 +98,7 @@
 			</div>
 		
 			<div class="item">
-				<img src="resources/images/tennis.jpg" style="height: 70%" alt="Tennis">
+				<img src="resources/images/tennis.jpg" style="width: 100%; height: 70%" alt="Tennis">
 				<div class="carousel-caption">
 					<h3>테니스</h3>
 					<p>테니스 설명</p>
@@ -371,156 +366,6 @@
     <!-- // end .section -->
 
 
-    <div class="section">
-        <div class="container">
-            <div class="section-title">
-                <small>TESTIMONIALS</small>
-                <h3>What our Customers Says</h3>
-            </div>
-
-            <div class="testimonials owl-carousel">
-                <div class="testimonials-single">
-                    <img src="resources/images/client.png" alt="client" class="client-img">
-                    <blockquote class="blockquote">Uniquely streamline highly efficient scenarios and 24/7 initiatives. Conveniently embrace multifunctional ideas through proactive customer service. Distinctively conceptualize 2.0 intellectual capital via user-centric partnerships.</blockquote>
-                    <h5 class="mt-4 mb-2">Crystal Gordon</h5>
-                    <p class="text-primary">United States</p>
-                </div>
-                <div class="testimonials-single">
-                    <img src="resources/images/client.png" alt="client" class="client-img">
-                    <blockquote class="blockquote">Uniquely streamline highly efficient scenarios and 24/7 initiatives. Conveniently embrace multifunctional ideas through proactive customer service. Distinctively conceptualize 2.0 intellectual capital via user-centric partnerships.</blockquote>
-                    <h5 class="mt-4 mb-2">Crystal Gordon</h5>
-                    <p class="text-primary">United States</p>
-                </div>
-                <div class="testimonials-single">
-                    <img src="resources/images/client.png" alt="client" class="client-img">
-                    <blockquote class="blockquote">Uniquely streamline highly efficient scenarios and 24/7 initiatives. Conveniently embrace multifunctional ideas through proactive customer service. Distinctively conceptualize 2.0 intellectual capital via user-centric partnerships.</blockquote>
-                    <h5 class="mt-4 mb-2">Crystal Gordon</h5>
-                    <p class="text-primary">United States</p>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    <!-- // end .section -->
-
-
-    <div class="section light-bg" id="gallery">
-        <div class="container">
-            <div class="section-title">
-                <small>GALLERY</small>
-                <h3>App Screenshots</h3>
-            </div>
-
-            <div class="img-gallery owl-carousel owl-theme">
-                <img src="resources/images/screen1.jpg" alt="image">
-                <img src="resources/images/screen2.jpg" alt="image">
-                <img src="resources/images/screen3.jpg" alt="image">
-                <img src="resources/images/screen1.jpg" alt="image">
-            </div>
-
-        </div>
-
-    </div>
-    <!-- // end .section -->
-
-
-
-
-
-    <div class="section" id="pricing">
-        <div class="container">
-            <div class="section-title">
-                <small>PRICING</small>
-                <h3>Upgrade to Pro</h3>
-            </div>
-
-            <div class="card-deck">
-                <div class="card pricing">
-                    <div class="card-head">
-                        <small class="text-primary">PERSONAL</small>
-                        <span class="price">$14<sub>/m</sub></span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <div class="list-group-item">10 Projects</div>
-                        <div class="list-group-item">5 GB Storage</div>
-                        <div class="list-group-item">Basic Support</div>
-                        <div class="list-group-item"><del>Collaboration</del></div>
-                        <div class="list-group-item"><del>Reports and analytics</del></div>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="btn btn-primary btn-lg btn-block">Choose this Plan</a>
-                    </div>
-                </div>
-                <div class="card pricing popular">
-                    <div class="card-head">
-                        <small class="text-primary">FOR TEAMS</small>
-                        <span class="price">$29<sub>/m</sub></span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <div class="list-group-item">Unlimited Projects</div>
-                        <div class="list-group-item">100 GB Storage</div>
-                        <div class="list-group-item">Priority Support</div>
-                        <div class="list-group-item">Collaboration</div>
-                        <div class="list-group-item">Reports and analytics</div>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="btn btn-primary btn-lg btn-block">Choose this Plan</a>
-                    </div>
-                </div>
-                <div class="card pricing">
-                    <div class="card-head">
-                        <small class="text-primary">ENTERPRISE</small>
-                        <span class="price">$249<sub>/m</sub></span>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <div class="list-group-item">Unlimited Projects</div>
-                        <div class="list-group-item">Unlimited Storage</div>
-                        <div class="list-group-item">Collaboration</div>
-                        <div class="list-group-item">Reports and analytics</div>
-                        <div class="list-group-item">Web hooks</div>
-                    </ul>
-                    <div class="card-body">
-                        <a href="#" class="btn btn-primary btn-lg btn-block">Choose this Plan</a>
-                    </div>
-                </div>
-            </div>
-            <!-- // end .pricing -->
-
-
-        </div>
-
-    </div>
-    <!-- // end .section -->
-
-
-    <div class="section pt-0">
-        <div class="container">
-            <div class="section-title">
-                <small>FAQ</small>
-                <h3>Frequently Asked Questions</h3>
-            </div>
-
-            <div class="row pt-4">
-                <div class="col-md-6">
-                    <h4 class="mb-3">Can I try before I buy?</h4>
-                    <p class="light-font mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rutrum, urna eu pellentesque pretium, nisi nisi fermentum enim, et sagittis dolor nulla vel sapien. Vestibulum sit amet mattis ante. </p>
-                    <h4 class="mb-3">What payment methods do you accept?</h4>
-                    <p class="light-font mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rutrum, urna eu pellentesque pretium, nisi nisi fermentum enim, et sagittis dolor nulla vel sapien. Vestibulum sit amet mattis ante. </p>
-
-                </div>
-                <div class="col-md-6">
-                    <h4 class="mb-3">Can I change my plan later?</h4>
-                    <p class="light-font mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rutrum, urna eu pellentesque pretium, nisi nisi fermentum enim, et sagittis dolor nulla vel sapien. Vestibulum sit amet mattis ante. </p>
-                    <h4 class="mb-3">Do you have a contract?</h4>
-                    <p class="light-font mb-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer rutrum, urna eu pellentesque pretium, nisi nisi fermentum enim, et sagittis dolor nulla vel sapien. Vestibulum sit amet mattis ante. </p>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- // end .section -->
 
 
 
@@ -573,15 +418,7 @@
 
     </div>
 
-	<!-- jQuery and Bootstrap -->
-	<script src="resources/js/jquery-3.2.1.min.js"></script>
-	<script src="resources/js/bootstrap.min.js"></script>
-    <script src="resources/js/bootstrap.bundle.min.js"></script>
-    <!-- Plugins JS -->
-    <script src="resources/js/owl.carousel.min.js"></script>
-    <!-- Custom JS -->
-    <script src="resources/js/script.js"></script>
-    <script>
+    <script type="text/javascript">
 		// Activate Carousel
 	    $("#myCarousel").carousel();
 	
