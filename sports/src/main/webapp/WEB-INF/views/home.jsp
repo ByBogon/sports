@@ -17,17 +17,28 @@
 	
 </head>
 <style>
-	.nav-menu fixed-top {
-		position: fixed;
-		right: 0;
-		left: 0;
-		z-index: 999;
-	}
 	body {
 		padding-top: 75px;
 	}
+	.navbar-fixed-top {
+		position: -webkit-sticky;
+		position: sticky;
+		top: 0;
+		left: 0;
+		width: 100%;
+		background: #f6f6f6;
+		z-index: 999;
+		height: 90px;
+		overflow: hidden;
+		-webkit-transition: height 0.3s;
+		-moz-transition: height 0.3s;
+		transition: height 0.3s;
+	}
+	.navbar-fixed-top.cbp-af-header-shrink {
+		height: 75px;
+	}
 </style>
-<body data-spy="scroll" data-target="#navbar" data-offset="30">
+<body>
 
 
     <!-- Nav Menu -->
@@ -83,7 +94,7 @@
 		<div class="carousel-inner" role="listbox">
 			<div class="item active">
 				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" alt="squash">
-				<div class="carousel-caption">
+				<div class="carousel-caption" style="color: black;">
 					<h3>스쿼시</h3>
 					<p>스쿼시 설명</p>
 				</div> 
