@@ -8,8 +8,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="resources/css/bootstrap.min.css">
-    <!-- Themify Icons -->
-    <link rel="stylesheet" href="resources/css/themify-icons.css">
     
 	<!-- jQuery and Bootstrap -->
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
@@ -18,6 +16,7 @@
 </head>
 <body>
 	<jsp:include page="nav_main.jsp"></jsp:include>
+
 	<div id="carouselExampleIndicators" class="carousel slide"
 		data-ride="carousel">
 		<ol class="carousel-indicators">
