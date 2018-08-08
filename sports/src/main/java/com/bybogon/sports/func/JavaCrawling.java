@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -78,10 +79,6 @@ public class JavaCrawling {
 	        	e.printStackTrace();
 	        }
 	        Elements elem = doc.select("div.list-table");
-	        String tr = elem.select("tr").text();
-	        /*System.out.println("======================");
-	        System.out.println(tr);
-	        System.out.println("======================");*/
 	        for (Element el : elem.select("tr > td")) {
 	        	String str = el.text();
 	        	String areaNo = "";
@@ -96,17 +93,60 @@ public class JavaCrawling {
 		        	System.out.println(str);
 			        System.out.println("======================");
 		        	tel = str.substring(tel_idx+1);
-		        	System.out.println(tel);
+		        	System.out.println("tel: "+ tel);
 			        System.out.println("======================");
 		        	String tels[] = tel.trim().split("-");
+		        	String lastTel = "";
 		        	//String 
 		        	for(int i=0; i<tels.length; i++) {
 		        		System.out.println("tels:" + tels[i]);
-		        		if(i==3) {
-		        			//tels[i]
+		        		/*if (tels[0].length() == 4) {
+		        			tels[2] = "";
+		        			break;
+		        		}*/
+		        		if(i==2) {
+		        			lastTel = tels[i];
+		        			lastTel = lastTel.substring(0, 4);
+		        			System.out.println("lastTel: "+lastTel);
+		        			tels[i] = lastTel;
 		        		}
 		        		
 		        	}
+		        	for(String tmp : tels) {
+			        	System.out.println("Tels[]: "+tmp);	
+		        	}
+		        	String final_tels[] = new String[3];
+		        	
+		        	String info = "";
+		        	for(int i=0; i<tels.length; i++) {
+		        		System.out.println(i+" length: "+tels.length);
+		        		System.out.println(i+" final tels: "+tels[i]);
+		        		if(tels.length>2) {
+		        			System.out.println(i+" if");
+		        			if(i < 3) {
+			        			final_tels[i] = tels[i];
+
+				        		System.out.println(i+" final tels[]: "+final_tels[i]);
+			        		} else if (i >= 3) {
+			        			System.out.println(i+" aaaaaaaaaaa: "+i);
+			        			info += tels[i];
+			        			System.out.println(i+" info[]: "+info);
+			        			detail += info;
+			        		}
+		        		} else {
+		        			System.out.println(i+" else");
+		        			final_tels[i] = tels[i];
+			        		System.out.println(i+" final tels[]: "+final_tels[i]);
+		        			if(i == 3) {
+		        				info += tels[i];
+		        				System.out.println(i+" info[]: "+info);
+		        				detail += info;
+		        			}
+		        		}
+		        		
+		        		
+		        	}
+		        	
 			        int areaNo_idx = tel.indexOf("-");
 			        if (areaNo_idx > 0) {
 			        	System.out.println(areaNo_idx);
@@ -121,7 +161,7 @@ public class JavaCrawling {
 				        System.out.println("======================");
 				        System.out.println(tel);
 				        System.out.println("======================");
-				        System.out.println(detail);
+				        System.out.println("detail: "+detail);
 				        System.out.println("======================");
 		        	}
 	        	}
