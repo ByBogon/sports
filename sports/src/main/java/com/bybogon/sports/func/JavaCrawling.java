@@ -101,11 +101,50 @@ public class JavaCrawling {
 		        	tel = str.substring(tel_idx+1);
 		        	System.out.println("tel: "+ tel);
 		        	System.out.println("======================");
-		        	String tels[] = tel.trim().split("-");
+		        	//String tels[] = tel.trim().split("-");
+		        	
+		        	//tel을 -으로 나눠서 for문 돌려서 공백으로 시작하면 그이후로 info
+		        	String tel2[] = tel.trim().split("-");
+		        	String total_phone = "";
+		        	String total_info2 = "";
+		        	StringBuilder phone = new StringBuilder();
+		        	StringBuilder strbuilder2 = new StringBuilder();
+		        	
+		        	for(int i=0; i<tel2.length; i++) {
+		        		if(tel2[i].startsWith(" ")) {
+		        			//strbuilder2.append(tel2[i]);
+		        			total_info2 += tel2[i];
+		        			System.out.println(total_info2);
+		        		} else {
+		        			phone.append(tel2[i]);
+		        			phone.append("-");
+		        			System.out.println(phone);
+		        		}
+		        	}
+		        	total_phone = phone.toString();
+		        	//total_info2 = strbuilder2.toString();
+		        	System.out.println("total_phone: "+total_phone);
+		        	System.out.println("total_info2: "+total_info2);
 		        	//tel을 공백으로 나눠서 전화번호(-포함)이 tels[0]이 되고
 		        	//tels[0]을 전화번호로, 그외에 것들은 info에 넣기
 		        	
-		        	for(int i=0; i<tels.length; i++) {
+		        	/*String tel1[] = tel.trim().split(" ");
+		        	String total_tel = "";
+		        	String total_info = "";
+		        	StringBuilder strbuilder = new StringBuilder();
+		        	for(int i=0; i<tel1.length; i++) {
+		        		System.out.println(tel1[i]);
+		        		if(i==0) {
+		        			total_tel = tel1[0];
+		        			System.out.println("total tel: "+total_tel);
+		        		} else {
+		        			strbuilder.append(tel1[i]);
+		        		}
+		        	}
+		        	total_info = strbuilder.toString();
+		        	System.out.println("total info: "+total_info);*/
+		        	
+		        	/*for(int i=0; i<tels.length; i++) {
 		        		//System.out.println("tels length: "+ tels.length);
 		        		//System.out.println("tels:" + tels[i]);
 		        		if(i==2) {
@@ -123,7 +162,7 @@ public class JavaCrawling {
 		        		
 		        	}
 		        	
-/*		        	for(int i=0; i<tels.length; i++) {
+		        	for(int i=0; i<tels.length; i++) {
 		        		System.out.println(i+" length: "+tels.length);
 		        		System.out.println(i+" final tels: "+tels[i]);
 		        		if(tels.length>2) {
@@ -150,7 +189,7 @@ public class JavaCrawling {
 		        		}
 		        	}
 		        	
-*/		        	
+		        	
 		        	StringBuilder builder = new StringBuilder();
 		        	for(String s : tels) {
 		        		builder.append(s);
@@ -165,7 +204,7 @@ public class JavaCrawling {
 			        System.out.println("Tel:"+ fullTel);
 			        System.out.println("======================");
 			        System.out.println("lastInfo: "+lastInfo);
-			        System.out.println("======================");
+			        System.out.println("======================");*/
 			        
 			        //이안에서 디비로 insert
 	        	}
