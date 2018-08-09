@@ -81,44 +81,49 @@ public class JavaCrawling {
 	        Elements elem = doc.select("div.list-table");
 	        for (Element el : elem.select("tr > td")) {
 	        	String str = el.text();
-	        	String areaNo = "";
-	        	String addr = "";
-	        	String tel = "";
-	        	String detail = "";
 	        	int addr_idx = str.indexOf("▩");
 	        	int tel_idx = str.indexOf("☎");
 	        	if(addr_idx > 0 || tel_idx > 0) {
-		        	System.out.println("idx: "+addr_idx);
+	        		String addr = "";
+		        	String tel = "";
+		        	String detail = "";
+		        	String lastTel = "";
+		        	String lastInfo = "";
+		        	String areaName = str.substring(str.indexOf("[")+1, str.indexOf("]"));
+		        	//System.out.println("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+");
+		        	System.out.println("START!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		        	//System.out.println("idx: "+addr_idx);
 		        	addr = str.substring(addr_idx+1, tel_idx);
-		        	System.out.println(str);
-			        System.out.println("======================");
+		        	//System.out.println(str);
+			        //System.out.println("======================");
+		        	//System.out.println("AreaName: " + areaName);
+		        	//System.out.println("======================");
 		        	tel = str.substring(tel_idx+1);
 		        	System.out.println("tel: "+ tel);
-			        System.out.println("======================");
+		        	System.out.println("======================");
 		        	String tels[] = tel.trim().split("-");
-		        	String lastTel = "";
-		        	//String 
+		        	//tel을 공백으로 나눠서 전화번호(-포함)이 tels[0]이 되고
+		        	//tels[0]을 전화번호로, 그외에 것들은 info에 넣기
+		        	
 		        	for(int i=0; i<tels.length; i++) {
-		        		System.out.println("tels:" + tels[i]);
-		        		/*if (tels[0].length() == 4) {
-		        			tels[2] = "";
-		        			break;
-		        		}*/
+		        		//System.out.println("tels length: "+ tels.length);
+		        		//System.out.println("tels:" + tels[i]);
 		        		if(i==2) {
+		        			lastInfo += tels[i].substring(4);
+		        			//System.out.println("lastInfo: "+lastInfo);
 		        			lastTel = tels[i];
 		        			lastTel = lastTel.substring(0, 4);
-		        			System.out.println("lastTel: "+lastTel);
+		        			//System.out.println("lastTel: "+lastTel);
 		        			tels[i] = lastTel;
+		        		}
+		        		if(i>2) {
+		        			lastInfo += tels[i];
+		        			//System.out.println("lastInfo: "+lastInfo);
 		        		}
 		        		
 		        	}
-		        	for(String tmp : tels) {
-			        	System.out.println("Tels[]: "+tmp);	
-		        	}
-		        	String final_tels[] = new String[3];
 		        	
-		        	String info = "";
-		        	for(int i=0; i<tels.length; i++) {
+/*		        	for(int i=0; i<tels.length; i++) {
 		        		System.out.println(i+" length: "+tels.length);
 		        		System.out.println(i+" final tels: "+tels[i]);
 		        		if(tels.length>2) {
@@ -143,34 +148,28 @@ public class JavaCrawling {
 		        				detail += info;
 		        			}
 		        		}
-		        		
-		        		
 		        	}
 		        	
-			        int areaNo_idx = tel.indexOf("-");
-			        if (areaNo_idx > 0) {
-			        	System.out.println(areaNo_idx);
-			        	areaNo = tel.substring(0, areaNo_idx);
-			        	if (areaNo.trim().length() == 2) {
-			        		
-			        	}
-			        	
-			        	System.out.println(areaNo);
-				        System.out.println("======================");
-				        System.out.println(addr);
-				        System.out.println("======================");
-				        System.out.println(tel);
-				        System.out.println("======================");
-				        System.out.println("detail: "+detail);
-				        System.out.println("======================");
+*/		        	
+		        	StringBuilder builder = new StringBuilder();
+		        	for(String s : tels) {
+		        		builder.append(s);
 		        	}
+		        	String fullTel = builder.toString();
+		        	System.out.println("===============================================");
+		        	System.out.println("FINAL!!!!!!!!!!!!!!!!!!!!!");
+		        	System.out.println("AreaName: "+areaName);
+			        System.out.println("======================");
+			        System.out.println("Addr: "+addr);
+			        System.out.println("======================");
+			        System.out.println("Tel:"+ fullTel);
+			        System.out.println("======================");
+			        System.out.println("lastInfo: "+lastInfo);
+			        System.out.println("======================");
+			        
+			        //이안에서 디비로 insert
 	        	}
 	        }
-	        //System.out.println("======================");
-		//}
 		System.out.println("END");
-        
     }
-
-
 }
