@@ -43,19 +43,19 @@ public class JavaCrawling {
 	}
 	
 	
-	public int insertCenter(int no, String addr, String tel, String detail, int areaNo) {
+	public static int insertCenter(String addr, String tel, String detail, int areaNo) {
 		try {
+			testOracle();
 			String sql = "INSERT INTO SPORTS_CENTER("
 					+ " CENTER_NO, CENTER_ADDR, CENTER_TEL, CENTER_REG_CHK, SPORTS_NO, CENTER_DETAIL, CENTER_AREA_NO)"
-					+ " VALUES(?,?,?,0,0,?,?)";
+					+ " VALUES(SEQ_SPORTS_CENTER_NO.NEXTVAL,?,?,0,0,?,?)";
 	
 			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
 	
-			ps.setInt(1, no);
-			ps.setString(2, addr);
-			ps.setString(3, tel);
-			ps.setString(4, detail);
-			ps.setInt(5, areaNo);
+			ps.setString(1, addr);
+			ps.setString(2, tel);
+			ps.setString(3, detail);
+			ps.setInt(4, areaNo);
 	
 			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
 	
@@ -176,6 +176,8 @@ public class JavaCrawling {
 		        System.out.println("======================");
 		        
 		        //이안에서 디비로 insert
+		        int ret = insertCenter(addr, total_phone, total_info2, area_no);
+		        System.out.println(ret);
 	        	}
 	        }
 		System.out.println("END");
