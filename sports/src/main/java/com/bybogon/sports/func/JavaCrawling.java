@@ -16,7 +16,6 @@ import org.jsoup.select.Elements;
 
 
 public class JavaCrawling {
-/*
 	private static Connection conn;
 	private static Statement stat;
 	private static ResultSet rs;
@@ -42,171 +41,141 @@ public class JavaCrawling {
 	        e.printStackTrace();
 	    }
 	}
-	*/
 	
-	/*public int insertBoard(V1_Board vo) {
+	
+	public int insertCenter(int no, String addr, String tel, String detail, int areaNo) {
 		try {
-			String sql = "INSERT INTO V1_BOARD("
-					+ " BRD_NO, BRD_TITLE, BRD_CONTENT, BRD_WRITER, BRD_HIT, BRD_DATE, BRD_FILE)"
-					+ " VALUES(SEQ_V1_BOARD_NO.NEXTVAL,?,?,?,0,SYSDATE,?)";
+			String sql = "INSERT INTO SPORTS_CENTER("
+					+ " CENTER_NO, CENTER_ADDR, CENTER_TEL, CENTER_REG_CHK, SPORTS_NO, CENTER_DETAIL, CENTER_AREA_NO)"
+					+ " VALUES(?,?,?,0,0,?,?)";
 	
 			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
 	
-			ps.setString(1, vo.getBrd_title());
-			ps.setString(2, vo.getBrd_content());
-			ps.setString(3, vo.getBrd_writer());
-			ps.setString(4, vo.getBrd_file());
+			ps.setInt(1, no);
+			ps.setString(2, addr);
+			ps.setString(3, tel);
+			ps.setString(4, detail);
+			ps.setInt(5, areaNo);
 	
 			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
 	
 		} catch (Exception e) {
-			System.out.println(e.getMessage() + "BoardDAO");
+			System.out.println(e.getMessage() + "sports");
 			return 0;
 		}
 	
-	}*/
+	}
 
 
 	public static void main(String[] args) throws Exception{
 		System.out.println("START");
-		//for(int i = 1; i <= 19; i++) {
-			//String URL = "http://koreasquash.or.kr/_guide-club.asp?sido=&page="+i;
-			String URL = "http://map.squash.pe.kr/bbs/board.php?bo_table=KoreaSquashCourt";
-	        Document doc = null;
-	        try {
-	        	doc = Jsoup.connect(URL).get();
-	        } catch (IOException e) {
-	        	e.printStackTrace();
-	        }
-	        Elements elem = doc.select("div.list-table");
-	        for (Element el : elem.select("tr > td")) {
-	        	String str = el.text();
-	        	int addr_idx = str.indexOf("▩");
-	        	int tel_idx = str.indexOf("☎");
-	        	if(addr_idx > 0 || tel_idx > 0) {
-	        		String addr = "";
-		        	String tel = "";
-		        	String detail = "";
-		        	String lastTel = "";
-		        	String lastInfo = "";
-		        	String areaName = str.substring(str.indexOf("[")+1, str.indexOf("]"));
-		        	//System.out.println("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+");
-		        	System.out.println("START!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		        	//System.out.println("idx: "+addr_idx);
-		        	addr = str.substring(addr_idx+1, tel_idx);
-		        	//System.out.println(str);
-			        //System.out.println("======================");
-		        	//System.out.println("AreaName: " + areaName);
-		        	//System.out.println("======================");
-		        	tel = str.substring(tel_idx+1);
-		        	System.out.println("tel: "+ tel);
-		        	System.out.println("======================");
-		        	//String tels[] = tel.trim().split("-");
-		        	
-		        	//tel을 -으로 나눠서 for문 돌려서 공백으로 시작하면 그이후로 info
-		        	String tel2[] = tel.trim().split("-");
-		        	String total_phone = "";
-		        	String total_info2 = "";
-		        	StringBuilder phone = new StringBuilder();
-		        	StringBuilder strbuilder2 = new StringBuilder();
-		        	
-		        	for(int i=0; i<tel2.length; i++) {
-		        		if(tel2[i].startsWith(" ")) {
-		        			//strbuilder2.append(tel2[i]);
-		        			total_info2 += tel2[i];
-		        			System.out.println(total_info2);
-		        		} else {
-		        			phone.append(tel2[i]);
-		        			phone.append("-");
-		        			System.out.println(phone);
-		        		}
-		        	}
-		        	total_phone = phone.toString();
-		        	//total_info2 = strbuilder2.toString();
-		        	System.out.println("total_phone: "+total_phone);
-		        	System.out.println("total_info2: "+total_info2);
-		        	//tel을 공백으로 나눠서 전화번호(-포함)이 tels[0]이 되고
-		        	//tels[0]을 전화번호로, 그외에 것들은 info에 넣기
-		        	
-		        	/*String tel1[] = tel.trim().split(" ");
-		        	String total_tel = "";
-		        	String total_info = "";
-		        	StringBuilder strbuilder = new StringBuilder();
-		        	for(int i=0; i<tel1.length; i++) {
-		        		System.out.println(tel1[i]);
-		        		if(i==0) {
-		        			total_tel = tel1[0];
-		        			System.out.println("total tel: "+total_tel);
-		        		} else {
-		        			strbuilder.append(tel1[i]);
-		        		}
-		        	}
-		        	total_info = strbuilder.toString();
-		        	System.out.println("total info: "+total_info);*/
-		        	
-		        	/*for(int i=0; i<tels.length; i++) {
-		        		//System.out.println("tels length: "+ tels.length);
-		        		//System.out.println("tels:" + tels[i]);
-		        		if(i==2) {
-		        			lastInfo += tels[i].substring(4);
-		        			//System.out.println("lastInfo: "+lastInfo);
-		        			lastTel = tels[i];
-		        			lastTel = lastTel.substring(0, 4);
-		        			//System.out.println("lastTel: "+lastTel);
-		        			tels[i] = lastTel;
-		        		}
-		        		if(i>2) {
-		        			lastInfo += tels[i];
-		        			//System.out.println("lastInfo: "+lastInfo);
-		        		}
-		        		
-		        	}
-		        	
-		        	for(int i=0; i<tels.length; i++) {
-		        		System.out.println(i+" length: "+tels.length);
-		        		System.out.println(i+" final tels: "+tels[i]);
-		        		if(tels.length>2) {
-		        			System.out.println(i+" if");
-		        			if(i < 3) {
-			        			final_tels[i] = tels[i];
-
-				        		System.out.println(i+" final tels[]: "+final_tels[i]);
-			        		} else if (i >= 3) {
-			        			System.out.println(i+" aaaaaaaaaaa: "+i);
-			        			info += tels[i];
-			        			System.out.println(i+" info[]: "+info);
-			        			detail += info;
-			        		}
-		        		} else {
-		        			System.out.println(i+" else");
-		        			final_tels[i] = tels[i];
-			        		System.out.println(i+" final tels[]: "+final_tels[i]);
-		        			if(i == 3) {
-		        				info += tels[i];
-		        				System.out.println(i+" info[]: "+info);
-		        				detail += info;
-		        			}
-		        		}
-		        	}
-		        	
-		        	
-		        	StringBuilder builder = new StringBuilder();
-		        	for(String s : tels) {
-		        		builder.append(s);
-		        	}
-		        	String fullTel = builder.toString();
-		        	System.out.println("===============================================");
-		        	System.out.println("FINAL!!!!!!!!!!!!!!!!!!!!!");
-		        	System.out.println("AreaName: "+areaName);
-			        System.out.println("======================");
-			        System.out.println("Addr: "+addr);
-			        System.out.println("======================");
-			        System.out.println("Tel:"+ fullTel);
-			        System.out.println("======================");
-			        System.out.println("lastInfo: "+lastInfo);
-			        System.out.println("======================");*/
-			        
-			        //이안에서 디비로 insert
+		String URL = "http://map.squash.pe.kr/bbs/board.php?bo_table=KoreaSquashCourt";
+        Document doc = null;
+        try {
+        	doc = Jsoup.connect(URL).get();
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+        Elements elem = doc.select("div.list-table");
+        for (Element el : elem.select("tr > td")) {
+        	String str = el.text();
+        	int addr_idx = str.indexOf("▩");
+        	int tel_idx = str.indexOf("☎");
+        	if(addr_idx > 0 || tel_idx > 0) {
+        		int area_no = 0;
+        		String addr = "";
+	        	String tel = "";
+	        	String areaName = str.substring(str.indexOf("[")+1, str.indexOf("]"));
+	        	areaName = areaName.trim();
+	        	//System.out.println("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+");
+	        	System.out.println("START!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	        	//System.out.println("idx: "+addr_idx);
+	        	addr = str.substring(addr_idx+1, tel_idx);
+	        	System.out.println(areaName);
+	        	if(areaName.equals("서울")) {
+	        		area_no = 10;
+	        	} else if (areaName.equals("부산")) {
+	        		area_no = 11;
+	        	} else if (areaName.equals("대구")) {
+	        		area_no = 12;
+	        	} else if (areaName.equals("인천")) {
+	        		area_no = 13;
+	        	} else if (areaName.equals("광주")) {
+	        		area_no = 14;
+	        	} else if (areaName.equals("대전")) {
+	        		area_no = 15;
+	        	} else if (areaName.equals("울산")) {
+	        		area_no = 16;
+	        	} else if (areaName.equals("세종")) {
+	        		area_no = 17;
+	        	} else if (areaName.equals("경기도")) {
+	        		area_no = 18;
+	        	} else if (areaName.equals("강원도")) {
+	        		area_no = 19;
+	        	} else if (areaName.equals("충청북도")) {
+	        		area_no = 20;
+	        	} else if (areaName.equals("충청남도")) {
+	        		area_no = 21;
+	        	} else if (areaName.equals("전라북도")) {
+	        		area_no = 22;
+	        	} else if (areaName.equals("전라남도")) {
+	        		area_no = 23;
+	        	} else if (areaName.equals("경상북도")) {
+	        		area_no = 24;
+	        	} else if (areaName.equals("경상남도")) {
+	        		area_no = 25;
+	        	} else if (areaName.equals("제주도")) {
+	        		area_no = 26;
+	        	} else {
+	        		area_no = 99;
+	        	}
+	       
+	        	System.out.println("주소: "+addr+"/ 행정번호: "+area_no);
+	        	//System.out.println(str);
+	        	//System.out.println("======================");
+	        	//System.out.println("AreaName: " + areaName);
+	        	//System.out.println("======================");
+	        	tel = str.substring(tel_idx+1);
+	        	System.out.println("tel: "+ tel);
+	        	//System.out.println("======================");
+	        	//String tels[] = tel.trim().split("-");
+	        	
+	        	//tel을 -으로 나눠서 for문 돌려서 공백으로 시작하면 그이후로 info
+	        	String tel2[] = tel.trim().split(" ", 2);
+	        	String total_phone = "";
+	        	String total_info2 = "";
+	        	StringBuilder phone = new StringBuilder();
+	        	StringBuilder strbuilder2 = new StringBuilder();
+	        	
+	        	for(int i=0; i<tel2.length; i++) {
+	        		if(i==1) {
+	        			strbuilder2.append(tel2[i]);
+	        			total_info2 += tel2[i];
+	        		} else {
+	        			phone.append(tel2[i]);
+	        		}
+	        	}
+	        	total_phone = phone.toString();
+	        	total_info2 = strbuilder2.toString();
+	        	//System.out.println("final_total_phone: "+total_phone);
+	        	//System.out.println("final_total_info2: "+total_info2);
+	        			        	
+	        	
+	        	
+	        	System.out.println("===============================================");
+	        	System.out.println("FINAL!!!!!!!!!!!!!!!!!!!!!");
+	        	System.out.println("AreaNo: "+area_no);
+		        System.out.println("======================");
+	        	System.out.println("AreaName: "+areaName);
+		        System.out.println("======================");
+		        System.out.println("Addr: "+addr);
+		        System.out.println("======================");
+		        System.out.println("Tel: "+ total_phone);
+		        System.out.println("======================");
+		        System.out.println("Info: "+total_info2);
+		        System.out.println("======================");
+		        
+		        //이안에서 디비로 insert
 	        	}
 	        }
 		System.out.println("END");
