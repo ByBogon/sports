@@ -65,6 +65,26 @@ public class JavaCrawling {
 		}
 	
 	}
+	public static int updateCenter(int centerNo, String centerName) {
+		try {
+			testOracle();
+			String sql = "UPDATE SPORTS_CENTER SET "
+					+ " CENTER_NAME = (CASE CENTER_NO WHEN ? THEN ? "
+					+ "END) WHERE CENTER_NO IN (?)";
+	
+			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
+
+			ps.setInt(1, centerNo);
+			ps.setString(2, centerName);
+			ps.setInt(3, centerNo);
+	
+			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
+	
+		} catch (Exception e) {
+			System.out.println(e.getMessage() + "sports");
+			return 0;
+		}
+	}
 
 
 	public static void main(String[] args) throws Exception{
@@ -77,12 +97,19 @@ public class JavaCrawling {
         	e.printStackTrace();
         }
         Elements elem = doc.select("div.list-table");
+
+        
         for (Element el : elem.select("tr > td")) {
         	String str = el.text();
         	int addr_idx = str.indexOf("▩");
         	int tel_idx = str.indexOf("☎");
         	if(addr_idx > 0 || tel_idx > 0) {
-        		int area_no = 0;
+        		String centerName = str.substring(str.indexOf("]")+1, addr_idx);
+        		System.out.println(centerName.trim());
+        		for(int centerNo = 1; centerNo < 238; centerNo++) {
+        		System.out.println(centerNo);
+            	updateCenter(centerNo, centerName.trim());
+        		/*int area_no = 0;
         		String addr = "";
 	        	String tel = "";
 	        	String areaName = str.substring(str.indexOf("[")+1, str.indexOf("]"));
@@ -177,9 +204,10 @@ public class JavaCrawling {
 		        
 		        //이안에서 디비로 insert
 		        int ret = insertCenter(addr, total_phone, total_info2, area_no);
-		        System.out.println(ret);
+		        System.out.println(ret);*/
 	        	}
 	        }
-		System.out.println("END");
+        System.out.println("END");
+		}
     }
 }

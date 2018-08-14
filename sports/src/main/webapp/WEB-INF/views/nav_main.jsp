@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <!-- Nav Menu -->
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 	<a class="navbar-brand" href="#">Navbar</a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -14,6 +15,18 @@
 			<li class="nav-item">
 				<a class="nav-link" href="#">관리자모드</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="join.do">회원가입</a>
+			</li>
+			<li class="nav-item">
+				<c:if test="${sessionScope.SID eq null}">
+					<a class="nav-link" href="login.do">로그인</a>
+				</c:if>
+				<c:if test="${sessionScope.SID ne null}">
+					<a class="nav-link" href="logout.do">${sessionScope.SNAME}님 로그아웃</a>
+				</c:if>
+			
+			</li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					스포츠
@@ -22,6 +35,18 @@
 					<a class="dropdown-item" href="sports.do">스쿼시</a>
 					<a class="dropdown-item" href="sports.do?sports=basketball">농구</a>
 					<a class="dropdown-item" href="sports.do?sports=tennis">테니스</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					메뉴
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="center_location.do">센터검색</a>
+					<a class="dropdown-item" href="#">모임</a>
+					<a class="dropdown-item" href="#">채팅방</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">Something else here</a>
 				</div>
