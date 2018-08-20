@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.google.code.geocoder.GeoAddressService;
 import com.google.code.geocoder.Geocoder;
 import com.google.code.geocoder.GeocoderRequestBuilder;
 import com.google.code.geocoder.model.GeocodeResponse;
@@ -22,15 +23,22 @@ public class Geocoding {
 	private static ResultSet rs;
 
 	public static void main(String[] args) throws Exception{
-		String location = " 인천광역시 서구 대평로 11-1 ";
+		String location = " 서울시 서초구 신반포로 176  ";
 
 		//Float[] coords = CommonUtil.performGeoCoding(location);
 		//System.out.println(location + ": " + coords[0] + ", " + coords[1]);
 		final Geocoder geocoder = new Geocoder();
 		GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(location).
 				setLanguage("kr").getGeocoderRequest(); 
+		
 		GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
-		System.out.println(geocoderResponse);
+		GeoAddressService serv = new GeoAddressService(geocoder);
+		LatLng addr = serv.getLatLngPointsByAddress(location);
+		
+		System.out.println(addr);
+		
+		//System.out.println(geocoderResponse);
+		System.out.println(geocoderResponse.getResults());
 		
 	}
 	

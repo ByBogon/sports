@@ -9,10 +9,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.jsoup.Jsoup;
-import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import com.google.code.geocoder.GeoAddressService;
+import com.google.code.geocoder.Geocoder;
+import com.google.code.geocoder.GeocoderRequestBuilder;
+import com.google.code.geocoder.model.GeocodeResponse;
+import com.google.code.geocoder.model.GeocoderRequest;
+import com.google.code.geocoder.model.LatLng;
 
 
 public class JavaCrawling {
@@ -43,19 +49,32 @@ public class JavaCrawling {
 	}
 	
 	
-	public static int insertCenter(String addr, String tel, String detail, int areaNo) {
+	public static LatLng geocoding(String location) throws IOException {
+		//location = "";
+		final Geocoder geocoder = new Geocoder();
+		GeoAddressService serv = new GeoAddressService(geocoder);
+		LatLng addr = serv.getLatLngPointsByAddress(location);
+		
+		//System.out.println(addr);
+		return addr;
+	}
+	
+	
+	public static int insertCenter(int areaNo, String name, String addr, String tel, String detail) {
 		try {
 			testOracle();
-			String sql = "INSERT INTO SPORTS_CENTER("
-					+ " CENTER_NO, CENTER_ADDR, CENTER_TEL, CENTER_REG_CHK, SPORTS_NO, CENTER_DETAIL, CENTER_AREA_NO)"
-					+ " VALUES(SEQ_SPORTS_CENTER_NO.NEXTVAL,?,?,0,0,?,?)";
+			String sql = "INSERT INTO SPORTS_CENTER( "
+					+ " CENTER_NO, CENTER_AREA_NO, CENTER_NAME, CENTER_ADDR, CENTER_TEL, "
+					+ " CENTER_DETAIL, CENTER_REG_CHK, SPORTS_NO, CENTER_REG_DATE) "
+					+ " VALUES(SEQ_SPORTS_CENTER_NO.NEXTVAL,?,?,?,?,?,0,0,SYSDATE)";
 	
 			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
-	
-			ps.setString(1, addr);
-			ps.setString(2, tel);
-			ps.setString(3, detail);
-			ps.setInt(4, areaNo);
+			
+			ps.setInt(1, areaNo);
+			ps.setString(2, name);
+			ps.setString(3, addr);
+			ps.setString(4, tel);
+			ps.setString(5, detail);
 	
 			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
 	
@@ -69,14 +88,13 @@ public class JavaCrawling {
 		try {
 			testOracle();
 			String sql = "UPDATE SPORTS_CENTER SET "
-					+ " CENTER_NAME = (CASE CENTER_NO WHEN ? THEN ? "
-					+ "END) WHERE CENTER_NO IN (?)";
+					+ " CENTER_NAME = ? "
+					+ " WHERE CENTER_NO = ?";
 	
 			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
 
-			ps.setInt(1, centerNo);
-			ps.setString(2, centerName);
-			ps.setInt(3, centerNo);
+			ps.setString(1, centerName);
+			ps.setInt(2, centerNo);
 	
 			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
 	
@@ -97,28 +115,28 @@ public class JavaCrawling {
         	e.printStackTrace();
         }
         Elements elem = doc.select("div.list-table");
-
-        
+        int index = 0;
         for (Element el : elem.select("tr > td")) {
         	String str = el.text();
         	int addr_idx = str.indexOf("▩");
         	int tel_idx = str.indexOf("☎");
         	if(addr_idx > 0 || tel_idx > 0) {
+        		index++;
         		String centerName = str.substring(str.indexOf("]")+1, addr_idx);
-        		System.out.println(centerName.trim());
-        		for(int centerNo = 1; centerNo < 238; centerNo++) {
-        		System.out.println(centerNo);
-            	updateCenter(centerNo, centerName.trim());
-        		/*int area_no = 0;
+        		System.out.println("NOW: "+index);
+        		//System.out.println(centerName.trim());
+        		//System.out.println(str);
+            	//updateCenter(index, centerName.trim());
+        		int area_no = 0;
         		String addr = "";
 	        	String tel = "";
 	        	String areaName = str.substring(str.indexOf("[")+1, str.indexOf("]"));
 	        	areaName = areaName.trim();
 	        	//System.out.println("+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+");
-	        	System.out.println("START!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	        	//System.out.println("START!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	        	//System.out.println("idx: "+addr_idx);
 	        	addr = str.substring(addr_idx+1, tel_idx);
-	        	System.out.println(areaName);
+	        	//System.out.println(areaName);
 	        	if(areaName.equals("서울")) {
 	        		area_no = 10;
 	        	} else if (areaName.equals("부산")) {
@@ -157,13 +175,13 @@ public class JavaCrawling {
 	        		area_no = 99;
 	        	}
 	       
-	        	System.out.println("주소: "+addr+"/ 행정번호: "+area_no);
+	        	//System.out.println("주소: "+addr+"/ 행정번호: "+area_no);
 	        	//System.out.println(str);
 	        	//System.out.println("======================");
 	        	//System.out.println("AreaName: " + areaName);
 	        	//System.out.println("======================");
 	        	tel = str.substring(tel_idx+1);
-	        	System.out.println("tel: "+ tel);
+	        	//System.out.println("tel: "+ tel);
 	        	//System.out.println("======================");
 	        	//String tels[] = tel.trim().split("-");
 	        	
@@ -186,12 +204,14 @@ public class JavaCrawling {
 	        	total_info2 = strbuilder2.toString();
 	        	//System.out.println("final_total_phone: "+total_phone);
 	        	//System.out.println("final_total_info2: "+total_info2);
+	        	
+	        	LatLng gps = geocoding(addr);
 	        			        	
-	        	
-	        	
 	        	System.out.println("===============================================");
 	        	System.out.println("FINAL!!!!!!!!!!!!!!!!!!!!!");
 	        	System.out.println("AreaNo: "+area_no);
+		        System.out.println("======================");
+		        System.out.println("CenterName: "+centerName.trim());
 		        System.out.println("======================");
 	        	System.out.println("AreaName: "+areaName);
 		        System.out.println("======================");
@@ -201,13 +221,15 @@ public class JavaCrawling {
 		        System.out.println("======================");
 		        System.out.println("Info: "+total_info2);
 		        System.out.println("======================");
+		        System.out.println("LATLNG: "+gps);
+		        System.out.println("======================");
 		        
 		        //이안에서 디비로 insert
-		        int ret = insertCenter(addr, total_phone, total_info2, area_no);
+		        /*int ret = insertCenter(addr, total_phone, total_info2, area_no);
 		        System.out.println(ret);*/
-	        	}
 	        }
-        System.out.println("END");
+        	System.out.println("Last: "+index);
 		}
+        System.out.println("END");
     }
 }
