@@ -1,4 +1,4 @@
-package com.bybogon.sports;
+package com.bybogon.sports.controller;
 
 import javax.servlet.http.HttpSession;
 
@@ -43,6 +43,12 @@ public class MemberController {
 		}
 		return "redirect:sports.do";
 	}
+	@RequestMapping(value="logout.do",
+			method = {RequestMethod.GET, RequestMethod.POST})
+	public String login(HttpSession httpsession) {
+		httpsession.invalidate();
+		return "redirect:sports.do";
+	}
 	
 	@RequestMapping(value = "login.do", method=RequestMethod.GET)
 	public String login() {
@@ -62,8 +68,11 @@ public class MemberController {
 				session.setAttribute("SID", vo.getMem_id());
 				session.setAttribute("SNAME", vo.getMem_name());
 			}
+			return "redirect:sports.do";
+		} else {
+			return "login";
 		}
-		return "redirect:sports.do";
+		
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.bybogon.sports.func;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -8,16 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.google.code.geocoder.AdvancedGeoCoder;
 import com.google.code.geocoder.GeoAddressService;
 import com.google.code.geocoder.Geocoder;
-import com.google.code.geocoder.GeocoderRequestBuilder;
-import com.google.code.geocoder.model.GeocodeResponse;
-import com.google.code.geocoder.model.GeocoderRequest;
 import com.google.code.geocoder.model.LatLng;
 
 
@@ -49,7 +52,7 @@ public class JavaCrawling {
 	}
 	
 	
-	public static LatLng geocoding(String location) throws IOException {
+/*	public static LatLng geocoding(String location) throws IOException {
 		//location = "";
 		final Geocoder geocoder = new Geocoder();
 		GeoAddressService serv = new GeoAddressService(geocoder);
@@ -57,16 +60,19 @@ public class JavaCrawling {
 		
 		//System.out.println(addr);
 		return addr;
-	}
+	}*/
 	
 	
-	public static int insertCenter(int areaNo, String name, String addr, String tel, String detail) {
+	public static int insertCenter(
+			int areaNo, String name, String addr, 
+			String tel, String detail, float lat, float lng) {
 		try {
 			testOracle();
 			String sql = "INSERT INTO SPORTS_CENTER( "
 					+ " CENTER_NO, CENTER_AREA_NO, CENTER_NAME, CENTER_ADDR, CENTER_TEL, "
-					+ " CENTER_DETAIL, CENTER_REG_CHK, SPORTS_NO, CENTER_REG_DATE) "
-					+ " VALUES(SEQ_SPORTS_CENTER_NO.NEXTVAL,?,?,?,?,?,0,0,SYSDATE)";
+					+ " CENTER_DETAIL, CENTER_LAT, CENTER_LNG, "
+					+ " CENTER_REG_CHECK, SPORTS_NO, CENTER_REG_DATE) "
+					+ " VALUES(SEQ_SPORTS_CENTER_NO.NEXTVAL,?,?,?,?,?,?,?,0,0,SYSDATE)";
 	
 			PreparedStatement ps = OracleConnStatic.getConn().prepareStatement(sql);
 			
@@ -75,6 +81,8 @@ public class JavaCrawling {
 			ps.setString(3, addr);
 			ps.setString(4, tel);
 			ps.setString(5, detail);
+			ps.setFloat(6, lat);
+			ps.setFloat(7, lng);
 	
 			return ps.executeUpdate(); // INSERT, UPDATE, DELETE는 뒤에 Update
 	
@@ -84,6 +92,7 @@ public class JavaCrawling {
 		}
 	
 	}
+	
 	public static int updateCenter(int centerNo, String centerName) {
 		try {
 			testOracle();
@@ -106,6 +115,12 @@ public class JavaCrawling {
 
 
 	public static void main(String[] args) throws Exception{
+		HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+		httpClient.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 10 * 1000); //10s
+		Geocoder geocoder = new AdvancedGeoCoder(httpClient);
+		GeoAddressService serv = new GeoAddressService(geocoder);
+		
+		
 		System.out.println("START");
 		String URL = "http://map.squash.pe.kr/bbs/board.php?bo_table=KoreaSquashCourt";
         Document doc = null;
@@ -204,8 +219,8 @@ public class JavaCrawling {
 	        	total_info2 = strbuilder2.toString();
 	        	//System.out.println("final_total_phone: "+total_phone);
 	        	//System.out.println("final_total_info2: "+total_info2);
-	        	
-	        	LatLng gps = geocoding(addr);
+	        	LatLng gps = serv.getLatLngPointsByAddress(addr);
+	        	//LatLng gps = geocoding(addr);
 	        			        	
 	        	System.out.println("===============================================");
 	        	System.out.println("FINAL!!!!!!!!!!!!!!!!!!!!!");
@@ -223,10 +238,23 @@ public class JavaCrawling {
 		        System.out.println("======================");
 		        System.out.println("LATLNG: "+gps);
 		        System.out.println("======================");
+		        float lat = 0f, lng = 0f;
+		        if(gps != null) {
+		        	BigDecimal biglat = gps.getLat();
+			        lat = biglat.setScale(22, RoundingMode.DOWN).floatValue();
+			        BigDecimal biglng = gps.getLng();
+			        lng = biglng.setScale(22, RoundingMode.DOWN).floatValue();
+			        System.out.println(gps.getLat());
+			        System.out.println(gps.getLng());
+			        
+		        }
+		        
+		        System.out.println("lat: "+lat);
+		        System.out.println("lng: "+lng);
 		        
 		        //이안에서 디비로 insert
-		        /*int ret = insertCenter(addr, total_phone, total_info2, area_no);
-		        System.out.println(ret);*/
+		        int ret = insertCenter(area_no, centerName.trim(), addr, total_phone, total_info2, lat, lng);
+		        System.out.println(ret);
 	        }
         	System.out.println("Last: "+index);
 		}
