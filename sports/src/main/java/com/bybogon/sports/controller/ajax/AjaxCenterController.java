@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,16 @@ public class AjaxCenterController {
 		return list;
 		
 	}
-	
-
+	@RequestMapping(value = "ajax_center_search.do",
+			method= {RequestMethod.GET, RequestMethod.POST},
+			produces="application/json")
+	public @ResponseBody List<Map<String, Object>> searchCenter(
+			@RequestParam(value = "addr") String addr) {
+		System.out.println(addr);
+		List<Map<String, Object>> list = cDAO.searchCenter(addr);
+		System.out.println(list);
+		System.out.println(list.size());
+		
+		return list;
+	}
 }
