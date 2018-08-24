@@ -36,10 +36,10 @@ public class AjaxCenterController {
 	public @ResponseBody List<Map<String, Object>> searchCenter(
 			@RequestParam(value = "addr") String addr) {
 		System.out.println(addr);
-		List<Map<String, Object>> list = cDAO.searchCenter(addr);
+		List<Map<String, Float[]>> list = cDAO.searchCenter(addr);
 		System.out.println(list);
 		System.out.println(list.size());
 		
-		return list;
+		return null;
 	}
 }
