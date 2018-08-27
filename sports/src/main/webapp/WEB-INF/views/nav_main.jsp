@@ -15,17 +15,26 @@
 			<li class="nav-item">
 				<a class="nav-link" href="#">관리자모드</a>
 			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="join.do">회원가입</a>
-			</li>
-			<li class="nav-item">
-				<c:if test="${sessionScope.SID eq null}">
-					<a class="nav-link" href="login.do">로그인</a>
-				</c:if>
-				<c:if test="${sessionScope.SID ne null}">
-					<a class="nav-link" href="logout.do">${sessionScope.SNAME}님 로그아웃</a>
-				</c:if>
 			
+			<c:if test="${sessionScope.SID eq null}">
+				<li class="nav-item">
+					<a class="nav-link" href="join.do">회원가입</a>
+				</li>
+				<li class="nav-item">
+						<a class="nav-link" href="login.do">로그인</a>
+				</li>
+			</c:if>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					내정보
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#">내정보보기</a>
+					<a class="dropdown-item" href="#">내모임들보기</a>
+					
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
 			</li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,18 +50,41 @@
 			</li>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					메뉴
+					센터
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="center_location.do">센터검색</a>
-					<a class="dropdown-item" href="#">모임</a>
-					<a class="dropdown-item" href="#">채팅방</a>
+					<a class="dropdown-item" href="#">센터소개</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					모임
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="open_group.do">모임 만들기</a>
+					<a class="dropdown-item" href="groups.do">모임 리스트</a>
+					<a class="dropdown-item" href="#">모임 관리하기</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					채팅
+				</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="chatting.do">채팅</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">Something else here</a>
 				</div>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link disabled" href="#">Disabled</a>
+				<c:if test="${sessionScope.SID ne null}">
+					<a class="nav-link" href="logout.do">${sessionScope.SNAME}님 로그아웃</a>
+				</c:if>
 			</li>
 		</ul>
 		<!-- <form class="form-inline my-2 my-lg-0">

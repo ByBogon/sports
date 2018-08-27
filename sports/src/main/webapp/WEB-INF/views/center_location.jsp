@@ -32,20 +32,73 @@
 				<div id="map" style="width:100%; height:400px; margin: auto">
 				</div>
 			</div>
-			
+			<div class="container" style="text-align:center; margin: auto; margin-top: 20px">
+				<table id="center_list" class="table table-striped table-hover" style="text-align:center">
+					<thead class="thead-light">
+						<tr>
+							<th>지역</th>
+							<th>센터명</th>
+							<th>주소</th>
+							<th>전화번호</th>
+						</tr>
+					</thead>
+					<tbody class="tbody" style="text-align:center">
+					
+					</tbody>										
+				</table>
+			</div>			
 		</div>
+		
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
     <script>
     $(function() {
+    	$(document).on('click', '.tr', function() {
+    		console.log("clicked!");
+    		var idx = $(this).index('.tr');
+    		var addr = $('.addr').eq(idx).text();
+    		console.log(idx);
+    		console.log(addr);
+    		$.get('ajax_center_one.do?addr='+addr, function(data) {
+    			console.log(data);
+    			coords = new daum.maps.LatLng(data.CENTER_LAT, data.CENTER_LNG);
+       			mark = new daum.maps.Marker({
+					position : coords
+				});
+       			map.panTo(coords);
+       			map.setLevel(4, {anchor: coords}, {animate:true});
+       			
+       			document.getElementById('txt_search').scrollIntoView(true);
+       			
+    		})
+    	});
+    	$('#txt_search').keypress(function (e) {
+    		var key = e.which;
+    		if(key == 13) { //엔터키
+    			$('#btn_search').trigger("click");
+    			return false;
+    		}
+    	})
     	$('#btn_search').on('click', function() {
+    		$('.tbody').empty();
     		var addr = $('#txt_search').val();
 			console.log(addr);
     		$.get('ajax_center_search.do?addr='+addr, function(data) {
-    			console.log('ajax 성공'+data);
+    			console.log('ajax 성공');
+    			console.log(data);
+				var len = data.length;
     			if(data != null) {
-    				map.setCenter(data.CENTER_LAT, data.CENTER_LNG);
+    				for(var i=0; i<len; i++) {
+    					$('.tbody').append(
+   							'<tr class="tr">'+
+	   							'<td>'+data[i].CENTER_AREA_NAME+'</td>'+
+	   							'<td>'+data[i].CENTER_NAME+'</td>'+
+	   							'<td class="addr">'+data[i].CENTER_ADDR+'</td>'+
+	   							'<td>'+data[i].CENTER_TEL+'</td>'+	   							
+   							'</tr>'
+    					);
+    				}
     			}
     		})
     	});
@@ -56,13 +109,13 @@
         	level: 14 //지도의 레벨(확대, 축소 정도)
         };
         var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
-    
 		
     	var clusterer = new daum.maps.MarkerClusterer({
     	    map: map,
     	    averageCenter: true,
     	    minLevel: 4
     	});
+    	
         $.get('ajax_center_locations.do', function(data) {
         	console.log(data);
         	// 데이터에서 좌표 값을 가지고 마커를 표시합니다
@@ -81,10 +134,10 @@
        			var infowindow = new daum.maps.InfoWindow({
         			content : iwContent
         		});
+
        			daum.maps.event.addListener(mark, 'click', function() {
-       				map.setCenter(coords);
+       				map.panTo(coords);
        			});
-       			
        			daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
                 daum.maps.event.addListener(mark, 'mouseout', makeOutListener(infowindow));
        			
@@ -95,13 +148,14 @@
             clusterer.addMarkers(markers);
             
         });
+        
         daum.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
             // 현재 지도 레벨에서 1레벨 확대한 레벨
             var level = map.getLevel()-1;
             // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
             map.setLevel(level, {anchor: cluster.getCenter()});
         });
-        
+
      	 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
         function makeOverListener(map, marker, infowindow) {
         	infowindow.close();
@@ -116,39 +170,7 @@
             	infowindow.close();
             };
         };
-        
-        /* $.get('ajax_customer_food.do?rtr_crn='+'${param.rtr_crn}', function(data){
-			var str_select = "<select class='browser-default ord_cnt'>";
-			for (var i=1; i<=100; i++) {
-				str_select += "<option value='"+ i +"'>"+ i +"</option>";
-			}
-			str_select += "</select>";
-			
-			console.log(data);
-			var len = data.length;
-			for(var i=0; i<len; i++) {
-				$('.collection').append(
-					'<li class="collection-item avatar" style="margin: 20px;">'+
-						'<input type="hidden" class="fd_num" value="'+data[i].FD_NUM+'"/>'+
-						'<div style="cursor:pointer">'+
-							'<img src="resources/imgs/2.jpg" class="circle" />'+							
-							'<span class="title">'+data[i].FD_NAME+ '</span>'+
-							'<p>'+data[i].FD_PRICE+' 원</p>'+
-							'<div class="input-field inline">'+
-							'<input type="text" class="validate"/>'+
-							str_select +
-							'</div>'+
-							'<a href="#!" class="secondary-content btn_order">주문</a>'+
-						'</div>'+
-					'</li>'
-				);
-			}
-		},'json'); 
-
-    })
-    */
     });
-    
     </script>
 
 </body>

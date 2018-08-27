@@ -52,12 +52,12 @@ public class MemberController {
 	
 	@RequestMapping(value = "login.do", method=RequestMethod.GET)
 	public String login() {
-		return "login";
+		return "login_v4";
 	}
 	
 	@RequestMapping(value = "login.do", method=RequestMethod.POST)
-	public String loginP(@RequestParam(value="id") String id,
-			@RequestParam(value="pw") String pw,
+	public String loginP(@RequestParam(value="username") String id,
+			@RequestParam(value="pass") String pw,
 			HttpSession session) {
 		System.out.println(id);
 		System.out.println(pw);
@@ -70,7 +70,7 @@ public class MemberController {
 			}
 			return "redirect:sports.do";
 		} else {
-			return "login";
+			return "login_v4";
 		}
 		
 	}

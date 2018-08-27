@@ -36,10 +36,19 @@ public class AjaxCenterController {
 	public @ResponseBody List<Map<String, Object>> searchCenter(
 			@RequestParam(value = "addr") String addr) {
 		System.out.println(addr);
-		List<Map<String, Float[]>> list = cDAO.searchCenter(addr);
+		List<Map<String, Object>> list = cDAO.searchCenter(addr);
 		System.out.println(list);
 		System.out.println(list.size());
-		
-		return null;
+		return list;
+	}
+	
+	@RequestMapping(value ="ajax_center_one.do",
+			method = {RequestMethod.GET, RequestMethod.POST},
+			produces="application/json")
+	public @ResponseBody Map<String, Object> selectCenterOne(
+			@RequestParam(value="addr") String addr) {
+		Map<String, Object> map = cDAO.selectCenterOne(addr);
+		System.out.println(map.size());
+		return map;
 	}
 }

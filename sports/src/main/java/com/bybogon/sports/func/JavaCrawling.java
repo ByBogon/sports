@@ -253,8 +253,8 @@ public class JavaCrawling {
 		        System.out.println("lng: "+lng);
 		        
 		        //이안에서 디비로 insert
-		        int ret = insertCenter(area_no, centerName.trim(), addr, total_phone, total_info2, lat, lng);
-		        System.out.println(ret);
+		        /*int ret = insertCenter(area_no, centerName.trim(), addr, total_phone, total_info2, lat, lng);
+		        System.out.println(ret);*/
 	        }
         	System.out.println("Last: "+index);
 		}
