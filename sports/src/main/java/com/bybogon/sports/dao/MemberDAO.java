@@ -1,7 +1,10 @@
 package com.bybogon.sports.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.bybogon.sports.vo.Sports_Member;
@@ -20,4 +23,7 @@ public interface MemberDAO {
 	public Sports_Member selectMemberOne(String id);
 	
 	public int updateMemberOne(Sports_Member vo);
+	
+	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID LIKE #{mem} OR MEM_NAME LIKE #{mem}"})
+	public List<Sports_Member> selectMemberList(@Param("mem") String mem);
 }

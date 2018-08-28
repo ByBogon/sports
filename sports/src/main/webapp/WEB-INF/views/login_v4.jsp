@@ -44,7 +44,7 @@
 
 					<div class="wrap-input100 validate-input m-b-23" data-validate = "Username is reauired">
 						<span class="label-input100">Username</span>
-						<input class="input100" type="text" name="username" placeholder="Type your username">
+						<input class="input100" type="text" name="username" placeholder="Type your username" autocomplete="off">
 						<span class="focus-input100" data-symbol="&#xf206;"></span>
 					</div>
 

@@ -107,38 +107,37 @@
 	</form>
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resource/js/bootstrap.min.js"></script>
-	<script>
-		$(function(){
-			$('#id').keyup(function(){
-				var a = $('#id').val();
-				console.log(a);
-				if (a.length > 0) {
-					//doGET을 호출 {"ret":"y"}
-					console.log("if문 안");
-					$.get('ajaxidcheck.do?id='+a, function(data){
-						console.log("get안");
-						if (data.ret =='y') {
-							$('#btn-idcheck').val('사용가능');
-							$('#btn-idcheck').attr('class', 'btn btn-success');
-						} else if (data.ret == 'n') {
-							$('#btn-idcheck').val('사용불가');
-							$('#btn-idcheck').attr('class', 'btn btn-warning');
-						}
-						console.log(data)
-					}, 'json');
-				}
-				else {
-					$('#btn-idcheck').val('중복확인');
-					$('#btn-idcheck').attr('class', 'btn btn-primary');
-				}
-				
-				/* $.post('서버주소','전달할값', function(data){
-				},'json'); */
-			});
-		});
-	</script>
+
 </body>
 <script type="text/javascript">
+	$(function(){
+		$('#id').keyup(function(){
+			var a = $('#id').val();
+			console.log(a);
+			if (a.length > 0) {
+				//doGET을 호출 {"ret":"y"}
+				console.log("if문 안");
+				$.get('ajaxidcheck.do?id='+a, function(data){
+					console.log("get안");
+					if (data.ret =='y') {
+						$('#btn-idcheck').val('사용가능');
+						$('#btn-idcheck').attr('class', 'btn btn-success');
+					} else if (data.ret == 'n') {
+						$('#btn-idcheck').val('사용불가');
+						$('#btn-idcheck').attr('class', 'btn btn-warning');
+					}
+					console.log(data)
+				}, 'json');
+			}
+			else {
+				$('#btn-idcheck').val('중복확인');
+				$('#btn-idcheck').attr('class', 'btn btn-primary');
+			}
+			
+			/* $.post('서버주소','전달할값', function(data){
+			},'json'); */
+		});
+	});
 	function pwCheck() {
 		var pw = document.getElementById("pw").value;
 		var pw_chk = document.getElementById("pw_chk").value;
