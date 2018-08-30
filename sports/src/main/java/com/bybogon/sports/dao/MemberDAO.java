@@ -24,6 +24,19 @@ public interface MemberDAO {
 	
 	public int updateMemberOne(Sports_Member vo);
 	
-	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID LIKE #{mem} OR MEM_NAME LIKE #{mem}"})
-	public List<Sports_Member> selectMemberList(@Param("mem") String mem);
+	@Select({"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE (MEM_ID != #{myid} AND MEM_ID LIKE #{mem}||'%') ",
+			" OR (MEM_NAME != #{myname} AND MEM_NAME LIKE #{mem}||'%')"})
+	public List<Sports_Member> searchMemberList(
+			@Param("mem") String mem,
+			@Param("myid") String myid,
+			@Param("myname") String myname);
+	
+	@Select({"<script>",
+			"SELECT MEM_ID, MEM_NAME, l.LEVEL_NAME FROM SPORTS_MEMBER m JOIN SPORTS_MEM_LEVEL l ON m.LEVEL_NO = l.LEVEL_NO WHERE MEM_ID IN ",
+			" <foreach collection='list' item='item' index='index' separator=',' open='(' close=')'> ",
+			" #{item} ",
+			" </foreach>",
+			"</script>"})
+	public List<Sports_Member> selectMemberList(@Param("list") String[] id_list);
 }

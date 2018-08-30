@@ -10,6 +10,7 @@ public class Sports_Member {
 	private int mem_check = 0;
 	private int sports_no = 0;
 	private int level_no = 0;
+	private String level_name = null;
 	private String mem_date = null;
 	
 	public Sports_Member() {
@@ -34,6 +35,14 @@ public class Sports_Member {
 		this.mem_email = mem_email;
 	}
 
+
+	public String getLevel_name() {
+		return level_name;
+	}
+
+	public void setLevel_name(String level_name) {
+		this.level_name = level_name;
+	}
 
 	public String getMem_id() {
 		return mem_id;

@@ -21,10 +21,16 @@ public class AjaxMemberController {
 	@RequestMapping(value = "ajax_search_member.do", method=RequestMethod.GET,
 			produces="application/json")
 	public @ResponseBody List<Sports_Member> searchMember(
-			@RequestParam(value="mem") String mem) {
+			@RequestParam(value="mem") String mem,
+			@RequestParam(value="myid") String myid,
+			@RequestParam(value="myname") String myname) {
 		System.out.println(mem);
-		List<Sports_Member> list = mDao.selectMemberList(mem);
-		
+		System.out.println(myid);
+		System.out.println(myname);
+		List<Sports_Member> list = mDao.searchMemberList(mem, myid, myname);
+		for(Sports_Member vo : list) {
+			System.out.println(vo.getMem_id());
+		}
 		return list;
 	}
 }

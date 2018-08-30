@@ -45,7 +45,7 @@ public class MemberController {
 	}
 	@RequestMapping(value="logout.do",
 			method = {RequestMethod.GET, RequestMethod.POST})
-	public String login(HttpSession httpsession) {
+	public String logout(HttpSession httpsession) {
 		httpsession.invalidate();
 		return "redirect:sports.do";
 	}

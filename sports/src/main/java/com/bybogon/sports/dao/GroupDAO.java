@@ -9,7 +9,24 @@ import com.bybogon.sports.vo.Sports_Member;
 
 public interface GroupDAO {
 	
-	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID NOT LIKE #{mem_id} AND SPORTS_NO = #{no}"})
-	public List<Sports_Member> selectMemberList(@Param("no") int no, @Param("mem_id") String mem_id);
+	@Select({"<script>",
+			"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE MEM_ID NOT IN ",
+			" <foreach collection='idList' item='item' index='index' separator=',' open='(' close=')'> ",
+			" #{item} ",
+			" </foreach>",
+			" AND SPORTS_NO = #{no}",
+			"</script>"
+			})
+	public List<Sports_Member> showAddableMemberList(
+			@Param("no") int no, 
+			@Param("idList") List<String> idList);
+	
+	@Select({"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE MEM_ID NOT IN #{mem_id} AND SPORTS_NO = #{no}"})
+	public List<Sports_Member> showAllMemberList(
+		@Param("no") int no, 
+		@Param("mem_id") String mem_id);
+
 
 }
