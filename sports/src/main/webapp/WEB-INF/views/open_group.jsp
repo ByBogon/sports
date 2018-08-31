@@ -1,307 +1,460 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ page session="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ page session="true"%>
 <html>
 <head>
-	<title>스쿼시</title>
-	<!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css">
-    <link rel="stylesheet" href="resources/css/semantic.min.css">
-	<!-- jQuery and Bootstrap -->
-	<script src="resources/js/jquery-3.3.1.min.js"></script>
-	<script src="resources/js/bootstrap.min.js"></script>
+<title>스쿼시</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+<link rel="stylesheet" href="resources/css/semantic.min.css">
+<!-- jQuery and Bootstrap -->
+<script src="resources/js/jquery-3.3.1.min.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services"></script>
+	
 </head>
 <style>
-	.highlight {
-		background-color:gray;
-	}
+.highlight {
+	background-color: gray;
+}
 </style>
 <body>
 	<jsp:include page="nav_main.jsp"></jsp:include>
-	<div class="container" style="margin:auto; margin-top: 20px">
-		<div>
+	<div class="ui grid">
+		<div class="left floated column">
+		<div class="ui container" style="margin: auto; margin-top: 20px;">
 			<form:form action="open_group.do" method="post" modelAttribute="vo">
-				<div class="form-inline">
+				<div class="form-inline" style="margin-top: 20px">
 					<label>모임명: </label>
-					<form:input type="text" class="form-control" path="grp_name" placeholder="모임명"/>	
+					<form:input type="text" class="form-control" path="grp_name"
+						placeholder="모임명" />
 				</div>
-				<div class="form-inline">
-					<label>주최자: </label>
-					<input type="text" class="form-control" readonly value="${sessionScope.SNAME}"/>
+				<div class="form-inline" style="margin-top: 20px">
+					<label>주최자: </label> <input type="text" class="form-control"
+						readonly value="${sessionScope.SNAME}" />
 				</div>
-				<div class="form-inline">
+				<div class="form-inline" style="margin-top: 20px">
 					<label>운동종목: </label>
-					<form:select class="form-control" id="sports_genre" path="sports_no" items="${vo.map}"/>
+					<form:select class="form-control" id="sports_genre"
+						path="sports_no" items="${vo.map}" />
 				</div>
-				<div class="form-inline">
-					<input type="text" class="form-control" placeholder="장소"/>
-					<input type="button" class="btn btn-secondary" value="찾기"/>
+				<div class="form-inline" style="margin-top: 20px">
+					<label>센터 찾기: </label>
+					<input type="text" class="form-control"	id="txt_center"
+						placeholder="센터명/주소" autocomplete="off"/>
+					<input type="button" class="btn btn-secondary btn-search-center" value="찾기" />
 				</div>
-				<input type="button" class="btn btn-primary btn-add" value="멤버추가"/>
-				<input type="button" class="btn btn-danger btn-rmv" value="멤버삭제"/>
-				<div style="float: right">
-					<input type="submit" class="btn btn-success" value="모임생성"/>
-					<a href="#" class="btn btn-dark">홈으로</a>
+				<div class="form-inline" style="margin-top: 20px">
+					<label>직접 입력: </label>
+					<input type="text" class="form-control" id="txt_addr" autocomplete="off"/>
+					<input type="button" class="btn btn-secondary btn-search-addr" 
+						onclick="daumPostcode()" value="주소 검색" />
 				</div>
 			</form:form>
 		</div>
+		<div class="right floated column">
+			<div id="map" style="width:300px; height:300px; margin:auto; margin-top:10px; display:none"></div>
+		</div>
+	</div>
+	</div>
+	<div class="ui container">
+		<div class="ui left aligned container" style="margin-top: 20px">
+			<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
+			<input type="button" class="btn btn-danger btn-rmv" value="멤버삭제" />
+		</div>
+		<div class="ui right aligned container">
+			<input type="submit" class="btn btn-success" value="모임생성" /> <a
+				href="#" class="btn btn-dark">홈으로</a>
+		</div>
+	</div>
+	<div class="ui container">
 		<div class="ui link special cards members" style="margin-top: 20px">
 		</div>
 	</div>
 	
+	
 	<!-- Modal -->
-	<div class="modal fade" id="modal_del_grp_mem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal fade" id="modal_del_grp_mem" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="exampleModalCenterTitle">멤버 삭제</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
-				...
-				</div>
+				<div class="modal-body">선택하신 멤버를 제외하시겠습니까?</div>
 				<div class="modal-footer">
-					<input type="button" class="btn btn-secondary" data-dismiss="modal" value="취소"/>
-					<input type="submit" class="btn btn-danger" value="삭제"/>
+					<input type="button" class="btn btn-secondary" data-dismiss="modal"
+						value="취소" /> <input type="button" class="btn btn-danger"
+						id="modal_btn_rmv" value="삭제" />
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<jsp:include page="modal_add_group_mem.jsp"></jsp:include>
-	
-	<script>
-	var id_list = [];
-	var cardIdList = [];
-	var rmIdList = [];
-	function havingCardIds() {
-		var cardIds = [];
-		$('.members').find('.card').each(function() {
-			var idx = $(this).index('.card');
-			console.log(idx);
-			var id = $('.meta').eq(idx).text();
-			console.log(id);
-			cardIds.push(id);
-		})
-		return cardIds;
-	}
-	$(function() {
-		$('.btn-rmv').on('click', function() {
-			rmIdList.length = 0;
+	<jsp:include page="modal_search_group_center.jsp"></jsp:include>
+
+	<script type="text/javascript">
+		var id_list = [];
+		var cardIdList = [];
+		var rmIdList = [];
+		function havingCardIds() {
+			var cardIds = [];
 			$('.members').find('.card').each(function() {
-				var idx = $(this).index('.card');
-				var chk = $('.grp_mem_chck').eq(idx);
-				var rmId = chk.val();
-				if(chk.is(":checked")) {
-					rmIdList.push(rmId);
-				}
-			})
-			console.log(rmIdList.length);
-			if(rmIdList.length == 0) {
-			} else {
-				$('#modal_del_grp_mem').modal('show');	
-			}
-		})
-		$('.members').on('click', '.card', function() {
-			var idx = $(this).index('.card');
-			console.log(idx);
-			var check = $('.grp_mem_chck').eq(idx);
-			if(check.is(":checked")) {
-   				check.prop('checked', false);
-   			} else {
-   				check.prop('checked', true);
-   			}			
-		})
-		
-		$('#insertGrpMemModal').on('shown.bs.modal', function() {
-			 $('.members').find('.card').each(function() {
 				var idx = $(this).index('.card');
 				console.log(idx);
 				var id = $('.meta').eq(idx).text();
 				console.log(id);
-				$('#mem_table').find('.mem').each(function() {
-					var i = $(this).index('.mem');
-					var check = $('.mem_chck').eq(i);
-					var mem_id_eq = $('.mem_id').eq(i);
-		    		var mem_id = mem_id_eq.text();
-		    		console.log(mem_id);
-		    		if(id == mem_id) {
-		    			mem_id_eq.parent().addClass("highlight");
-		    			check.prop('checked', true);
-		    		}
+				cardIds.push(id);
+			})
+			return cardIds;
+		}
+		function havingCheckedCards() {
+			var checkedCards = [];
+			$('.members').find('.card').each(function() {
+				var idx = $(this).index('.card');
+				var chkbox = $('.grp_mem_chck').eq(idx);
+				if (chkbox.is(":checked")) {
+					checkedCards.push(chkbox.val());
+				}
+			})
+			return checkedCards;
+		}
+		function clickableDelBtn() {
+			cardIdList = havingCheckedCards();
+			var rmvBtn = $('.btn-rmv');
+			if (cardIdList.length == 0) {
+				rmvBtn.prop("disabled", true);
+			} else {
+				rmvBtn.prop("disabled", false);
+			}
+		}
+		window.onload = clickableDelBtn;
+		$(function() {
+
+			$('#center_table').on('click', '.center_tr', function() {
+				var idx = $(this).index('.center_tr');
+				var centerName = $('.center_name').eq(idx).text();
+				$('#txt_center').val(centerName);
+				$('#searchGrpCenterModal').modal('hide');
+			})
+			
+			$('.btn-search-center').on('click', function() {
+				var center = $('#txt_center').val();
+				
+				$.get('ajax_center_search.do?addr='+center, function(data) {
+					var len = data.length;
+					for (var i = 0; i < len; i++) {
+						$('.center').append(
+							'<tr class="center_tr">'
+								+'<td class>'+data[i].CENTER_AREA_NAME+'</td>'
+								+'<td class="center_name">'+data[i].CENTER_NAME+'</td>'
+								+'<td>'+data[i].CENTER_ADDR+'</td>'
+								+'<td>'+data[i].CENTER_TEL+'</td>'
+							+'</tr>');
+					}
+				})
+				$('#searchGrpCenterModal').modal('show');
+			})
+			$('#searchGrpCenterModal').on('hide.bs.modal', function() {
+				$('.center_tr').remove();
+			})
+
+			$('#modal_btn_rmv').on('click', function() {
+				console.log(rmIdList.length);
+				$('.members').find('.card').each(function() {
+					var idx = $(this).index('.card');
+					var rmvCard = $('.card').eq(idx);
+					var rmvId = $('.grp_mem_chck').eq(idx).val();
+					$.each(rmIdList, function(index, val) {
+						console.log('rmIdList: ' + val);
+						if (rmvId === val) {
+							rmvCard.remove();
+						}
+					})
+				})
+				$('#modal_del_grp_mem').modal('hide');
+			})
+
+			$('.btn-rmv').on('click', function() {
+				rmIdList.length = 0;
+				$('.members').find('.card').each(function() {
+					var idx = $(this).index('.card');
+					var chk = $('.grp_mem_chck').eq(idx);
+					var rmId = chk.val();
+					if (chk.is(":checked")) {
+						rmIdList.push(rmId);
+					}
+				})
+				console.log(rmIdList.length);
+				$('#modal_del_grp_mem').modal('show');
+			})
+			$('.members').on('click', '.card', function() {
+				var idx = $(this).index('.card');
+				console.log(idx);
+				var check = $('.grp_mem_chck').eq(idx);
+				if (check.is(":checked")) {
+					check.prop('checked', false);
+					clickableDelBtn();
+				} else {
+					check.prop('checked', true);
+					clickableDelBtn();
+				}
+			})
+
+			$('#insertGrpMemModal').on('shown.bs.modal', function() {
+				$('.members').find('.card').each(function() {
+					var idx = $(this).index('.card');
+					console.log(idx);
+					var id = $('.meta').eq(idx).text();
+					console.log(id);
+					$('#mem_table').find('.mem').each(function() {
+						var i = $(this).index('.mem');
+						var check = $('.mem_chck').eq(i);
+						var mem_id_eq = $('.mem_id').eq(i);
+						var mem_id = mem_id_eq.text();
+						console.log(mem_id);
+						if (id == mem_id) {
+							mem_id_eq.parent().addClass("highlight");
+							check.prop('checked', true);
+						}
+					})
 				})
 			})
-		})
-		$('#modal_add_grp_mem').on('click', function(e) {
-			console.log(id_list.length);
-			$.each(id_list, function(index, val) {
-				console.log(val);
-			})
-			e.preventDefault();
-			$.ajax({
-				traditional : true,
-				type	: "POST",
-				url		: "ajax_add_grp_mem.do",
-				data	: {id_list:id_list},
-				success: function(data) {
-					console.log(data);
-					var len = data.length;
-					console.log(len);
-					for(var i=0; i<len; i++) {
-						$('.members').append(
-							'<div class="card">'
-								+'<div class="image">'
-									+'<img src="resources/images/elyse.png">'
-								+'</div>'
-								+'<div class="content">'
-									+'<div class="header">'+data[i].mem_name+'</div>'
-									+'<div class="meta">'+data[i].mem_id+'</div>'
-								+'</div>'
-								+'<div class="extra content">'
-									+'<span class="left floated">'
-									+'<input type="checkbox" class="grp_mem_chck" name="grp_chk[]" '
-										+'value="'+data[i].mem_id+'"/>'
-									+'</span>'
-									+'<span class="right floated">'+data[i].level_name+'</span>'
-								+'</div>'
-							+'</div>'
-						);
+			$('#modal_add_grp_mem').on('click',function(e) {
+				console.log(id_list.length);
+				$.each(id_list, function(index, val) {
+					console.log(val);
+				})
+				e.preventDefault();
+				$.ajax({
+					traditional : true,
+					type : "POST",
+					url : "ajax_add_grp_mem.do",
+					data : {
+						id_list : id_list
+					},
+					success : function(data) {
+						console.log(data);
+						var len = data.length;
+						console.log(len);
+						for (var i = 0; i < len; i++) {
+							$('.members').append(
+								'<div class="card">'
+									+ '<div class="image">'
+										+ '<img src="resources/images/elyse.png">'
+									+ '</div>'
+									+ '<div class="content">'
+										+ '<div class="header">'+data[i].mem_name+'</div>'
+										+ '<div class="meta">'+data[i].mem_id+'</div>'
+									+ '</div>'
+									+ '<div class="extra content">'
+										+ '<span class="left floated">'
+											+ '<input type="checkbox" class="grp_mem_chck" name="grp_chk[]" '
+											+'value="'+data[i].mem_id+'"/>'
+										+ '</span>'
+										+ '<span class="right floated">'+data[i].level_name+'</span>'
+									+ '</div>'
+								+ '</div>');
+						}
+						id_list.length = 0;
+					},
+					error : function(error) {
+						console.log(error);
 					}
-					id_list.length = 0;
-				},
-				error: function (error) {
-					console.log(error);
+				})
+				$('#insertGrpMemModal').modal('hide');
+				return false;
+			})
+
+			// 모달이 hide 이벤트를 시작할때는 .on('hide.bs.modal')
+			// 모달이 없어진뒤 함수
+			$('#insertGrpMemModal').on('hidden.bs.modal', function() {
+				id_list.length = 0;
+				console.log('id_list: ' + id_list.length);
+			});
+			$('#mem_table').on('click', '.mem', function() {
+				var idx = $(this).index('.mem');
+				var check = $('.mem_chck').eq(idx);
+				console.log("clicked!");
+				var mem_id_eq = $('.mem_id').eq(idx);
+				var mem_id = mem_id_eq.text();
+				console.log(idx);
+				console.log(mem_id);
+				if (check.is(":checked")) {
+					check.prop('checked', false);
+					mem_id_eq.parent().removeClass("highlight");
+					id_list.splice($.inArray(mem_id, id_list), 1);
+					console.log('size:' + id_list.length);
+				} else {
+					check.prop('checked', true);
+					mem_id_eq.parent().addClass("highlight");
+					id_list.push(mem_id);
+					console.log('size:' + id_list.length);
 				}
-			})
-			$('#insertGrpMemModal').modal('hide');
-			return false;
-		})
-		
-		// 모달이 hide 이벤트를 시작할때는 .on('hide.bs.modal')
-		// 모달이 없어진뒤 함수
-		$('#insertGrpMemModal').on('hidden.bs.modal', function() {
-			id_list.length = 0;
-			console.log('hide: '+id_list.length);
-		});
-		$('#mem_table').on('click', '.mem', function(){
-			var idx = $(this).index('.mem');
-			var check = $('.mem_chck').eq(idx);
-			console.log("clicked!");
-			var mem_id_eq = $('.mem_id').eq(idx);
-    		var mem_id = mem_id_eq.text();
-    		console.log(idx);
-    		console.log(mem_id);
-   			if(check.is(":checked")) {
-   				check.prop('checked', false);
-   				mem_id_eq.parent().removeClass("highlight");
-   				id_list.splice($.inArray(mem_id, id_list), 1);
-   				console.log('size:'+id_list.length);
-   			} else {
-   				check.prop('checked', true);
-   				mem_id_eq.parent().addClass("highlight");
-   	    		id_list.push(mem_id);
-   	    		console.log('size:'+id_list.length);
-   			}
-			
-		});
-		$('#mem_chck_all').click(function() {
-			$('#mem_table').find('.mem_chck').each(function() {
-				var row = $(this);
-				console.log(row);
-				var value;
-				/* if (row.find('.mem_chck').is(':checked') {
-					value = $('.mem_chck').val();
-				} */
-			})
-			if ($('#mem_chck_all').is(':checked')) {
-				$('.mem_chck').prop('checked', true);
-			} else {
-				$('.mem_chck').prop('checked', false);
-			}
-		});
-		$('.btn-add').on('click', function() {
-			cardIdList = havingCardIds();
-			console.log(cardIdList.length);
-			$.each(cardIdList, function(index, val) {
-				console.log('cardIds: '+val);
-			})
-			$('.tbody').empty();
-			var no = $('#sports_genre').val();
-			var id = '${sessionScope.SID}';
-			console.log(no);
-			console.log(id);
-			
-			$.ajax({
-				url		: 'ajax_grp_mem_list.do',
-				data	: {no:no, mem_id:id, idList:cardIdList},
-				dataType: 'json',
-				traditional: true,
-				success: function(data) {
-					console.log(data);
-					var len = data.length;
-					console.log(len);
-					for(var i=0; i<len; i++) {
-						$('.tbody').append(
-							'<tr class="mem" id="mem">'
-							+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
-							+'value="'+data[i].mem_id+'"/></td>'
-							+'<td class="mem_id">'+data[i].mem_id+'</td>'
-							+'<td>'+data[i].mem_name+'</td>'
-							+'</tr>'
-						);
-					}
-					$('#insertGrpMemModal').modal('show');
-					return false;
+
+			});
+			$('#mem_chck_all').click(function() {
+				$('#mem_table').find('.mem_chck').each(function() {
+					var row = $(this);
+					console.log(row);
+					var value;
+					/* if (row.find('.mem_chck').is(':checked') {
+						value = $('.mem_chck').val();
+					} */
+				})
+				if ($('#mem_chck_all').is(':checked')) {
+					$('.mem_chck').prop('checked', true);
+				} else {
+					$('.mem_chck').prop('checked', false);
 				}
 			});
-			
-		})
-		$('#modal_btn_search_mem').on('click', function() {
-			var mem = $('#modal_txt_search_mem').val();
-			var myid = '${sessionScope.SID}';
-			var myname = '${sessionScope.SNAME}';
-			console.log(mem);
-			console.log(myid);
-			console.log(myname);
-			$.get('ajax_search_member.do?mem='+mem+'&myid='+myid+'&myname='+myname,
-					function(data) {
+			$('.btn-add').on('click', function() {
+				cardIdList = havingCardIds();
+				console.log(cardIdList.length);
+				$.each(cardIdList, function(index, val) {
+					console.log('cardIds: ' + val);
+				})
 				$('.tbody').empty();
-				$('.txt_msg').empty();
-				console.log(data);
-				var len = data.length;
-				console.log(len);
-				if(data != null && len != 0) {
-					for(var i=0; i<len; i++) {
-						$('.tbody').append(
-							'<tr class="mem">'
-							+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
-							+'value="'+data[i].mem_id+'"/></td>'
-							+'<td class="mem_id">'+data[i].mem_id+'</td>'
-							+'<td>'+data[i].mem_name+'</td>'
-							+'</tr>'
-						);
-					}	
-				} else {
-					$('.txt_msg').append(
-						'<label>원하는 멤버를 찾지 못하였습니다</label>'		
-					);
-				}						
+				var no = $('#sports_genre').val();
+				var id = '${sessionScope.SID}';
+				console.log(no);
+				console.log(id);
+				$.ajax({
+					url : 'ajax_grp_mem_list.do',
+					data : {
+						no : no,
+						mem_id : id,
+						idList : cardIdList
+					},
+					dataType : 'json',
+					traditional : true,
+					success : function(data) {
+						console.log(data);
+						var len = data.length;
+						console.log(len);
+						for (var i = 0; i < len; i++) {
+							$('.tbody').append(
+								'<tr class="mem" id="mem">'
+									+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
+									+'value="'+data[i].mem_id+'"/></td>'
+									+'<td class="mem_id">'+data[i].mem_id+'</td>'
+									+'<td>'+data[i].mem_name+'</td>'
+								+'</tr>');
+						}
+						$('#insertGrpMemModal').modal('show');
+						return false;
+					}
+				});
+
+			})
+			$('#modal_btn_search_mem').on('click', function() {
+				var mem = $('#modal_txt_search_mem').val();
+				var myid = '${sessionScope.SID}';
+				var myname = '${sessionScope.SNAME}';
+				console.log(mem);
+				console.log(myid);
+				console.log(myname);
+				$.get('ajax_search_member.do?mem='+mem+'&myid='+myid+'&myname='+myname, function(data) {
+					$('.tbody').empty();
+					$('.txt_msg').empty();
+					console.log(data);
+					var len = data.length;
+					console.log(len);
+					if (data != null && len != 0) {
+						for (var i = 0; i < len; i++) {
+							$('.tbody').append(
+								'<tr class="mem">'
+									+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
+									+'value="'+data[i].mem_id+'"/></td>'
+									+'<td class="mem_id">'+data[i].mem_id+'</td>'
+									+'<td>'+data[i].mem_name+'</td>'
+								+'</tr>');
+						}
+					} else {
+						$('.txt_msg').append('<label>원하는 멤버를 찾지 못하였습니다</label>');
+					}
+				})
+			})
+
+			$('#modal_txt_search_mem').keypress(function(e) {
+				var key = e.which;
+				if (key == 13) { //엔터키
+					$('#modal_btn_search_mem').trigger("click");
+					return false;
+				}
 			})
 		})
-		
-		$('#modal_txt_search_mem').keypress(function (e) {
-    		var key = e.which;
-    		if(key == 13) { //엔터키
-    			$('#modal_btn_search_mem').trigger("click");
-    			return false;
-    		}
-	    })
-		
-	})	
+		var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+	        mapOption = {
+	            center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+	            level: 5 // 지도의 확대 레벨
+	        };
+	
+	    //지도를 미리 생성
+	    var map = new daum.maps.Map(mapContainer, mapOption);
+	    //주소-좌표 변환 객체를 생성
+	    var geocoder = new daum.maps.services.Geocoder();
+	    //마커를 미리 생성
+	    var marker = new daum.maps.Marker({
+	        position: new daum.maps.LatLng(37.537187, 127.005476),
+	        map: map
+	    });
+	
+	
+	    function daumPostcode() {
+	        new daum.Postcode({
+	            oncomplete: function(data) {
+	                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+	                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+	                var fullAddr = data.address; // 최종 주소 변수
+	                var extraAddr = ''; // 조합형 주소 변수
+	
+	                // 기본 주소가 도로명 타입일때 조합한다.
+	                if(data.addressType === 'R'){
+	                    //법정동명이 있을 경우 추가한다.
+	                    if(data.bname !== ''){
+	                        extraAddr += data.bname;
+	                    }
+	                    // 건물명이 있을 경우 추가한다.
+	                    if(data.buildingName !== ''){
+	                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+	                    }
+	                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+	                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+	                }
+	
+	                // 주소 정보를 해당 필드에 넣는다.
+	                document.getElementById("txt_addr").value = fullAddr;
+	                // 주소로 상세 정보를 검색
+	                geocoder.addressSearch(data.address, function(results, status) {
+	                    // 정상적으로 검색이 완료됐으면
+	                    if (status === daum.maps.services.Status.OK) {
+	
+	                        var result = results[0]; //첫번째 결과의 값을 활용
+	
+	                        // 해당 주소에 대한 좌표를 받아서
+	                        var coords = new daum.maps.LatLng(result.y, result.x);
+	                        // 지도를 보여준다.
+	                        mapContainer.style.display = "block";
+	                        map.relayout();
+	                        // 지도 중심을 변경한다.
+	                        map.setCenter(coords);
+	                        // 마커를 결과값으로 받은 위치로 옮긴다.
+	                        marker.setPosition(coords)
+	                    }
+	                });
+	            }
+	        }).open();
+	    }
 	</script>
 </body>
 </html>
