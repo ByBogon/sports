@@ -22,64 +22,66 @@
 }
 </style>
 <body>
-	<jsp:include page="nav_main.jsp"></jsp:include>
-	<div class="ui grid">
-		<div class="left floated column">
-		<div class="ui container" style="margin: auto; margin-top: 20px;">
-			<form:form action="open_group.do" method="post" modelAttribute="vo">
-				<div class="form-inline" style="margin-top: 20px">
-					<label>모임명: </label>
-					<form:input type="text" class="form-control" path="grp_name"
-						placeholder="모임명" />
+<jsp:include page="nav_main.jsp"></jsp:include>
+	<div>
+		<div class="ui two column padded grid">
+			<div class="column">
+				<div class="ui container" style="margin: auto; margin-top: 20px;">
+					<div class="form-inline" style="margin-top: 20px">
+						<label>모임명: </label>
+						<input type="text" class="form-control" id="grp_name" name="grp_name" placeholder="모임명" />
+					</div>
+					<div class="form-inline" style="margin-top: 20px">
+						<label>주최자: </label>
+						<input type="text" class="form-control" id="grp_leader" name="grp_leader"  readonly value="${sessionScope.SNAME}" />
+					</div>
+					<div class="form-inline" style="margin-top: 20px">
+						<label>운동종목: </label>
+						<select class="form-control" id="sports_genre" name="grp_leader">
+							<c:forEach var="genre" items="${list}" varStatus="i">
+								<option value="${i.index}">${genre}</option>
+							</c:forEach>
+						</select>
+					</div>
+					<div class="form-inline" style="margin-top: 20px">
+						<label>센터 찾기: </label>
+						<input type="text" class="form-control"	id="txt_center"	name="txt_center" placeholder="센터명/주소" autocomplete="off"/>
+						<input type="button" class="btn btn-secondary btn-search-center" value="찾기" />
+					</div>
+					<div class="form-inline" style="margin-top: 20px">
+						<label>직접 입력: </label>
+						<input type="text" class="form-control" id="txt_addr" name="txt_addr" autocomplete="off"/>
+						<input type="button" class="btn btn-secondary btn-search-addr" onclick="daumPostcode()" value="주소 검색" />
+					</div>
 				</div>
-				<div class="form-inline" style="margin-top: 20px">
-					<label>주최자: </label> <input type="text" class="form-control"
-						readonly value="${sessionScope.SNAME}" />
-				</div>
-				<div class="form-inline" style="margin-top: 20px">
-					<label>운동종목: </label>
-					<form:select class="form-control" id="sports_genre"
-						path="sports_no" items="${vo.map}" />
-				</div>
-				<div class="form-inline" style="margin-top: 20px">
-					<label>센터 찾기: </label>
-					<input type="text" class="form-control"	id="txt_center"
-						placeholder="센터명/주소" autocomplete="off"/>
-					<input type="button" class="btn btn-secondary btn-search-center" value="찾기" />
-				</div>
-				<div class="form-inline" style="margin-top: 20px">
-					<label>직접 입력: </label>
-					<input type="text" class="form-control" id="txt_addr" autocomplete="off"/>
-					<input type="button" class="btn btn-secondary btn-search-addr" 
-						onclick="daumPostcode()" value="주소 검색" />
-				</div>
-			</form:form>
+			</div>
+			<div class="column">
+				<div id="map" style="width:300px; height:300px; margin:auto; margin-top:10px; display:none"></div>
+			</div>
 		</div>
-		<div class="right floated column">
-			<div id="map" style="width:300px; height:300px; margin:auto; margin-top:10px; display:none"></div>
+		<div class="ui two column padded grid">
+			<div class="column">
+				<div class="ui container">
+					<div style="margin-top: 20px">
+						<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
+						<input type="button" class="btn btn-danger btn-rmv" value="멤버삭제" />
+					</div>
+				</div>
+			</div>
+			<div class="column">
+				<input type="button" class="btn btn-success btn-create" value="모임생성" />
+				<a href="#" class="btn btn-dark">홈으로</a>
+			</div>
+		</div>
+		<div class="ui container">
+			<div class="ui link special cards members" style="margin-top: 20px">
+			</div>
 		</div>
 	</div>
-	</div>
-	<div class="ui container">
-		<div class="ui left aligned container" style="margin-top: 20px">
-			<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
-			<input type="button" class="btn btn-danger btn-rmv" value="멤버삭제" />
-		</div>
-		<div class="ui right aligned container">
-			<input type="submit" class="btn btn-success" value="모임생성" /> <a
-				href="#" class="btn btn-dark">홈으로</a>
-		</div>
-	</div>
-	<div class="ui container">
-		<div class="ui link special cards members" style="margin-top: 20px">
-		</div>
-	</div>
-	
 	
 	<!-- Modal -->
 	<div class="modal fade" id="modal_del_grp_mem" tabindex="-1"
-		role="dialog" aria-labelledby="exampleModalCenterTitle"
-		aria-hidden="true">
+		role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -98,6 +100,7 @@
 			</div>
 		</div>
 	</div>
+	
 
 	<jsp:include page="modal_add_group_mem.jsp"></jsp:include>
 	<jsp:include page="modal_search_group_center.jsp"></jsp:include>
@@ -128,6 +131,7 @@
 			})
 			return checkedCards;
 		}
+		
 		function clickableDelBtn() {
 			cardIdList = havingCheckedCards();
 			var rmvBtn = $('.btn-rmv');
@@ -139,6 +143,30 @@
 		}
 		window.onload = clickableDelBtn;
 		$(function() {
+			$('.btn-create').on('click', function(e) {
+				console.log('clicked!');
+				e.preventDefault();
+				var grp = $('#grp_name').val();
+				var leader = $('#grp_leader').val();
+				if(grp.trim() === null || grp.trim().length === 0) {
+					//그룹명 정하게 Alert나 여러가지 띄울것
+					console.log('그룹명 정하세요');
+					return false;
+				}
+				if(leader === null || leader.length === 0) {
+					//로그인 하라고 하기(로그인페이지로 리다이렉트)
+					console.log('로그인 안되어있음');
+					return false;
+				}
+				var checkedIds = havingCardIds();
+				$.each(checkedIds, function(index, val) {
+					console.log(val);
+				})
+
+				document.location = '/sports/makeOneGroup.do?grp_name='+grp
+						+'&grp_leader='+leader+'&memList='+checkedIds;
+				
+			})
 
 			$('#center_table').on('click', '.center_tr', function() {
 				var idx = $(this).index('.center_tr');
@@ -254,7 +282,7 @@
 									+ '</div>'
 									+ '<div class="content">'
 										+ '<div class="header">'+data[i].mem_name+'</div>'
-										+ '<div class="meta">'+data[i].mem_id+'</div>'
+										+ '<div class="meta" name="card_mem_id">'+data[i].mem_id+'</div>'
 									+ '</div>'
 									+ '<div class="extra content">'
 										+ '<span class="left floated">'
@@ -408,7 +436,6 @@
 	        position: new daum.maps.LatLng(37.537187, 127.005476),
 	        map: map
 	    });
-	
 	
 	    function daumPostcode() {
 	        new daum.Postcode({

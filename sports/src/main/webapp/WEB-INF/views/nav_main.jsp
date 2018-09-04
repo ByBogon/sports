@@ -65,8 +65,8 @@
 				</a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 					<a class="dropdown-item" href="open_group.do">모임 만들기</a>
-					<a class="dropdown-item" href="groups.do">모임 리스트</a>
-					<a class="dropdown-item" href="#">모임 관리하기</a>
+					<a class="dropdown-item" href="myGroups.do">내모임 리스트</a>
+					<a class="dropdown-item" href="myGroupsEdit.do">내모임 관리하기</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="#">Something else here</a>
 				</div>
