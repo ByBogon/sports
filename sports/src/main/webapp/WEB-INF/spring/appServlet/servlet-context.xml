@@ -12,6 +12,17 @@
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />
 
+	<interceptors>
+		<interceptor>
+			<mapping path="/**" />
+			<exclude-mapping path="/login**"/>
+			<exclude-mapping path="/logout**"/>
+			<exclude-mapping path="/resources**"/>
+			<exclude-mapping path="/resources/**"/>
+			<beans:bean class="com.bybogon.sports.interceptor.MainInterceptor"></beans:bean>
+		</interceptor>
+	</interceptors>
+	
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 
