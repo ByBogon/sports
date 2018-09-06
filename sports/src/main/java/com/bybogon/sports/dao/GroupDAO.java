@@ -32,7 +32,7 @@ public interface GroupDAO {
 		@Param("no") int no, 
 		@Param("mem_id") String mem_id);
 	
-	@Select({"SELECT MAX(NVL(GRP_MEM_NO, 0)) FROM SPORTS_GRP_MEM"})
+	@Select({"SELECT NVL(MAX(GRP_MEM_NO), 0) FROM SPORTS_GRP_MEM"})
 	public int selectRecentGrpMemNo();
 	
 	@Select({"SELECT GRP_NO FROM SPORTS_GRP WHERE GRP_NAME = #{grp_name}"})
@@ -68,5 +68,14 @@ public interface GroupDAO {
 			"    ) grpno ON grpno.GRP_NO = g.GRP_NO ", 
 			"JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
 	public List<Sports_Grp> selectMyGroups(@Param("id") String id);
+	
+	@Select({"SELECT GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, s.SPORTS_NAME, g.GRP_LEADER, grp.cnt FROM ",
+			"	(SELECT " , 
+			"		GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
+			"	FROM SPORTS_GRP_MEM ", 
+			"	GROUP BY GRP_NO) grp ",
+			" INNER JOIN SPORTS_GRP g on g.GRP_NO = grp.GRP_NO ",
+			" JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
+	public List<Sports_Grp> selectAllGroups();
 
 }

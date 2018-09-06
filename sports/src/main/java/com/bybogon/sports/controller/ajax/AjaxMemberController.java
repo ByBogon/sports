@@ -16,7 +16,7 @@ import com.bybogon.sports.vo.Sports_Member;
 public class AjaxMemberController {
 
 	@Autowired
-	private MemberDAO mDao;
+	private MemberDAO mDAO;
 	
 	@RequestMapping(value = "ajax_search_member.do", method=RequestMethod.GET,
 			produces="application/json")
@@ -27,10 +27,20 @@ public class AjaxMemberController {
 		System.out.println(mem);
 		System.out.println(myid);
 		System.out.println(myname);
-		List<Sports_Member> list = mDao.searchMemberList(mem, myid, myname);
+		List<Sports_Member> list = mDAO.searchMemberList(mem, myid, myname);
 		for(Sports_Member vo : list) {
 			System.out.println(vo.getMem_id());
 		}
 		return list;
+	}
+	
+	@RequestMapping(value = "ajax_id_check.do", method = RequestMethod.GET,
+			produces="application/json")
+	public @ResponseBody int AjaxIdCheck(
+			@RequestParam(value="id") String id) {
+		
+		int ret = mDAO.ajaxIdCheck(id);
+		return ret;
+		
 	}
 }

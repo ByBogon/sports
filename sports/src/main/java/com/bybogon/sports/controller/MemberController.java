@@ -1,5 +1,6 @@
 package com.bybogon.sports.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bybogon.sports.dao.MemberDAO;
+import com.bybogon.sports.func.EncryptionClass;
 import com.bybogon.sports.vo.Sports_Member;
 
 @Controller
@@ -30,7 +32,7 @@ public class MemberController {
 			@RequestParam(value="age") int age,
 			@RequestParam(value="email") String email,
 			HttpSession session) {
-		Sports_Member vo = new Sports_Member(id, pw, name, age, email);
+		Sports_Member vo = new Sports_Member(id, EncryptionClass.convertMD5(pw), name, age, email);
 		System.out.println(vo.getMem_id());
 		System.out.println(vo.getMem_pw());
 		System.out.println(vo.getMem_name());
@@ -58,19 +60,42 @@ public class MemberController {
 	@RequestMapping(value = "login.do", method=RequestMethod.POST)
 	public String loginP(@RequestParam(value="username") String id,
 			@RequestParam(value="pass") String pw,
-			HttpSession session) {
+			HttpSession session, HttpServletRequest request) {
+		try {
+		
 		System.out.println(id);
 		System.out.println(pw);
-		Sports_Member vo = new Sports_Member(id, pw);
+		Sports_Member vo = new Sports_Member(id, EncryptionClass.convertMD5(pw));
 		vo = mDAO.loginMember(vo);
 		if(vo != null) {
 			if(vo.getMem_check() == 1) {
 				session.setAttribute("SID", vo.getMem_id());
 				session.setAttribute("SNAME", vo.getMem_name());
+			
+			//마지막 페이지 주소
+			String backUrl = (String) session.getAttribute("BACK_URL");
+			System.out.println(backUrl);
+			if(backUrl.equals("login.do")) {
+				backUrl = "sports.do";
+			}			
+			request.setAttribute("msg", "로그인 성공");
+			request.setAttribute("url", backUrl);
+			return "alert"; 
+			} else if (vo.getMem_check() == 0) {
+				System.out.println("차단된 아이디입니다. 관리자에게 문의하세요");
+				return "redirect:login.do"; //login.jsp표시
+			} else {
+				System.out.println("아이디와 비밀번호를 확인해주세요.");
+				return "redirect:login.do"; //login.jsp표시
 			}
-			return "redirect:sports.do";
 		} else {
-			return "login_v4";
+			System.out.println("vo가 null 입니다");
+			return "redirect:login.do";
+		}
+		
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return "redirect:login.do";
 		}
 		
 	}

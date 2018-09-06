@@ -4,19 +4,27 @@
 <%@ page session="true" %>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>센터찾기</title>
 	<!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css">
-    
+    <meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	<link rel="stylesheet" href="resources/css/semantic.min.css">
+	<link rel="stylesheet" href="resources/css/nav_bar.css?ver=1">
 	<!-- jQuery and Bootstrap -->
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
-	<script src="resources/js/bootstrap.min.js"></script>
-	
+	<script src="resources/js/semantic.min.js"></script>
+	<script src="resources/js/nav_bar.js"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
+    
 </head>
 <body>
+	<div class="ui page grid">
 	<jsp:include page="nav_main.jsp"></jsp:include>
-	<div>
-		<div>
+	
+		<div class="ui center aligned container">
 			<div>
 				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" />
 			</div>
@@ -51,7 +59,6 @@
 		
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
     <script>
     $(function() {
     	$(document).on('click', '.tr', function() {

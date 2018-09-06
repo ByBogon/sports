@@ -13,6 +13,7 @@
 <script src="resources/js/semantic.min.js"></script>
 </head>
 <body>
+<div class="ui page grid">
 <jsp:include page="nav_main.jsp"></jsp:include>
 <div class="ui container">
 	<div class="ui two column padded grid">
@@ -48,6 +49,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <script>

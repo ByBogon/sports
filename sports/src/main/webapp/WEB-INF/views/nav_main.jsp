@@ -4,7 +4,7 @@
  <!-- Nav Menu -->
  <div class="computer tablet only row">
 	<div class="ui inverted menu navbar" style="width:100%">
-		<a class="barnd item" href="sports.do">Squash</a>
+		<a class="brand item" href="sports.do">Squash</a>
 		<a class="item" href="#">Home </a>
 		<a class="item" href="#">관리자모드</a>
 		<div class="ui dropdown item">
@@ -43,7 +43,7 @@
 			<i class="dropdown icon"></i>
 			<div class="menu">
 				<a class="item" href="open_group.do">모임 만들기</a>
-				<a class="item" href="#">전체 모임보기</a>
+				<a class="item" href="allGroups.do">전체 모임보기</a>
 				<a class="item" href="myGroupsEdit.do">내모임 관리하기</a>
 				<div class="ui inverted divider"></div>
 				<a class="item" href="#">Something else here</a>
@@ -141,4 +141,3 @@
 		</c:if>
 	</div>
  </div>
- 

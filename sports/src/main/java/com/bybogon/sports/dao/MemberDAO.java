@@ -11,6 +11,9 @@ import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
 	
+	@Select("SELECT NVL(COUNT(MEM_ID), 0) FROM SPORTS_MEMBER WHERE MEM_ID = #{id}")
+	public int ajaxIdCheck(@Param("id") String id);
+	
 	@Options(useGeneratedKeys=false)
 	@Insert({"INSERT INTO SPORTS_MEMBER(MEM_ID, MEM_PW, MEM_NAME, MEM_AGE, MEM_EMAIL, MEM_CHECK, SPORTS_NO, LEVEL_NO,  MEM_DATE) ",
 		" VALUES(#{mem_id}, #{mem_pw}, #{mem_name}, #{mem_age}, #{mem_email}, 1, 0, 1, SYSDATE)"})

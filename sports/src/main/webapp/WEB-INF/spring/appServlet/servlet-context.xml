@@ -19,6 +19,7 @@
 			<exclude-mapping path="/logout**"/>
 			<exclude-mapping path="/resources**"/>
 			<exclude-mapping path="/resources/**"/>
+			<exclude-mapping path="/ajax**"/>
 			<beans:bean class="com.bybogon.sports.interceptor.MainInterceptor"></beans:bean>
 		</interceptor>
 	</interceptors>

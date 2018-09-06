@@ -5,16 +5,21 @@
 <%@ page session="true"%>
 <html>
 <head>
-<title>스쿼시</title>
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="resources/css/bootstrap.min.css">
-<link rel="stylesheet" href="resources/css/semantic.min.css">
-<!-- jQuery and Bootstrap -->
-<script src="resources/js/jquery-3.3.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
-<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services"></script>
-	
+	<meta charset="utf-8">
+	<title>그룹 만들기</title>
+	<!-- Bootstrap CSS -->
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	<link rel="stylesheet" href="resources/css/semantic.min.css">
+	<link rel="stylesheet" href="resources/css/nav_bar.css">
+	<!-- jQuery and Bootstrap -->
+	<script src="resources/js/jquery-3.3.1.min.js"></script>
+	<script src="resources/js/semantic.min.js"></script>
+	<script src="resources/js/nav_bar.js"></script>
+	<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services"></script>
 </head>
 <style>
 .highlight {
@@ -22,6 +27,7 @@
 }
 </style>
 <body>
+<div class="ui page grid">
 <jsp:include page="nav_main.jsp"></jsp:include>
 	<div>
 		<div class="ui two column padded grid">
@@ -100,7 +106,7 @@
 			</div>
 		</div>
 	</div>
-	
+</div>	
 
 	<jsp:include page="modal_add_group_mem.jsp"></jsp:include>
 	<jsp:include page="modal_search_group_center.jsp"></jsp:include>
@@ -369,17 +375,22 @@
 						console.log(data);
 						var len = data.length;
 						console.log(len);
-						for (var i = 0; i < len; i++) {
-							$('.tbody').append(
-								'<tr class="mem" id="mem">'
-									+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
-									+'value="'+data[i].mem_id+'"/></td>'
-									+'<td class="mem_id">'+data[i].mem_id+'</td>'
-									+'<td>'+data[i].mem_name+'</td>'
-								+'</tr>');
+						if(len > 0) {
+							for (var i = 0; i < len; i++) {
+								$('.tbody').append(
+									'<tr class="mem" id="mem">'
+										+'<td><input type="checkbox" class="mem_chck" name="chk[]" '
+										+'value="'+data[i].mem_id+'"/></td>'
+										+'<td class="mem_id">'+data[i].mem_id+'</td>'
+										+'<td>'+data[i].mem_name+'</td>'
+									+'</tr>');
+							}
+							$('#insertGrpMemModal').modal('show');
+							return false;	
+						} else {
+							$('.txt_msg').append('<label>더이상 추가 가능한 멤버가 없습니다</label>');
 						}
-						$('#insertGrpMemModal').modal('show');
-						return false;
+						
 					}
 				});
 
