@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="resources/css/semantic.min.css">
 <!-- jQuery and Bootstrap -->
 <script src="resources/js/jquery-3.3.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>
+<script src="resources/js/semantic.min.js"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services"></script>
 	
@@ -31,6 +31,20 @@
 			<div class="ui three stackable cards">
 				<c:forEach var="vo" items="${list}">
 					<div class="ui link card">
+						<div class="content">
+							<div class="right floated meta">
+								<div class="ui left pointing dropdown">
+									<input type="hidden" name="">
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<div class="item" data-value="view">그룹 정보</div>
+										<div class="item" data-value="mems">그룹 멤버</div>
+										<div class="item" data-value="edit">그룹 수정</div>
+										<div class="item" data-value="delete">그룹 삭제</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="image">
 							<img src="resources/images/molly.png">
 						</div>
@@ -50,6 +64,11 @@
 		</div>
 	</div>
 	
+	<script>
+		$(function() {
+			$('.ui.dropdown').dropdown();
+		})
 	
+	</script>
 </body>
 </html>
