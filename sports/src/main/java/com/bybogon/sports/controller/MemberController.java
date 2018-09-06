@@ -74,5 +74,10 @@ public class MemberController {
 		}
 		
 	}
+	
+	@RequestMapping(value="myPage.do", method=RequestMethod.GET)
+	public String mypage() {
+		return "myPage";
+	}
 
 }
