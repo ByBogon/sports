@@ -25,9 +25,9 @@
 					<i class="dropdown icon"></i>
 					내정보 관리
 					<div class="menu">
-						<div class="item">내 정보 수정하기</div>
-						<div class="item">내 비밀번호 변경하기</div>
-						<div class="item">탈퇴하기</div>
+						<a href="myPage.do" class="item">내 정보 수정하기</a>
+						<a href="#" class="item">내 비밀번호 변경하기</a>
+						<a href="#" class="item">탈퇴하기</a>
 					</div>
 				</div>
 				<a href="#" class="item">운동 센터 등록</a>
@@ -56,8 +56,12 @@
 </div>
 
 <script>
+
 	$(function() {
 		$('.ui.dropdown').dropdown();
+		$(document).on('click', '.ui.inverted.button', function() {
+			console.log('clicked');
+		})
 		
 		$('#pw').keypress(function(e) {
 			var key = e.which;
@@ -113,7 +117,7 @@
 								html += '<div class="ui special cards"><div class="card">';
 								html += '<div class="blurring dimmable image"> <div class="ui dimmer">';
 								html += '<div class="content"> <div class="center">';
-								html += '<div class="ui inverted button">이미지 변경</div>';
+								html += '<div class="ui inverted button" id="profile">이미지 변경</div>';
 							    html += '</div></div></div>';
 							    html += '<img src="resources/images/matthew.png"></div>';
 								html += '<div class="floating ui teal label">Default</div>';
@@ -123,7 +127,7 @@
 							    html += '<span class="age">'+data.MEM_AGE+'</span>';
 							    html += '<span class="email">'+data.MEM_EMAIL+'</span>';
 							    html += '</div></div>';
-							    html += '<div class="extra content">Within '+data.MCNT+' Groups</div>';
+							    html += '<div class="right aligned extra content">Within '+data.MCNT+' Groups</div>';
 							  	html += '</div>';
 								html += '</div>';
 								
@@ -131,6 +135,8 @@
 								$('.special.cards .image').dimmer({
 									on: 'hover'
 								});
+
+								
 							})
 						}
 					}
