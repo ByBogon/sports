@@ -1,6 +1,7 @@
 package com.bybogon.sports.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -11,7 +12,23 @@ import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
 	
-	@Select("SELECT NVL(COUNT(MEM_ID), 0) FROM SPORTS_MEMBER WHERE MEM_ID = #{id}")
+	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID = #{id} AND MEM_PW = #{pw}"})
+	public Map<String, Object> ajaxPwCheck(@Param("id") String id, @Param("pw") String pw);
+	
+	@Select({"SELECT", 
+			"    sm.MEM_ID, sm.MEM_AGE, sm.MEM_ADDR, sm.MEM_EMAIL, sm.MEM_NAME, ", 
+			"    NVL(COUNT(grpno.GRP_NO), 0) mcnt ", 
+			" FROM (",
+			"    SELECT DISTINCT g.GRP_NO, GRP_LEADER FROM SPORTS_GRP g", 
+			"    INNER JOIN SPORTS_GRP_MEM m ON g.GRP_NO = m.GRP_NO ", 
+			"    WHERE GRP_LEADER = #{id} OR GRP_MEM = #{id} ", 
+			"    ) grpno ", 
+			"INNER JOIN SPORTS_MEMBER sm ON grpno.GRP_LEADER = sm.MEM_ID ", 
+			"WHERE MEM_ID = #{id} ", 
+			"GROUP BY sm.MEM_ID, sm.MEM_AGE, sm.MEM_ADDR, sm.MEM_EMAIL, sm.MEM_NAME"})
+	public Map<String, Object> ajaxSelectMemOne(@Param("id") String id);
+	
+	@Select({"SELECT NVL(COUNT(MEM_ID), 0) FROM SPORTS_MEMBER WHERE MEM_ID = #{id}"})
 	public int ajaxIdCheck(@Param("id") String id);
 	
 	@Options(useGeneratedKeys=false)

@@ -8,15 +8,17 @@
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/semantic.min.css">
+<link rel="stylesheet" href="resources/css/nav_bar.css?ver=2">
 <!-- jQuery and Bootstrap -->
 <script src="resources/js/jquery-3.3.1.min.js"></script>
 <script src="resources/js/semantic.min.js"></script>
+<script src="resources/js/nav_bar.js?ver=1"></script>
 </head>
 <body>
 <div class="ui page grid">
 <jsp:include page="nav_main.jsp"></jsp:include>
-<div class="ui container">
-	<div class="ui two column padded grid">
+	<div class="ui two column vertically padded grid" style="width:100%">
+	<div class="row">
 		<div class="column">
 			<div class="ui vertical menu">
 				<div class="ui left pointing dropdown link item">
@@ -28,33 +30,114 @@
 						<div class="item">탈퇴하기</div>
 					</div>
 				</div>
-				<div class="item">
-					주로 운동하는 장소 등록
-				</div>
+				<a href="#" class="item">운동 센터 등록</a>
 			</div>
 		</div>
 		<div class="column">
-			<div class="ui container">
-				<form class="ui fluid form">
-					<div class="inline filed">
+			<div class="ui container context" id="context">
+				<form class="ui form">
+					<div class="field">
 						<div class="ui pointing below label">
 							현재 비밀번호를 입력해주세요.
 						</div>
-						<input type="password"/>
+						<input type="password" id="pw"/>
+					</div>
+					<div id="message">
+					
 					</div>
 				</form>
 			</div>
-			<div class="ui right aligned container">
-				<input type="submit" class="ui primary button" value="확인">
+			<div class="ui right aligned container" style="margin-top: 10px">
+				<input type="submit" class="ui primary button" id="pwchk" value="확인">
 			</div>
 		</div>
+		</div>
 	</div>
-</div>
 </div>
 
 <script>
 	$(function() {
 		$('.ui.dropdown').dropdown();
+		
+		$('#pw').keypress(function(e) {
+			var key = e.which;
+			if (key == 13) { //엔터키
+				$('#pwchk').trigger("click");
+				return false;
+			}
+		})
+		
+		$('#pwchk').on('click', function(e) {
+			e.preventDefault();
+			var id = '${sessionScope.SID}';
+			var pw = $('#pw').val();
+			var html = '';
+			var form = $('.ui.form');
+			console.log(form);
+			console.log(id);
+			console.log(pw);
+			if((pw.trim() === "") || (pw.trim() === null)) {
+				form.attr('class', 'ui form warning');	
+				html += '<div class="ui warning message">';
+					html += '<div class="header">비밀번호 미입력</div>';
+					html += '<ul class="list">';
+						html += '<li>비밀번호 입력란이 비었습니다</li>';
+					html += '</ul>';
+				html += '</div>';
+				$('#message').html(html);
+				return false;
+			} else {
+				$.ajax({
+					url		: 'ajaxPwCheck.do',
+					method	: 'POST',
+					data	: {	
+								id : id,
+								pw : pw.trim()
+							  },
+					success : function(data) {
+						console.log(data);
+						if((data === null) || (data === "")) {
+							form.attr('class', 'ui form error');	
+							html += '<div class="ui error message">';
+								html += '<div class="header">비밀번호 오류</div>';
+								html += '<ul class="list">';
+									html += '<li>잘못된 비밀번호 입니다</li>';
+								html += '</ul>';
+							html += '</div>';
+							$('#message').html(html);
+							return false;
+						} else {
+							$.post('ajaxSelectMemOne.do', {mem_id : data.MEM_ID}, function(data) {
+								
+								$('.ui.container.context').empty();
+								html += '<div class="ui special cards"><div class="card">';
+								html += '<div class="blurring dimmable image"> <div class="ui dimmer">';
+								html += '<div class="content"> <div class="center">';
+								html += '<div class="ui inverted button">이미지 변경</div>';
+							    html += '</div></div></div>';
+							    html += '<img src="resources/images/matthew.png"></div>';
+								html += '<div class="floating ui teal label">Default</div>';
+							   	html += '<div class="content">';
+							    html += '<a class="header">'+data.MEM_NAME+'</a>';
+							    html += '<div class="meta">';
+							    html += '<span class="age">'+data.MEM_AGE+'</span>';
+							    html += '<span class="email">'+data.MEM_EMAIL+'</span>';
+							    html += '</div></div>';
+							    html += '<div class="extra content">Within '+data.MCNT+' Groups</div>';
+							  	html += '</div>';
+								html += '</div>';
+								
+								$('.ui.container.context').html(html);
+								$('.special.cards .image').dimmer({
+									on: 'hover'
+								});
+							})
+						}
+					}
+				})
+			}
+		})
+		
 	})
 </script>
 </body>

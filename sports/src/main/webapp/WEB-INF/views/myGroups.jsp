@@ -33,7 +33,6 @@
 			<div class="ui container">
 				<c:if test="${list != null}">
 				<div class="ui three stackable cards">
-					
 					<c:forEach var="vo" items="${list}">
 						<div class="ui link card">
 							<div class="content">
@@ -77,9 +76,15 @@
 	</div>
 	<script>
 		$(function() {
-			$('.ui.dropdown').dropdown();
+			$('.cards').on('click', '.card', function() {
+				var idx = $(this).index();
+				console.log('clicked');
+				console.log(idx);
+				var dropdown = $('.right.meta > .ui.dropdown').eq(idx);
+				console.log(dropdown);
+				$(dropdown).dropdown('show');
+			});
 		})
-	
 	</script>
 </body>
 </html>

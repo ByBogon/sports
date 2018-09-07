@@ -1,6 +1,7 @@
 package com.bybogon.sports.controller.ajax;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bybogon.sports.dao.MemberDAO;
+import com.bybogon.sports.func.EncryptionClass;
 import com.bybogon.sports.vo.Sports_Member;
 
 @RestController
@@ -38,9 +40,31 @@ public class AjaxMemberController {
 			produces="application/json")
 	public @ResponseBody int AjaxIdCheck(
 			@RequestParam(value="id") String id) {
-		
 		int ret = mDAO.ajaxIdCheck(id);
-		return ret;
 		
+		return ret;
+	}
+	
+	@RequestMapping(value = "ajaxPwCheck.do", method = RequestMethod.POST,
+			produces="application/json")
+	public @ResponseBody Map<String, Object> AjaxPwCheck(
+			@RequestParam(value="id") String id,
+			@RequestParam(value="pw") String pw) {
+		System.out.println(id);
+		System.out.println(pw);
+		pw = EncryptionClass.convertMD5(pw);
+		System.out.println(pw);
+		Map<String, Object> map = mDAO.ajaxPwCheck(id, pw);
+		return map;
+	}
+	
+	@RequestMapping(value = "ajaxSelectMemOne.do", method = RequestMethod.POST,
+			produces="application/json")
+	public @ResponseBody Map<String, Object> ajaxSelectMemOne(
+		@RequestParam(value="mem_id") String id) {
+		System.out.println(id);
+		Map<String, Object> map = mDAO.ajaxSelectMemOne(id);
+	
+		return map;
 	}
 }
