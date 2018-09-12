@@ -3,6 +3,8 @@ package com.bybogon.sports.controller.ajax;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,5 +68,34 @@ public class AjaxMemberController {
 		Map<String, Object> map = mDAO.ajaxSelectMemOne(id);
 	
 		return map;
+	}
+	
+	@RequestMapping(value = "ajaxUpdateMemOne.do", method = RequestMethod.POST)
+	public String ajaxUpdateMemOne(
+			@RequestParam(value="mem_name") String name,
+			@RequestParam(value="mem_age") int age,
+			@RequestParam(value="mem_detail") String detail,
+			@RequestParam(value="mem_email1") String email1,
+			@RequestParam(value="mem_email2") String email2,
+			@RequestParam(value="mem_img", required=false, defaultValue="null") String img,
+			HttpSession session) {
+		String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
+		System.out.println("1: "+name);
+		System.out.println("2: "+age);
+		System.out.println("4: "+detail);
+		System.out.println("5: "+email1);
+		System.out.println("5: "+email2);
+		img = amazonUrl+img;
+		System.out.println("6: "+img);
+		String id = (String) session.getAttribute("SID");
+		Sports_Member vo = new Sports_Member(
+				id, name, age, email1+email2, img, detail);
+		
+		int ret = mDAO.ajaxUpdateMemOne(vo);
+		if (ret > 0) {
+			return "success";
+		} else {
+			return "false";
+		}
 	}
 }

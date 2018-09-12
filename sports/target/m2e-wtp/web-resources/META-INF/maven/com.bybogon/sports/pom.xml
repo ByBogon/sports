@@ -21,10 +21,13 @@
 		</repository>
 	</repositories>
 	
-	
-
-	
 	<dependencies>
+		<!-- AWS S3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.406</version>
+		</dependency>
 	
 		<!-- google geocoder -->
 		<dependency>

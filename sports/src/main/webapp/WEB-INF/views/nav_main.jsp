@@ -44,7 +44,6 @@
 			<div class="menu">
 				<a class="item" href="open_group.do">모임 만들기</a>
 				<a class="item" href="allGroups.do">전체 모임보기</a>
-				<a class="item" href="myGroupsEdit.do">내모임 관리하기</a>
 				<div class="ui inverted divider"></div>
 				<a class="item" href="#">Something else here</a>
 			</div>
@@ -54,6 +53,7 @@
 			<i class="dropdown icon"></i>
 			<div class="menu">
 				<a class="item" href="chatting.do">채팅</a>
+				<a class="item" href="http://13.209.150.69:8005/">오픈 채팅방 목록</a>
 				<div class="ui inverted divider"></div>
 				<a class="item" href="#">Something else here</a>
 			</div>
@@ -114,8 +114,7 @@
 			<div class="header">모임</div>
 			<div class="menu">
 				<a class="item" href="open_group.do">모임 만들기</a>
-				<a class="item" href="#">전체 모임보기</a>
-				<a class="item" href="myGroupsEdit.do">내모임 관리하기</a>
+				<a class="item" href="allGroups.do">전체 모임보기</a>
 				<div class="ui inverted divider"></div>
 			</div>
 		</div>
@@ -123,7 +122,7 @@
 			<div class="header">채팅</div>
 			<div class="menu">
 				<a class="item" href="chatting.do">채팅</a>
-				<a class="item" href="#">오픈 채팅방 목록</a>
+				<a class="item" href="http://13.209.150.69:8005/">오픈 채팅방 목록</a>
 				<div class="ui inverted divider"></div>
 			</div>
 		</div>

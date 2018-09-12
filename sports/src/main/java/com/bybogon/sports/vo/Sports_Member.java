@@ -12,6 +12,8 @@ public class Sports_Member {
 	private int level_no = 0;
 	private String level_name = null;
 	private String mem_date = null;
+	private String mem_img = null;
+	private String mem_detail= null;
 	
 	public Sports_Member() {
 		super();
@@ -24,7 +26,16 @@ public class Sports_Member {
 		this.mem_pw = mem_pw;
 	}
 
-
+	public Sports_Member(String mem_id, String mem_name, int mem_age, String mem_email, String mem_img,
+			String mem_detail) {
+		super();
+		this.mem_id = mem_id;
+		this.mem_name = mem_name;
+		this.mem_age = mem_age;
+		this.mem_email = mem_email;
+		this.mem_img = mem_img;
+		this.mem_detail = mem_detail;
+	}
 
 	public Sports_Member(String mem_id, String mem_pw, String mem_name, int mem_age, String mem_email) {
 		super();
@@ -35,6 +46,22 @@ public class Sports_Member {
 		this.mem_email = mem_email;
 	}
 
+
+	public String getMem_img() {
+		return mem_img;
+	}
+
+	public void setMem_img(String mem_img) {
+		this.mem_img = mem_img;
+	}
+
+	public String getMem_detail() {
+		return mem_detail;
+	}
+
+	public void setMem_detail(String mem_detail) {
+		this.mem_detail = mem_detail;
+	}
 
 	public String getLevel_name() {
 		return level_name;

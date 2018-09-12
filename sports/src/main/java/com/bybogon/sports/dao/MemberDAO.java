@@ -7,16 +7,27 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
 	
+	@Options(useGeneratedKeys=false)
+	@Update({"UPDATE SPORTS_MEMBER SET ",
+			 "	MEM_NAME = #{vo.mem_name}, ",
+			 "	MEM_AGE = #{vo.mem_age}, ",
+			 "	MEM_EMAIL = #{vo.mem_email}, ",
+			 "	MEM_IMG = #{vo.mem_img}, ",
+			 "	MEM_DETAIL = #{vo.mem_detail} ",
+			 "WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1"})
+	public int ajaxUpdateMemOne(@Param("vo") Sports_Member vo);
+	
 	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID = #{id} AND MEM_PW = #{pw}"})
 	public Map<String, Object> ajaxPwCheck(@Param("id") String id, @Param("pw") String pw);
 	
 	@Select({"SELECT", 
-			"    sm.MEM_ID, sm.MEM_AGE, sm.MEM_ADDR, sm.MEM_EMAIL, sm.MEM_NAME, ", 
+			"    sm.MEM_ID, sm.MEM_AGE, sm.MEM_DETAIL, sm.MEM_IMG, sm.MEM_EMAIL, sm.MEM_NAME, ", 
 			"    NVL(COUNT(grpno.GRP_NO), 0) mcnt ", 
 			" FROM (",
 			"    SELECT DISTINCT g.GRP_NO, GRP_LEADER FROM SPORTS_GRP g", 
@@ -25,7 +36,7 @@ public interface MemberDAO {
 			"    ) grpno ", 
 			"INNER JOIN SPORTS_MEMBER sm ON grpno.GRP_LEADER = sm.MEM_ID ", 
 			"WHERE MEM_ID = #{id} ", 
-			"GROUP BY sm.MEM_ID, sm.MEM_AGE, sm.MEM_ADDR, sm.MEM_EMAIL, sm.MEM_NAME"})
+			"GROUP BY sm.MEM_ID, sm.MEM_AGE, sm.MEM_DETAIL, sm.MEM_IMG, sm.MEM_EMAIL, sm.MEM_NAME"})
 	public Map<String, Object> ajaxSelectMemOne(@Param("id") String id);
 	
 	@Select({"SELECT NVL(COUNT(MEM_ID), 0) FROM SPORTS_MEMBER WHERE MEM_ID = #{id}"})

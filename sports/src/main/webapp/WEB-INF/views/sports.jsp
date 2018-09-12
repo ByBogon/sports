@@ -45,7 +45,7 @@
 		            <div class="ui three stackable link cards">
 	                    <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
@@ -58,7 +58,7 @@
 						</div>
 		                <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
@@ -71,7 +71,7 @@
 						</div>
 		                <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
@@ -96,7 +96,7 @@
 		            <div class="ui three stackable link cards">
 	                    <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
@@ -109,7 +109,7 @@
 						</div>
 		                <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
@@ -122,7 +122,7 @@
 						</div>
 		                <div class="card">
 	                    	<div class="image">
-	                    		<img src="resources/images/1.jpg" alt="resources/images/default.png"/>
+	                    		<img src="https://s3.ap-northeast-2.amazonaws.com/bybogon.life/imgs/1.jpg" alt="resources/images/default.png"/>
 	                    	</div>
 	                    	<div class="content">
 	                        	<div class="header">
