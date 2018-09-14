@@ -70,7 +70,7 @@
 				<div class="ui container">
 					<div style="margin-top: 20px">
 						<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
-						<input type="button" class="btn btn-danger btn-rmv" value="멤버삭제" />
+						<input type="button" class="btn btn-danger btn-rmv" id="btn-rmv" value="멤버삭제" />
 					</div>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 	</div>
 	
 	<!-- Modal -->
-	<div class="modal fade" id="modal_del_grp_mem" tabindex="-1"
+	<div class="modal" id="modal_del_grp_mem" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
@@ -179,7 +179,12 @@
 				var centerName = $('.center_name').eq(idx).text();
 				$('#txt_center').val(centerName);
 				$('#searchGrpCenterModal').modal('hide');
+				$('#searchGrpCenterModal').on('hide.bs.modal', function() {
+					$('.center_tr').remove();
+				})
 			})
+			
+			
 			
 			$('.btn-search-center').on('click', function() {
 				var center = $('#txt_center').val();
@@ -195,12 +200,11 @@
 								+'<td>'+data[i].CENTER_TEL+'</td>'
 							+'</tr>');
 					}
+					$('#searchGrpCenterModal').modal('show');
 				})
-				$('#searchGrpCenterModal').modal('show');
+				
 			})
-			$('#searchGrpCenterModal').on('hide.bs.modal', function() {
-				$('.center_tr').remove();
-			})
+			
 
 			$('#modal_btn_rmv').on('click', function() {
 				console.log(rmIdList.length);
@@ -218,7 +222,7 @@
 				$('#modal_del_grp_mem').modal('hide');
 			})
 
-			$('.btn-rmv').on('click', function() {
+			$('#btn-rmv').on('click', function() {
 				rmIdList.length = 0;
 				$('.members').find('.card').each(function() {
 					var idx = $(this).index('.card');

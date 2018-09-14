@@ -22,6 +22,15 @@
 	</repositories>
 	
 	<dependencies>
+		<!-- Apache 암호화 AES 256 -->
+		<!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.11</version>
+		</dependency>
+		
+		
 		<!-- AWS S3 -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>

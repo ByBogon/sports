@@ -18,17 +18,6 @@
 			</div>
 		</div>
 		<div class="ui dropdown item">
-			스포츠
-			<i class="dropdown icon"></i>
-			<div class="menu">
-				<a class="item" href="sports.do">스쿼시</a>
-				<a class="item" href="sports.do?sports=basketball">농구</a>
-				<a class="item" href="sports.do?sports=tennis">테니스</a>
-				<div class="ui inverted divider"></div>
-				<a class="item" href="#">Something else here</a>
-			</div>
-		</div>
-		<div class="ui dropdown item">
 			센터
 			<i class="dropdown icon"></i>
 			<div class="menu">
@@ -90,15 +79,6 @@
 			<div class="menu">
 				<a class="item" href="myPage.do">내정보</a>
 				<a class="item" href="myGroups.do">내모임</a>
-				<div class="ui inverted divider"></div>
-			</div>
-		</div>
-		<div class="item">
-			<div class="header">스포츠</div>
-			<div class="menu">
-				<a class="item" href="sports.do">스쿼시</a>
-				<a class="item" href="sports.do?sports=basketball">농구</a>
-				<a class="item" href="sports.do?sports=tennis">테니스</a>
 				<div class="ui inverted divider"></div>
 			</div>
 		</div>

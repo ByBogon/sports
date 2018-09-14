@@ -22,8 +22,7 @@
 </head>
 <body>
 	<div class="ui page grid">
-	<jsp:include page="nav_main.jsp"></jsp:include>
-	
+		<jsp:include page="nav_main.jsp"></jsp:include>
 		<div class="ui center aligned container">
 			<div>
 				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" />
@@ -40,23 +39,8 @@
 				<div id="map" style="width:100%; height:400px; margin: auto">
 				</div>
 			</div>
-			<div class="container" style="text-align:center; margin: auto; margin-top: 20px">
-				<table id="center_list" class="table table-striped table-hover" style="text-align:center">
-					<thead class="thead-light">
-						<tr>
-							<th>지역</th>
-							<th>센터명</th>
-							<th>주소</th>
-							<th>전화번호</th>
-						</tr>
-					</thead>
-					<tbody class="tbody" style="text-align:center">
-					
-					</tbody>										
-				</table>
-			</div>			
+			<jsp:include page="center_location_context.jsp"></jsp:include>
 		</div>
-		
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
     <script>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page session="true" %>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -23,29 +24,17 @@
 <body>
 <div class="ui page grid">
 <jsp:include page="nav_main.jsp"></jsp:include>
-	<div class="ui grid" style="width:100%">
-		<div class="left floated column">
-			<div class="ui vertical menu">
-				<div class="ui left pointing dropdown link item">
-					<i class="dropdown icon"></i>
-					내정보 관리
-					<div class="menu">
-						<a href="myPage.do" class="item">내 정보 수정하기</a>
-						<a href="#" class="item">내 비밀번호 변경하기</a>
-						<a href="#" class="item">탈퇴하기</a>
-					</div>
-				</div>
-				<a href="#" class="item">운동 센터 등록</a>
-			</div>
-		</div>
-		<div class="right floated column" style="width:100%">
+	<div class="ui grid" style="width:100%; margin-top: 20px">
+		<jsp:include page="myPageMenuOnLeft.jsp"></jsp:include>
+		<div class="right floated column" style="width:70%">
 			<div class="ui container context" id="context">
-				<form class="ui form">
-					<div class="field">
-						<div class="ui pointing below label">
+				<form class="ui action input form" style="margin-top: 10px">
+					<div class="inline field">
+						<div class="ui right pointing label">
 							현재 비밀번호를 입력해주세요.
 						</div>
 						<input type="password" id="pw"/>
+						<input type="submit" class="ui primary button" id="pwchk" value="확인"/>
 					</div>
 					<div id="message">
 					
@@ -53,7 +42,6 @@
 				</form>
 			</div>
 			<div class="ui right aligned container btn-container" style="margin-top: 10px">
-				<input type="submit" class="ui primary button" id="pwchk" value="확인">
 			</div>
 		</div>
 	</div>
@@ -231,13 +219,27 @@
 							$('#message').html(html);
 							return false;
 						} else {
-							$.post('ajaxSelectMemOne.do', {mem_id : data.MEM_ID}, function(data) {
+							$.post('ajaxSelectMemOne.do', {mem_id : data.MEM_ID}, function(datas) {
 								var img;
-								console.log(data.MEM_IMG);
-								if( typeof data.MEM_IMG == "undefined" ) {
+								var detail;
+								var mcnt;
+								var email = datas.MEM_EMAIL;
+								console.log(datas.MEM_IMG);
+								console.log(email);
+								if( typeof datas.MEM_IMG == "undefined" ) {
 									img = 'resources/images/matthew.png';
 								} else {
-									img = data.MEM_IMG;
+									img = datas.MEM_IMG;
+								}
+								if( typeof datas.MCNT == "undefined" ) {
+									mcnt = 0;
+								} else {
+									mcnt = datas.MCNT;
+								}
+								if( typeof datas.MEM_DETAIL == "undefined" ) {
+									detail = ' ';
+								} else {
+									detail = datas.MEM_DETAIL;
 								}
 								$('.ui.container.context').empty();
 								html += '<form id="update_form" action="myPage.do" method="post" enctype="multipart/form-data">';
@@ -254,12 +256,12 @@
 												html += '<div class="floating ui teal label">Default</div>';
 											   	html += '<div class="content">';
 											   	html += '<div class="header">';
-											    html += '<div>'+data.MEM_NAME+'</div>';
-											    html += '<div class="meta right aligned">'+data.MEM_AGE+'</div>';
+											    html += '<div>'+datas.MEM_NAME+'</div>';
+											    html += '<div class="meta right aligned">'+datas.MEM_AGE+'</div>';
 											    html += '</div></div>';
 											    html += '<div class="extra content">';
-											    html += '<div class="left aligned email">'+data.MEM_EMAIL+'</div>';
-											    html += '<div class="right aligned extra content">'+data.MCNT+' Groups</div>';
+											    html += '<div class="left aligned email">'+datas.MEM_EMAIL+'</div>';
+											    html += '<div class="right aligned extra content">'+datas.MCNT+' Groups</div>';
 											    html += '</div></div>';
 									  		html += '</div>';
 									  		html += '<div class="right aligned column">';
@@ -267,18 +269,26 @@
 										  	html += '<div class="ui divided list">';
 										  	html += '<div class="item">';
 											  	html += '<div class="ui labeled fluid input">';
+											  	html += '<div class="ui center aligned label">아이디</div>';
+											  	html += '<input type="text" class="ui large input" id="mem_id" name="mem_id" value="'+id+'" disabled/></div></div>';
+										  	html += '<div class="item">';
+											  	html += '<div class="ui labeled fluid input">';
+											  	html += '<div class="ui center aligned label">새 암호</div>';
+											  	html += '<input type="password" class="ui large input" id="mem_pw" name="mem_pw"/></div></div>';
+										  	html += '<div class="item">';
+											  	html += '<div class="ui labeled fluid input">';
 											  	html += '<div class="ui center aligned label">이름</div>';
-											  	html += '<input type="text" class="ui large input" id="mem_name" name="mem_name" value="'+data.MEM_NAME+'"/></div></div>';
+											  	html += '<input type="text" class="ui large input" id="mem_name" name="mem_name" value="'+datas.MEM_NAME+'"/></div></div>';
 										  	html += '<div class="item">';
 											  	html += '<div class="ui right labeled fluid input">';
-											  	html += '<input type="text" class="ui large input" id="mem_age" name="mem_age" value="'+data.MEM_AGE+'"/>';
+											  	html += '<input type="text" class="ui large input" id="mem_age" name="mem_age" value="'+datas.MEM_AGE+'"/>';
 											  	html += '<div class="ui center aligned label">세</div></div></div>';
 										  	html += '<div class="item">';
 											  	html += '<div class="ui right labeled fluid input">';
-												  	html += '<input type="text" class="ui large input" id="mem_email" name="mem_email1" value="'+data.MEM_EMAIL.substring(0, data.MEM_EMAIL.indexOf("@", 0))+'"/>';
+												  	html += '<input type="text" class="ui large input" id="mem_email" name="mem_email1" value="'+email.substring(0, email.indexOf("@", 0))+'"/>';
 												  	html += '<div class="ui dropdown center aligned label">';
-													  	html += '<div class="email_last text" >'+data.MEM_EMAIL.substring(data.MEM_EMAIL.indexOf("@"), data.MEM_EMAIL.length)+'</div>';
-													  	html += '<input type="hidden" id="mem_email2" name="mem_email2"/>'
+													  	html += '<div class="email_last text" >'+email.substring(email.indexOf("@"), email.length)+'</div>';
+													  	html += '<input type="hidden" id="mem_email2" name="mem_email2" value="'+email.substring(email.indexOf("@"), email.length)+'"/>'
 													  	html += '<i class="dropdown icon"></i>';
 														  	html += '<div class="menu">';
 															  	html += '<div class="item">@gmail.com</div>';
@@ -293,7 +303,7 @@
 										  	html += '<div class="item">';
 											  	html += '<div class="ui labeled fluid input details">';
 											  		html += '<div class="ui top attached label">40자 내 자기소개</div>';
-											  		html += '<input type="text" class="ui large input" name="mem_detail" id="mem_detail" placeholder="자기소개" maxlength="40" value="'+data.MEM_DETAIL+'"/></div>';
+											  		html += '<input type="text" class="ui large input" name="mem_detail" id="mem_detail" placeholder="자기소개" maxlength="40" value="'+detail+'"/></div>';
 											  		html += '<div class="details_msg"></div></div>';
 									  	html += '</div>';
 									html += '</div>';
@@ -304,8 +314,7 @@
 								var btn = '';
 								btn += '<input type="submit" class="ui green button update" id="update_btn"value="수정하기"/>';
 								
-								$('.ui.right.aligned.container.btn-container').empty();
-								$('.ui.right.aligned.container.btn-container').html(btn);
+								$('.btn-container').html(btn);
 								$('.ui.container.context').html(html);
 								$('.special.card .image').dimmer({
 									on: 'hover'

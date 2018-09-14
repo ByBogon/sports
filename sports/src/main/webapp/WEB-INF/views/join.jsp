@@ -31,7 +31,7 @@
 		<jsp:include page="nav_main.jsp"></jsp:include>
 		<div class="center aligned container">
 			<form action="join.do" method="post" name="join_form"
-				onsubmit="return subCheck();">
+				id="join_form" onsubmit="return subCheck();">
 				<div class="box600">
 					<hr />
 					<div class="form-inline" style="margin-bottom: 5px">
@@ -104,6 +104,7 @@
 							<label>@</label>
 						</div>
 						<div>
+							<input type="hidden" id="emails"/>
 							<select id="drops" name="selected" onchange="dropdownChange()">
 								<option value="gmail.com" selected>gmail.com</option>
 								<option value="hanmail.com">hanmail.com</option>
@@ -116,7 +117,7 @@
 					</div>
 					<hr />
 					<div align="right">
-						<input type="submit" class="btn btn-success" value="회원가입"	/>
+						<input type="submit" class="btn btn-success submit" id="submit" value="회원가입"	/>
 					</div>
 				</div>
 			</form>
@@ -127,6 +128,21 @@
 <script type="text/javascript">
 	$(function(){
 		$('.ui.dropdown').dropdown();
+		
+		$('#submit').on('click', function(e) {
+			//e.preventDefault();
+			var sep = '@';
+			console.log('submit');
+			console.log($('#email').val());
+			if(($('#type_in').val()).trim() !== '') {
+				console.log('trim');
+				$('#email').val( ($('#email').val()) + sep + ($('#type_in').val()).trim());
+			} else {
+				console.log('type_in');
+				$('#email').val( ($('#email').val()) + sep + $('#drops').val() );
+			}
+			$('#join_form').submit();
+		});
 		
 		$('#id').keyup(function(){
 			var a = $('#id').val();
@@ -174,7 +190,6 @@
 			textBox.style.display = 'block';
 			dropDown.style.display = 'none';
 			dropDown.value = "";
-			
 		}
 	}
 
