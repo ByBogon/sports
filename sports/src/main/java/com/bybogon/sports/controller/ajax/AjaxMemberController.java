@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bybogon.sports.dao.MemberDAO;
-import com.bybogon.sports.dao.impl.ProcedureDAOImpl;
 import com.bybogon.sports.func.AES256Encrypt;
 import com.bybogon.sports.vo.Sports_Member;
 
@@ -23,9 +22,6 @@ public class AjaxMemberController {
 
 	@Autowired
 	private MemberDAO mDAO;
-	
-	@Autowired
-	private ProcedureDAOImpl pDAO;
 	
 	@RequestMapping(value = "ajax_search_member.do", method=RequestMethod.GET,
 			produces="application/json")
