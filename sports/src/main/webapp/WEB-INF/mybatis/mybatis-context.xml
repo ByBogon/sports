@@ -16,9 +16,9 @@
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" 
 			value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
-		<property name="username" value="hr" />
-		<property name="password" value="1234" />
+		<property name="url" value="jdbc:oracle:thin:@bybogon.czb4awyz3ywk.ap-northeast-2.rds.amazonaws.com:1521:ORCL" />
+		<property name="username" value="bybogon" />
+		<property name="password" value="parkbogon1!" />
 		<!-- <property name="validationQuery" 
 			value="${jdbc.validationQuery}" /> DB 활성화-->
 	</bean>
@@ -38,6 +38,7 @@
 	<bean id="sqlSessionFactory" 
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="log4jDataSource" />
+		
 		<property name="configLocation" 
 			value="/WEB-INF/mybatis/mybatis-config.xml" />
 		
@@ -49,5 +50,6 @@
 	
 	<!-- 추가하면 Controller에서 MapperScan을 할 필요가 없음 -->
 	<mybatis-spring:scan base-package="com.bybogon.sports.dao"/>
+	<mybatis-spring:scan base-package="com.bybogon.sports.dao.impl"/>
  
 </beans>
