@@ -58,6 +58,7 @@
 					position : coords
 				});
        			map.panTo(coords);
+       			map.setCenter(coords);
        			map.setLevel(4, {anchor: coords}, {animate:true});
        			
        			document.getElementById('txt_search').scrollIntoView(true);
@@ -117,27 +118,35 @@
 					position : coords
 				});
        			
-       			var iwContent = 
+       			/* var iwContent = 
        				'<div style="text-align:center; padding:6px 0;">'
        					+'<div>'+position.CENTER_NAME+'</div>'
        					+'<div>'+position.CENTER_ADDR+' / TEL: '+position.CENTER_TEL+'</div>'
-       				+'</div>';
+       				+'</div>';        				
+       			
        			var infowindow = new daum.maps.InfoWindow({
         			content : iwContent
-        		});
+        		}); */      				
+        		
+     			var iwContent = 
+       				'<div class="ui raised very padded text container segment" style="width: min-content; text-align:center; padding:6px 0;">'
+       					+'<div>'+position.CENTER_NAME+'</div>'
+       					+'<div>'+position.CENTER_ADDR+'</div><div>'+position.CENTER_TEL+'</div>'
+       				+'</div>';
+     			var customOverlay = new daum.maps.CustomOverlay({
+     				clickable: true,
+     		   		xAnchor : 0.5,
+     		   		yAnchor : 1.6,
+     			});
 
-       			daum.maps.event.addListener(mark, 'click', function() {
-       				map.panTo(coords);
-       			});
-       			daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
+       			daum.maps.event.addListener(mark, 'click', makeClickListener(map, mark, coords, iwContent, customOverlay) );
+       			/* daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
                 daum.maps.event.addListener(mark, 'mouseout', makeOutListener(infowindow));
-       			
+       			 */
                 return mark;
-       		});
-       		
+       		});       		
             // 클러스터러에 마커들을 추가합니다
-            clusterer.addMarkers(markers);
-            
+            clusterer.addMarkers(markers);            
         });
         
         daum.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
@@ -146,7 +155,32 @@
             // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
             map.setLevel(level, {anchor: cluster.getCenter()});
         });
-
+        
+        function makeClickListener(map, mark, coords, iwContent, customOverlay) {
+ 			console.log('0');
+        	return function() {
+        		customOverlay.setPosition(coords);
+       			customOverlay.setContent(iwContent);
+        		console.log(mark);
+        		console.log('1');
+				
+   				if((customOverlay.getMap() === null)) {
+   					customOverlay.setMap(map);
+   					map.setCenter(coords);
+   	   				map.panTo(coords);
+   	   				console.log('2');
+   					//customOverlay.setVisible(true);
+   				} else {
+   					//customOverlay.setVisible(false);
+   					customOverlay.setMap(null);
+   					map.setCenter(coords);
+   	   				map.panTo(coords);
+   	   				console.log('3');
+   				}
+        	}
+        }
+        
+		/* 
      	 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
         function makeOverListener(map, marker, infowindow) {
         	infowindow.close();
@@ -160,7 +194,9 @@
             return function() {
             	infowindow.close();
             };
-        };
+        }; 
+        */
+        
     });
     </script>
 

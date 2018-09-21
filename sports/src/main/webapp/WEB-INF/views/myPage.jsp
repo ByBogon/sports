@@ -84,31 +84,16 @@
 						var upform = $('#update_form').serializeArray();
 						console.log(upform);
 						upform.push({name: "mem_img", value: xhr.responseText});
+						console.log(upform);
 						$.post('ajaxUpdateMemOne.do', upform, function(data) {
 							console.log(data);
-							if(data === 'success') {
+							if(typeof data !== 'undefined') {
 								window.location.href="myPage.do";
 							}
 						})
 					}
 				}
 			}
-			
-			/* 
-			var name = $('#mem_name').val();
-			var age = $('#mem_age').val();
-			var detail = $('#mem_detail').val();
-			var email = $('#mem_email').val();
-			var src = $('#img').attr('src');
-			var drops = $('.ui.dropdown.label');
-			var txt = drops.dropdown('get text');
-			email += txt;
-			if(src === 'resources/images/matthew.png') {
-				src = null;
-			}  */
-			
-			
-			//$('#update_form').submit();
 		}); 
 		
 		$(document).on('click', '.floating.label', function() {
@@ -240,6 +225,9 @@
 									detail = ' ';
 								} else {
 									detail = datas.MEM_DETAIL;
+								}
+								if ( !(email.includes('@')) ) {
+									email = email+'@gmail.com';
 								}
 								$('.ui.container.context').empty();
 								html += '<form id="update_form" action="myPage.do" method="post" enctype="multipart/form-data">';

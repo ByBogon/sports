@@ -47,7 +47,9 @@
 				<a class="item" href="#">Something else here</a>
 			</div>
 		</div>
+		
 		<div class="right menu">
+			<a class="item" href="#">센터 제보</a>
 			<c:if test="${sessionScope.SID eq null}">
 				<a class="item" href="join.do">회원가입</a>
 				<a class="item" href="login.do">로그인</a>

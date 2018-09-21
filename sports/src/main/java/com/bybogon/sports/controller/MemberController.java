@@ -175,8 +175,25 @@ public class MemberController {
 		// 회원이 등록한 센터가 있으면 쿼리로 센터 정보 가져오기
 		// 없으면 등록하게 하기
 		String id = (String) session.getAttribute("SID");
+		if((id == null) || (id.equals(null))) {
+			return "redirect:login.do";
+		}
 		Map<String, Object> map = mDAO.selectMyCenterOne(id);
+		if(map.get("CENTER_NO") != null) {
+			System.out.println(map.get("CENTER_NO"));	
+		}
 		model.addAttribute("map", map);
 		return "myCenter";
 	}
+	
+	@RequestMapping(value = "resign.do", method=RequestMethod.GET)
+	public String resign(HttpSession session) {
+		String id = (String) session.getAttribute("SID");
+		if(id == null) {
+			return "login_v4";
+		} else {
+			return "resign";
+		}
+	}
+
 }

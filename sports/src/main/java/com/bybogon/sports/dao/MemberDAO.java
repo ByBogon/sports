@@ -12,12 +12,26 @@ import org.apache.ibatis.annotations.Update;
 import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
+	
+	@Options(useGeneratedKeys = false)
+	@Update({"UPDATE SPORTS_MEMBER SET MEM_CHECK = 0 WHERE MEM_ID = #{id} AND MEM_PW = #{encPw}"})
+	public int blockMember(@Param("id") String id, @Param("encPw") String pw);
+	
 
+	@Options(useGeneratedKeys = false)
+	@Update({"UPDATE SPORTS_MEMBER ",
+			" SET CENTER_NO = ",
+			"	( SELECT CENTER_NO ", 
+			"	  FROM SPORTS_CENTER ", 
+			"	  WHERE CENTER_ADDR LIKE '%'||#{addr}||'%' ) ", 
+			" WHERE MEM_ID = #{id}",
+	})
+	public int addMyCenter(@Param("id") String id, @Param("addr") String addr);
 	
 	@Select({"SELECT ", 
 			"	c.CENTER_NAME, c.CENTER_ADDR, c.CENTER_AREA_NO, c.CENTER_TEL, ",
 			"	c.CENTER_DETAIL, c.CENTER_LAT, c.CENTER_LNG, ", 
-			"	m.CENTER_NO, m.MEM_NAME ", 
+			"	m.CENTER_NO, m.MEM_NAME, m.MEM_IMG ", 
 			"FROM SPORTS_MEMBER m LEFT JOIN SPORTS_CENTER c ON m.CENTER_NO = c.CENTER_NO ", 
 			"WHERE MEM_ID = #{id}"
 	})

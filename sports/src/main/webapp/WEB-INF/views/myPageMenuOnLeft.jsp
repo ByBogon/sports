@@ -7,7 +7,7 @@
 			내정보 관리
 			<div class="menu">
 				<a href="myPage.do" class="item">내 정보 수정하기</a>
-				<a href="#" class="item">탈퇴하기</a>
+				<a href="resign.do" class="item">탈퇴하기</a>
 			</div>
 		</div>
 		<a href="myCenter.do" class="item">내 센터</a>

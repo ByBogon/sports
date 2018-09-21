@@ -1,6 +1,5 @@
 package com.bybogon.sports.controller.ajax;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +18,38 @@ import com.bybogon.sports.vo.Sports_Member;
 
 @RestController
 public class AjaxMemberController {
+	String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
 
 	@Autowired
 	private MemberDAO mDAO;
 	
-	@RequestMapping(value = "ajax_search_member.do", method=RequestMethod.GET,
+	@RequestMapping(value = "ajax_block_account.do", method = RequestMethod.POST)
+	public int blockAccount(
+			@RequestParam(value = "id") String id,
+			@RequestParam(value = "pw") String pw) {
+		int ret = 0;
+		try {
+			AES256Encrypt aes256 = new AES256Encrypt(key);
+			String encPw = aes256.aesEncode(pw);
+			ret = mDAO.blockMember(id, encPw);
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return ret;
+	}
+	
+	@RequestMapping(value = "ajax_add_myCenter.do", method = RequestMethod.GET)
+	public int addMyCenter(
+			@RequestParam(value="id") String id,
+			@RequestParam(value="addr") String addr) {
+		System.out.println(addr);
+		int ret = mDAO.addMyCenter(id, addr);
+		
+		return ret;
+	}
+	
+	@RequestMapping(value = "ajax_search_member.do", method = RequestMethod.GET,
 			produces="application/json")
 	public @ResponseBody List<Sports_Member> searchMember(
 			@RequestParam(value="mem") String mem,
@@ -54,7 +80,7 @@ public class AjaxMemberController {
 			@RequestParam(value="id") String id,
 			@RequestParam(value="pw") String pw) {
 		try {
-			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
+			
 			AES256Encrypt aes256 = new AES256Encrypt(key);
 			String encPw = aes256.aesEncode(pw);
 		
@@ -93,8 +119,15 @@ public class AjaxMemberController {
 			String id = (String) session.getAttribute("SID");
 			int ret;
 			System.out.println(pw);
+			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
+			AES256Encrypt aes256 = new AES256Encrypt(key);
+			String encPw = aes256.aesEncode(pw);
+			String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
+			img = amazonUrl+img;
+			System.out.println(img);
+			System.out.println(pw);
 			if( (pw.trim() == "") || ((pw.trim()).equals("")) || (pw == null) ) {
-				vo = new Sports_Member(id, null, name, age, email1+email2, null, detail);
+				vo = new Sports_Member(id, null, name, age, email1+email2, img, detail);
 				System.out.println(vo.getMem_pw());
 				ret = mDAO.ajaxUpdateMemOne(vo);
 				if (ret > 0) {
@@ -102,25 +135,19 @@ public class AjaxMemberController {
 				} else {
 					return "null";
 				}
-			}
-			System.out.println(pw);
-			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
-			AES256Encrypt aes256 = new AES256Encrypt(key);
-			String encPw = aes256.aesEncode(pw);
-			String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
-			img = amazonUrl+img;
-			
-			vo = new Sports_Member(
-					id, encPw, name, age, email1+email2, img, detail);
-			
-			ret = mDAO.ajaxUpdateMemOne(vo);
-			if (ret > 0) {
-				return "success";
 			} else {
-				return "false";
+				vo = new Sports_Member(
+						id, encPw, name, age, email1+email2, img, detail);
+				ret = mDAO.ajaxUpdateMemOne(vo);
+				if (ret > 0) {
+					return "success";
+				} else {
+					return "false";
+				}
 			}
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 	}

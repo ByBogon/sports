@@ -23,7 +23,7 @@
 						<th>멤버 이름</th>
 					</tr>
 				</thead>
-				<tbody class="tbody">
+				<tbody class="tbody" id="tbody_group_mem">
 				</tbody>
 			</table>
 		</div>
@@ -32,7 +32,7 @@
 	</div>
 
 	<div class="actions">
-		<input type="submit" class="ui teal button" id="modal_add_grp_mem" value="추가" />
+		<input type="submit" class="ui teal button" id="modal_btn_add_grp_mem" value="추가" />
 		<button type="button" class="ui black deny button"
 			data-dismiss="modal">취소</button>
 	</div>

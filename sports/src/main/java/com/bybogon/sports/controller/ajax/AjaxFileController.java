@@ -48,7 +48,8 @@ public class AjaxFileController {
 		// 폴더가 실제 트리구조의 하위 디렉토리가 아니라 key 값으로 읽음
 
 		s3DAO.uploadFile(uploadFile, keyName);
-		String S3ImgUrl = bucketName+"/"+keyName; 
+		String S3ImgUrl = bucketName+"/"+keyName;
+		System.out.println(S3ImgUrl);
 		return S3ImgUrl;
 	}
 	
