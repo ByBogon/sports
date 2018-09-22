@@ -52,7 +52,8 @@ public class GroupsController {
 	@RequestMapping(value = "makeOneGroup.do", method = RequestMethod.GET)
 	public String openGroupP(@RequestParam(value="grp_name") String grp_name,
 			@RequestParam(value="grp_leader") String grp_leader,
-			@RequestParam(value="memList") String[] memList) {
+			@RequestParam(value="memList") String[] memList,
+			HttpServletRequest request) {
 		Sports_Grp vo = new Sports_Grp(grp_name,grp_leader);
 		gDAO.makeOneGrp(vo);
 		int sportsGrpNo = gDAO.selectRecentSportsGrpNo(grp_name);
@@ -63,7 +64,9 @@ public class GroupsController {
 		}
 		
 		if (ret2 > 0) {
-			return "redirect:groups.do";
+			request.setAttribute("msg", "그룹 생성!");
+			request.setAttribute("url", "sports.do");
+			return "alert";
 		} else {
 			return "redirect:open_group.do";
 		}
@@ -72,11 +75,27 @@ public class GroupsController {
 	@RequestMapping(value = "myGroups.do", method = RequestMethod.GET)
 	public String myGroup(HttpSession session, Model model) {
 		String id = (String) session.getAttribute("SID");
-		if (id.equals("null")) {
+		System.out.println(id);
+		if (id == null) {
 			return "redirect:login.do";
+		} else {
+			List<Sports_Grp> list = gDAO.selectMyGroups(id);
+			model.addAttribute("list", list);
+			return "myGroups";
 		}
-		List<Sports_Grp> list = gDAO.selectMyGroups(id);
-		model.addAttribute("list", list);
-		return "myGroup";
+	}
+	
+	@RequestMapping(value = "allGroups.do", method = RequestMethod.GET)
+	public String allGroup(HttpSession session, Model model) {
+		String id = (String) session.getAttribute("SID");
+		System.out.println(id);
+		if (id == null) {
+			return "redirect:login.do";
+		} else {
+			
+			List<Sports_Grp> list = gDAO.selectAllGroups();
+			model.addAttribute("list", list);
+			return "allGroups";
+		}
 	}
 }

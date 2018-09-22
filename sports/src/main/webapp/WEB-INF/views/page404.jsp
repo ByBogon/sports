@@ -4,7 +4,7 @@
 <html>
 <head>
 	<title>페이지 오류</title>
-	<link rel="stylesheet" href="resources/css/bootstrap.css" />
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css" />
 </head>
 <body>
 	<div class="container">

@@ -6,12 +6,15 @@ public class Sports_Member {
 	private String mem_name = null;
 	private int mem_age = 0;
 	private String mem_email = null;
-	private String mem_addr = null;
+	private String center_name = null;
 	private int mem_check = 0;
 	private int sports_no = 0;
 	private int level_no = 0;
 	private String level_name = null;
 	private String mem_date = null;
+	private String mem_img = null;
+	private String mem_detail= null;
+	private int mcnt= 0;
 	
 	public Sports_Member() {
 		super();
@@ -24,7 +27,28 @@ public class Sports_Member {
 		this.mem_pw = mem_pw;
 	}
 
+	public Sports_Member(String mem_id, String mem_name, int mem_age, String mem_email, String mem_img,
+			String mem_detail) {
+		super();
+		this.mem_id = mem_id;
+		this.mem_name = mem_name;
+		this.mem_age = mem_age;
+		this.mem_email = mem_email;
+		this.mem_img = mem_img;
+		this.mem_detail = mem_detail;
+	}
 
+	public Sports_Member(String mem_id, String mem_pw, String mem_name, int mem_age, String mem_email, String mem_img,
+			String mem_detail) {
+		super();
+		this.mem_id = mem_id;
+		this.mem_pw = mem_pw;
+		this.mem_name = mem_name;
+		this.mem_age = mem_age;
+		this.mem_email = mem_email;
+		this.mem_img = mem_img;
+		this.mem_detail = mem_detail;
+	}
 
 	public Sports_Member(String mem_id, String mem_pw, String mem_name, int mem_age, String mem_email) {
 		super();
@@ -35,6 +59,30 @@ public class Sports_Member {
 		this.mem_email = mem_email;
 	}
 
+
+	public int getMcnt() {
+		return mcnt;
+	}
+
+	public void setMcnt(int mcnt) {
+		this.mcnt = mcnt;
+	}
+
+	public String getMem_img() {
+		return mem_img;
+	}
+
+	public void setMem_img(String mem_img) {
+		this.mem_img = mem_img;
+	}
+
+	public String getMem_detail() {
+		return mem_detail;
+	}
+
+	public void setMem_detail(String mem_detail) {
+		this.mem_detail = mem_detail;
+	}
 
 	public String getLevel_name() {
 		return level_name;
@@ -74,12 +122,15 @@ public class Sports_Member {
 	public void setMem_email(String mem_email) {
 		this.mem_email = mem_email;
 	}
-	public String getMem_addr() {
-		return mem_addr;
+	
+	public String getCenter_name() {
+		return center_name;
 	}
-	public void setMem_addr(String mem_addr) {
-		this.mem_addr = mem_addr;
+
+	public void setCenter_name(String center_name) {
+		this.center_name = center_name;
 	}
+
 	public int getMem_check() {
 		return mem_check;
 	}

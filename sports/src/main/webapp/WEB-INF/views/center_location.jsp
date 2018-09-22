@@ -4,19 +4,26 @@
 <%@ page session="true" %>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>센터찾기</title>
 	<!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="resources/css/bootstrap.min.css">
-    
+    <meta name=viewport content="width=device-width, initial-scale=1">
+	<meta name="mobile-web-app-capable" content="yes">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	<link rel="stylesheet" href="resources/css/semantic.min.css">
+	<link rel="stylesheet" href="resources/css/nav_bar.css?ver=1">
 	<!-- jQuery and Bootstrap -->
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
-	<script src="resources/js/bootstrap.min.js"></script>
-	
+	<script src="resources/js/semantic.min.js"></script>
+	<script src="resources/js/nav_bar.js"></script>
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
+    
 </head>
 <body>
-	<jsp:include page="nav_main.jsp"></jsp:include>
-	<div>
-		<div>
+	<div class="ui page grid">
+		<jsp:include page="nav_main.jsp"></jsp:include>
+		<div class="ui center aligned container">
 			<div>
 				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" />
 			</div>
@@ -32,26 +39,10 @@
 				<div id="map" style="width:100%; height:400px; margin: auto">
 				</div>
 			</div>
-			<div class="container" style="text-align:center; margin: auto; margin-top: 20px">
-				<table id="center_list" class="table table-striped table-hover" style="text-align:center">
-					<thead class="thead-light">
-						<tr>
-							<th>지역</th>
-							<th>센터명</th>
-							<th>주소</th>
-							<th>전화번호</th>
-						</tr>
-					</thead>
-					<tbody class="tbody" style="text-align:center">
-					
-					</tbody>										
-				</table>
-			</div>			
+			<jsp:include page="center_location_context.jsp"></jsp:include>
 		</div>
-		
 	</div>
 	<jsp:include page="footer.jsp"></jsp:include>
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
     <script>
     $(function() {
     	$(document).on('click', '.tr', function() {
@@ -67,6 +58,7 @@
 					position : coords
 				});
        			map.panTo(coords);
+       			map.setCenter(coords);
        			map.setLevel(4, {anchor: coords}, {animate:true});
        			
        			document.getElementById('txt_search').scrollIntoView(true);
@@ -126,27 +118,35 @@
 					position : coords
 				});
        			
-       			var iwContent = 
+       			/* var iwContent = 
        				'<div style="text-align:center; padding:6px 0;">'
        					+'<div>'+position.CENTER_NAME+'</div>'
        					+'<div>'+position.CENTER_ADDR+' / TEL: '+position.CENTER_TEL+'</div>'
-       				+'</div>';
+       				+'</div>';        				
+       			
        			var infowindow = new daum.maps.InfoWindow({
         			content : iwContent
-        		});
+        		}); */      				
+        		
+     			var iwContent = 
+       				'<div class="ui raised very padded text container segment" style="width: min-content; text-align:center; padding:6px 0;">'
+       					+'<div>'+position.CENTER_NAME+'</div>'
+       					+'<div>'+position.CENTER_ADDR+'</div><div>'+position.CENTER_TEL+'</div>'
+       				+'</div>';
+     			var customOverlay = new daum.maps.CustomOverlay({
+     				clickable: true,
+     		   		xAnchor : 0.5,
+     		   		yAnchor : 1.6,
+     			});
 
-       			daum.maps.event.addListener(mark, 'click', function() {
-       				map.panTo(coords);
-       			});
-       			daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
+       			daum.maps.event.addListener(mark, 'click', makeClickListener(map, mark, coords, iwContent, customOverlay) );
+       			/* daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
                 daum.maps.event.addListener(mark, 'mouseout', makeOutListener(infowindow));
-       			
+       			 */
                 return mark;
-       		});
-       		
+       		});       		
             // 클러스터러에 마커들을 추가합니다
-            clusterer.addMarkers(markers);
-            
+            clusterer.addMarkers(markers);            
         });
         
         daum.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
@@ -155,7 +155,32 @@
             // 지도를 클릭된 클러스터의 마커의 위치를 기준으로 확대합니다
             map.setLevel(level, {anchor: cluster.getCenter()});
         });
-
+        
+        function makeClickListener(map, mark, coords, iwContent, customOverlay) {
+ 			console.log('0');
+        	return function() {
+        		customOverlay.setPosition(coords);
+       			customOverlay.setContent(iwContent);
+        		console.log(mark);
+        		console.log('1');
+				
+   				if((customOverlay.getMap() === null)) {
+   					customOverlay.setMap(map);
+   					map.setCenter(coords);
+   	   				map.panTo(coords);
+   	   				console.log('2');
+   					//customOverlay.setVisible(true);
+   				} else {
+   					//customOverlay.setVisible(false);
+   					customOverlay.setMap(null);
+   					map.setCenter(coords);
+   	   				map.panTo(coords);
+   	   				console.log('3');
+   				}
+        	}
+        }
+        
+		/* 
      	 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
         function makeOverListener(map, marker, infowindow) {
         	infowindow.close();
@@ -169,7 +194,9 @@
             return function() {
             	infowindow.close();
             };
-        };
+        }; 
+        */
+        
     });
     </script>
 

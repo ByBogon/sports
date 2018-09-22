@@ -25,7 +25,7 @@ body{
 	}
 }
 
-.ui.vertical.menu{
+.mobile.only.narrow.row > .ui.vertical.navbar.menu{
 	margin-top: -15px !important;
 	width: 100%;
 	display: none;

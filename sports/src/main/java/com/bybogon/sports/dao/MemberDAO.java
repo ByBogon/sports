@@ -1,15 +1,83 @@
 package com.bybogon.sports.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
+	
+	@Options(useGeneratedKeys = false)
+	@Update({"UPDATE SPORTS_MEMBER SET MEM_CHECK = 0 WHERE MEM_ID = #{id} AND MEM_PW = #{encPw}"})
+	public int blockMember(@Param("id") String id, @Param("encPw") String pw);
+	
+
+	@Options(useGeneratedKeys = false)
+	@Update({"UPDATE SPORTS_MEMBER ",
+			" SET CENTER_NO = ",
+			"	( SELECT CENTER_NO ", 
+			"	  FROM SPORTS_CENTER ", 
+			"	  WHERE CENTER_ADDR LIKE '%'||#{addr}||'%' ) ", 
+			" WHERE MEM_ID = #{id}",
+	})
+	public int addMyCenter(@Param("id") String id, @Param("addr") String addr);
+	
+	@Select({"SELECT ", 
+			"	c.CENTER_NAME, c.CENTER_ADDR, c.CENTER_AREA_NO, c.CENTER_TEL, ",
+			"	c.CENTER_DETAIL, c.CENTER_LAT, c.CENTER_LNG, ", 
+			"	m.CENTER_NO, m.MEM_NAME, m.MEM_IMG ", 
+			"FROM SPORTS_MEMBER m LEFT JOIN SPORTS_CENTER c ON m.CENTER_NO = c.CENTER_NO ", 
+			"WHERE MEM_ID = #{id}"
+	})
+	public Map<String, Object> selectMyCenterOne(@Param("id") String id);
+	
+	@Options(useGeneratedKeys=false)
+	@Update({"<script> ",
+			 "UPDATE SPORTS_MEMBER SET ",
+			 "<if test=\"vo.mem_pw eq null\">",
+			 "	MEM_NAME = #{vo.mem_name}, ",
+			 "	MEM_AGE = #{vo.mem_age}, ",
+			 "	MEM_EMAIL = #{vo.mem_email}, ",
+			 "	MEM_IMG = #{vo.mem_img}, ",
+			 "	MEM_DETAIL = #{vo.mem_detail} ",
+			 "WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
+			 "</if>",
+			 "<if test=\"vo.mem_pw neq null\">",
+			 "	MEM_PW = #{vo.mem_pw}, ",
+			 "	MEM_NAME = #{vo.mem_name}, ",
+			 "	MEM_AGE = #{vo.mem_age}, ",
+			 "	MEM_EMAIL = #{vo.mem_email}, ",
+			 "	MEM_IMG = #{vo.mem_img}, ",
+			 "	MEM_DETAIL = #{vo.mem_detail} ",
+			 "WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
+			 "</if>",
+	"</script>"})
+	public int ajaxUpdateMemOne(@Param("vo") Sports_Member vo);
+	
+	@Select({"SELECT * FROM SPORTS_MEMBER WHERE MEM_ID = #{id} AND MEM_PW = #{pw}"})
+	public Map<String, Object> ajaxPwCheck(@Param("id") String id, @Param("pw") String pw);
+
+	@Select({"SELECT ",
+			"    sm.MEM_ID, sm.MEM_AGE, sm.MEM_DETAIL, sm.MEM_IMG, sm.MEM_EMAIL, sm.MEM_NAME,", 
+			"    NVL(COUNT(grpno.GRP_NO), 0) mcnt ", 
+			"FROM (", 
+			"    SELECT DISTINCT g.GRP_NO, GRP_LEADER FROM SPORTS_GRP g ", 
+			"    INNER JOIN SPORTS_GRP_MEM m ON g.GRP_NO = m.GRP_NO ", 
+			"    WHERE GRP_LEADER = #{id} OR GRP_MEM = #{id}", 
+			"    ) grpno ", 
+			"RIGHT JOIN SPORTS_MEMBER sm ON grpno.GRP_LEADER = sm.MEM_ID ", 
+			"WHERE MEM_ID = #{id}", 
+			"GROUP BY sm.MEM_ID, sm.MEM_AGE, sm.MEM_DETAIL, sm.MEM_IMG, sm.MEM_EMAIL, sm.MEM_NAME "})
+	public Map<String, Object> ajaxSelectMemOne(@Param("id") String id);
+	
+	@Select({"SELECT NVL(COUNT(MEM_ID), 0) FROM SPORTS_MEMBER WHERE MEM_ID = #{id}"})
+	public int ajaxIdCheck(@Param("id") String id);
 	
 	@Options(useGeneratedKeys=false)
 	@Insert({"INSERT INTO SPORTS_MEMBER(MEM_ID, MEM_PW, MEM_NAME, MEM_AGE, MEM_EMAIL, MEM_CHECK, SPORTS_NO, LEVEL_NO,  MEM_DATE) ",

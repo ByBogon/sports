@@ -19,6 +19,7 @@
 			<exclude-mapping path="/logout**"/>
 			<exclude-mapping path="/resources**"/>
 			<exclude-mapping path="/resources/**"/>
+			<exclude-mapping path="/ajax**"/>
 			<beans:bean class="com.bybogon.sports.interceptor.MainInterceptor"></beans:bean>
 		</interceptor>
 	</interceptors>
@@ -33,7 +34,6 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.bybogon.sports" />
-	
 	<!-- 파일업로드 용량 설정 -->
 	<beans:bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
