@@ -54,11 +54,11 @@
 							</div>
 							<div class="content">
 								<div class="header">${vo.grp_name}</div>
-								<div class="meta">${vo.grp_leader}</div>
+								<div class="meta right floated">모임장: ${vo.grp_leader}</div>
 							</div>
 							<div class="description"></div>
 							<div class="extra content">
-								<span class="right floated">Opened in ${vo.grp_date}</span>
+								<span class="right floated">${vo.grp_date}</span>
 								<span class="left floated"><i class="users icon"></i>${vo.cnt} Members</span>	
 							</div>
 							

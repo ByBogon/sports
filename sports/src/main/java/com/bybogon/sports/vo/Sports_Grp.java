@@ -9,6 +9,7 @@ public class Sports_Grp {
 	private String grp_mem = null;
 	private String grp_leader = null;
 	private String grp_center = null;
+	private String grp_mainimg = null;
 	private int cnt = 0;
 	
 	private int center_no = 0;
@@ -28,6 +29,15 @@ public class Sports_Grp {
 
 	
 	
+	
+	public String getGrp_mainimg() {
+		return grp_mainimg;
+	}
+
+	public void setGrp_mainimg(String grp_mainimg) {
+		this.grp_mainimg = grp_mainimg;
+	}
+
 	public int getCnt() {
 		return cnt;
 	}

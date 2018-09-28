@@ -2,17 +2,17 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page session="true"%>
+<%@ page import="com.bybogon.sports.vo.Sports_Grp" %>
 <html>
 <head>
 	<meta charset="utf-8">
 	<title>모임들</title>
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css">
-	<!-- jQuery and Bootstrap -->
+	
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/semantic.min.js"></script>
 	<script src="resources/js/nav_bar.js"></script>
@@ -51,6 +51,7 @@
 				<div class="ui three stackable special cards">
 					
 					<c:forEach var="vo" items="${list}">
+					
 						<div class="ui link card">
 							<div class="blurring dimmable image">
 								<div class="ui dimmer">
@@ -68,7 +69,7 @@
 							</div>
 							<div class="description"></div>
 							<div class="extra content">
-								<span class="right floated">Opened in ${vo.grp_date}</span>
+								<span class="right floated">${vo.grp_date}</span>
 								<span class="left floated"><i class="users icon"></i>${vo.cnt} Members</span>	
 							</div>
 							
@@ -85,7 +86,24 @@
 		</div>
 	</div>
 	<script>
+		var list = new Array();
+		<c:forEach items="${list}" var="vo">
+			var vo = new Object();
+			vo.grp_no = ${vo.grp_no};
+			list.push(JSON.stringify(vo));
+			console.log(vo);
+		</c:forEach>
+
+		console.log(list);
 		$(function() {
+			$('.cards').on('click', '.card', function() {
+				var idx = $(this).index();
+				var grp_no = JSON.parse(list[idx]).grp_no;
+				console.log(idx);
+				console.log(grp_no);
+				window.location.href = "group_content.do?grp_no="+grp_no+"";
+			})
+			
 			$('.ui.dropdown').dropdown();
 			$('.tag.example .ui.dropdown').dropdown({
 				allowAdditions: true
