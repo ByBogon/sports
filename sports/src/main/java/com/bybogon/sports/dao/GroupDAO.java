@@ -12,6 +12,19 @@ import com.bybogon.sports.vo.Sports_Member;
 
 public interface GroupDAO {
 	
+	@Select({"SELECT ", 
+			"    g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
+			"    g.GRP_LEADER, grp.cnt, s.SPORTS_NAME ",
+			"FROM ", 
+			"    (SELECT ", 
+			"        GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
+			"	 FROM SPORTS_GRP_MEM ", 
+			"	 WHERE GRP_NO = #{grp_no} ", 
+			"	 GROUP BY GRP_NO) grp ", 
+			"INNER JOIN SPORTS_GRP g ON g.GRP_NO = grp.GRP_NO ",
+			"JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO"})
+	public Sports_Grp selectGroupOne(@Param("grp_no") int grp_no);
+	
 	@Select({"<script>",
 			"SELECT * FROM SPORTS_MEMBER ",
 			" WHERE MEM_ID NOT IN ",
@@ -53,7 +66,7 @@ public interface GroupDAO {
 
 	
 	
-	@Select({"SELECT TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
+	@Select({"SELECT g.GRP_NO, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
 			"	grp.cnt, g.GRP_LEADER, s.SPORTS_NAME FROM ", 
 			"    (SELECT ", 
 			"        GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
@@ -68,7 +81,7 @@ public interface GroupDAO {
 			"JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
 	public List<Sports_Grp> selectMyGroups(@Param("id") String id);
 	
-	@Select({"SELECT GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, s.SPORTS_NAME, g.GRP_LEADER, grp.cnt FROM ",
+	@Select({"SELECT g.GRP_NO, GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, s.SPORTS_NAME, g.GRP_LEADER, grp.cnt FROM ",
 			"	(SELECT " , 
 			"		GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
 			"	FROM SPORTS_GRP_MEM ", 

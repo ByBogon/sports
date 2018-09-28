@@ -3,6 +3,7 @@ package com.bybogon.sports.controller;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,30 +37,28 @@ public class MemberController {
 			@RequestParam(value="email") String email,
 			HttpSession session) {
 		try {
-		String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
-		AES256Encrypt aes256 = new AES256Encrypt(key);
-		String encPw = aes256.aesEncode(pw);
-		System.out.println(encPw);
-		Sports_Member vo = new Sports_Member(id, encPw, name, age, email);
-
-		int ret = mDAO.joinMember(vo);
-		
-		if (ret == 1) {
+			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
+			AES256Encrypt aes256 = new AES256Encrypt(key);
+			String encPw = aes256.aesEncode(pw);
+			System.out.println(encPw);
+			Sports_Member vo = new Sports_Member(id, encPw, name, age, email);
+			int ret = mDAO.joinMember(vo);
+			if (ret == 1) {
+				return "redirect:sports.do";
+			}
 			return "redirect:sports.do";
-		}
-		return "redirect:sports.do";
-		
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		
 	}
+	
 	@RequestMapping(value="logout.do",
 			method = {RequestMethod.GET, RequestMethod.POST})
-	public String logout(HttpSession httpsession) {
-		httpsession.invalidate();
+	public String logout(HttpSession session, HttpServletResponse response) {
+		session.removeAttribute("SID");
+		session.removeAttribute("SNAME");
+		session.invalidate();
 		return "redirect:sports.do";
 	}
 	
@@ -69,53 +68,67 @@ public class MemberController {
 		if(id == null) {
 			return "login_v4";
 		} else {
-			return "redirect:sports.do";
+			String backUrl = (String) session.getAttribute("BACK_URL");
+			System.out.println("--:"+backUrl);
+			if(backUrl.equals("login.do")) {
+				backUrl = "sports.do";
+			}		
+			return "redirect:"+backUrl;
 		}
-		
 	}
 	
 	@RequestMapping(value = "login.do", method=RequestMethod.POST)
 	public String loginP(@RequestParam(value="username") String id,
 			@RequestParam(value="pass") String pw,
-			HttpSession session, HttpServletRequest request) {
+			HttpSession session, HttpServletRequest request,
+			HttpServletResponse response) {
 		try {
-			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
-			AES256Encrypt aes256 = new AES256Encrypt(key);
-			String encPw = aes256.aesEncode(pw);
-			System.out.println(encPw);
-			Sports_Member vo = new Sports_Member(id, encPw);
-			vo = mDAO.loginMember(vo);
-			if(vo != null) {
-				if(vo.getMem_check() == 1) {
-					session.setAttribute("SID", vo.getMem_id());
-					session.setAttribute("SNAME", vo.getMem_name());
-				
-				//마지막 페이지 주소
+			String sid = (String) session.getAttribute("SID");
+			if(sid == null) {
+				String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
+				AES256Encrypt aes256 = new AES256Encrypt(key);
+				String encPw = aes256.aesEncode(pw);
+				System.out.println(encPw);
+				Sports_Member vo = new Sports_Member(id, encPw);
+				vo = mDAO.loginMember(vo);
+				if(vo != null) {
+					if(vo.getMem_check() == 1) {
+						session.setAttribute("SID", vo.getMem_id());
+						session.setAttribute("SNAME", vo.getMem_name());
+					
+					//마지막 페이지 주소
+					String backUrl = (String) session.getAttribute("BACK_URL");
+					System.out.println("00:"+backUrl);
+					if(backUrl.equals("login.do")) {
+						backUrl = "sports.do";
+					}			
+					request.setAttribute("msg", "로그인 성공");
+					request.setAttribute("url", backUrl);
+					return "alert"; 
+					} else if (vo.getMem_check() == 0) {
+						System.out.println("차단된 아이디입니다. 관리자에게 문의하세요");
+						return "redirect:login.do"; //login.jsp표시
+					} else {
+						System.out.println("아이디와 비밀번호를 확인해주세요.");
+						return "redirect:login.do"; //login.jsp표시
+					}
+				} else {
+					System.out.println("vo가 null 입니다");
+					return "redirect:login.do";
+				}
+			} else {
+				//session 이 존재할때(로그인 상태일때)
 				String backUrl = (String) session.getAttribute("BACK_URL");
-				System.out.println(backUrl);
+				System.out.println("11:"+backUrl);
 				if(backUrl.equals("login.do")) {
 					backUrl = "sports.do";
-				}			
-				request.setAttribute("msg", "로그인 성공");
-				request.setAttribute("url", backUrl);
-				return "alert"; 
-				} else if (vo.getMem_check() == 0) {
-					System.out.println("차단된 아이디입니다. 관리자에게 문의하세요");
-					return "redirect:login.do"; //login.jsp표시
-				} else {
-					System.out.println("아이디와 비밀번호를 확인해주세요.");
-					return "redirect:login.do"; //login.jsp표시
-				}
-		} else {
-			System.out.println("vo가 null 입니다");
-			return "redirect:login.do";
-		}
-		
+				}		
+				return "redirect:"+backUrl;
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			return "redirect:login.do";
 		}
-		
 	}
 	
 	@RequestMapping(value="myPage.do", method=RequestMethod.GET)
@@ -127,6 +140,7 @@ public class MemberController {
 			return "myPage";
 		}
 	}
+	
 	@RequestMapping(value="myPage.do", method=RequestMethod.POST)
 	public String mypageP(@RequestParam(value="mem_name") String name,
 			@RequestParam(value="mem_age") int age,

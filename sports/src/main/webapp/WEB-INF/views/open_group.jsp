@@ -29,54 +29,124 @@
 <body>
 <div class="ui page grid">
 <jsp:include page="nav_main.jsp"></jsp:include>
-	<div>
+	<div class="ui container">
 		<div class="ui two column padded grid">
 			<div class="column">
+				<form method = "post" action = "makeOneGroup.do">
 				<div class="ui container" style="margin: auto; margin-top: 20px;">
-					<div class="form-inline" style="margin-top: 20px">
-						<label>모임명: </label>
+					<div class="ui container" style="margin-top: 20px">
+						<label>모임명</label>
 						<input type="text" class="form-control" id="grp_name" name="grp_name" placeholder="모임명" />
 					</div>
-					<div class="form-inline" style="margin-top: 20px">
-						<label>주최자: </label>
-						<input type="text" class="form-control" id="grp_leader" name="grp_leader"  readonly value="${sessionScope.SNAME}" />
+					<div class="ui container" style="margin-top: 20px">
+						<label>주최자</label>
+						<input type="text" class="form-control" id="grp_leader" name="grp_leader" readonly value="${sessionScope.SNAME}" />
 					</div>
-					<div class="form-inline" style="margin-top: 20px">
-						<label>운동종목: </label>
-						<select class="form-control" id="sports_genre" name="grp_leader">
-							<c:forEach var="genre" items="${list}" varStatus="i">
-								<option value="${i.index}">${genre}</option>
-							</c:forEach>
-						</select>
+					<div class="ui container" style="margin-top: 20px">
+						<label>운동종목</label>
+						<div class="ui fluid selection dropdown sports_genre">
+							<i class="dropdown icon"></i>
+							<div class="default text">운동종목</div>
+							<div class="menu">
+								<input type="hidden" id="sports_genre" name="sports_genre">
+								<c:forEach var="genre" items="${list}" varStatus="i">
+									<div class="item genre" data-value="${i.index}">${genre}</div>
+								</c:forEach>
+							</div>
+							<%-- <select class="form-control" id="sports_genre" name="grp_leader">
+								<c:forEach var="genre" items="${list}" varStatus="i">
+									<option value="${i.index}">${genre}</option>
+								</c:forEach>
+							</select> --%>
+						</div>
 					</div>
-					<div class="form-inline" style="margin-top: 20px">
-						<label>센터 찾기: </label>
-						<input type="text" class="form-control"	id="txt_center"	name="txt_center" placeholder="센터명/주소" autocomplete="off"/>
-						<input type="button" class="btn btn-secondary btn-search-center" value="찾기" />
+					<div class="ui container" style="margin-top: 20px">
+						<div class="ui info hidden message" id="sports_genre_info">
+							<div class="header">
+								운동종목 미지원
+							</div>
+							<ul class="list">
+								<li>
+									<p>현재는 <b>스쿼시</b>만 지원합니다.</p>
+								</li>
+								<li>빠른 시일 내에 타 종목들을 지원하겠습니다.</li>
+							</ul>
+						</div>
 					</div>
-					<div class="form-inline" style="margin-top: 20px">
-						<label>직접 입력: </label>
-						<input type="text" class="form-control" id="txt_addr" name="txt_addr" autocomplete="off"/>
-						<input type="button" class="btn btn-secondary btn-search-addr" onclick="daumPostcode()" value="주소 검색" />
+					<div class="ui container" style="margin-top: 20px">
+						<label>센터 찾기</label>
+						<div class="ui fluid action input" id="div_center">
+							<input type="text" id="txt_center" name="txt_center" placeholder="센터명/주소" autocomplete="off"/>
+							<div class="ui button secondary btn-search-center">찾기</div>
+						</div>
+						<div class="ui fluid labeled action input center_container">
+							<div class="ui label">
+								주소
+							</div>
+							<input type="text" id="txt_set_center" name="txt_set_center" autocomplete="off" disabled/>
+							<div class="ui button primary" id="btn_set_center">확인</div>
+						</div>
+					</div>
+					<div class="ui container" style="margin-top: 20px">
+						<div class="ui info hidden message" id="first_info">
+							<div class="header">
+								센터정보 입력
+							</div>
+							<ul class="list">
+								<li>
+									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
+								</li>
+								<li>센터제보는 위에 센터제보를 통해서 제보해주세요</li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="ui container" style="margin-top: 20px">
+						<label>직접 입력</label>
+						<div class="ui fluid action input addr_container">
+							<input type="text" id="txt_addr" name="txt_addr" autocomplete="off" readonly/>
+							<div class="ui button secondary btn-search-addr" onclick="daumPostcode()">주소검색</div>
+						</div>
+						
+						<div class="ui fluid labeled action input addr_container">
+							<div class="ui label">
+								센터 명
+							</div>
+							<input type="text" id="txt_addr_center" name="txt_addr_center" autocomplete="off"/>
+							<div class="ui button primary" id="btn_set_addr_center">확인</div>
+						</div>
+					</div>
+					<div class="ui container" style="margin-top: 20px">
+						<div class="ui info hidden message" id="second_info">
+							<div class="header">
+								센터정보 입력
+							</div>
+							<ul class="list">
+								<li>
+									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
+								</li>
+								<li>센터제보는 위에 센터제보를 통해서 제보해주세요</li>
+							</ul>
+						</div>
 					</div>
 				</div>
+				</form>
 			</div>
-			<div class="column">
-				<div id="map" style="width:300px; height:300px; margin:auto; margin-top:10px; display:none"></div>
+			<div class="column" style="margin: auto; margin-top: 30px">
+				<div id="map" style="width:400px; height:500px; margin:auto;"></div>
 			</div>
 		</div>
 		<div class="ui two column padded grid">
-			<div class="column">
-				<div class="ui container">
-					<div style="margin-top: 20px">
-						<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
-						<input type="button" class="btn btn-danger btn-rmv" id="btn-rmv" value="멤버삭제" />
-					</div>
-				</div>
+			<div class="column" style="margin: auto; margin-top: 20px">
+				<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
+				<input type="button" class="btn btn-danger btn-rmv" id="btn-rmv" value="멤버삭제" />
 			</div>
-			<div class="column">
-				<input type="button" class="btn btn-success btn-create" value="모임생성" />
-				<a href="#" class="btn btn-dark">홈으로</a>
+			<div class="column" style="margin: auto; margin-top: 20px">
+				<div class="ui right aligned container">
+					
+					<input type="button" class="btn btn-success btn-create" value="모임생성" />
+					<a href="#" class="btn btn-dark">홈으로</a>
+				</div>
 			</div>
 		</div>
 		<div class="ui container">
@@ -116,6 +186,22 @@
 	var cardIdList = [];
 	var rmIdList = [];
 	var defaultPage = 1;
+	
+	var mapLevel = 3;
+	var coords, coordsCenter, coordsAddr;
+	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
+            level: 16 // 지도의 확대 레벨
+        };
+
+    //지도를 미리 생성
+    var map = new daum.maps.Map(mapContainer, mapOption);
+    //주소-좌표 변환 객체를 생성
+    var geocoder = new daum.maps.services.Geocoder();
+    //마커를 미리 생성
+    var marker = new daum.maps.Marker({});
+    
 	function havingCardIds() {
 		var cardIds = [];
 		$('.members').find('.card').each(function() {
@@ -127,6 +213,7 @@
 		})
 		return cardIds;
 	}
+	
 	function havingCheckedCards() {
 		var checkedCards = [];
 		$('.members').find('.card').each(function() {
@@ -148,53 +235,242 @@
 			rmvBtn.prop("disabled", false);
 		}
 	}
+	
 	function centerSearch(txt, page) {
 		$.get('ajax_center_search.do?addr='+txt+'&page='+page, function(data) {
 			var len = data.length;
 			var html = '';
 			for (var i = 0; i < len; i++) {
 				html += '<tr class="center_tr">';
-					html += '<td class>'+data[i].CENTER_AREA_NAME+'</td>';
+					html += '<td>'+data[i].CENTER_AREA_NAME+'</td>';
 					html += '<td class="center_name">'+data[i].CENTER_NAME+'</td>';
-					html += '<td>'+data[i].CENTER_ADDR+'</td>';
+					html += '<td class="center_addr">'+data[i].CENTER_ADDR+'</td>';
 					html += '<td>'+data[i].CENTER_TEL+'</td>';
 				html += '</tr>';
 			}
-			$('#tbody_group_center').html(html);
+			$('#modal_tbody_group_center').html(html);
 		})
 	}
+
+    function daumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullAddr = data.address; // 최종 주소 변수
+                var extraAddr = ''; // 조합형 주소 변수
+
+                // 기본 주소가 도로명 타입일때 조합한다.
+                if(data.addressType === 'R'){
+                    //법정동명이 있을 경우 추가한다.
+                    if(data.bname !== ''){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있을 경우 추가한다.
+                    if(data.buildingName !== ''){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                }
+
+                // 주소 정보를 해당 필드에 넣는다.
+                document.getElementById("txt_addr").value = fullAddr;
+                // 주소로 상세 정보를 검색
+                geocoder.addressSearch(data.address, function(results, status) {
+                    // 정상적으로 검색이 완료됐으면
+                    if (status === daum.maps.services.Status.OK) {
+                    	marker.setMap(map);
+                        var result = results[0]; //첫번째 결과의 값을 활용
+                        coords = '';
+                        // 해당 주소에 대한 좌표를 받아서
+                        coords = new daum.maps.LatLng(result.y, result.x);
+                        coordsAddr = coords;
+                        // 지도를 보여준다.
+                        //mapContainer.style.display = "block";
+                        
+    		   			map.setLevel(mapLevel, {anchor: coords}, {animate:true});
+
+    		   			map.relayout();
+                        // 지도 중심을 변경한다.
+    		   		 	map.setCenter(coords);
+                        
+                        // 마커를 결과값으로 받은 위치로 옮긴다.
+                        
+                        marker.setPosition(coords);
+
+						daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coords) );
+                    }
+                });
+            }
+        }).open();
+    }
+    function makeClickListener(map, marker, coords) {
+		console.log('0');
+    	return function() {
+    		if(map.getLevel !== mapLevel) {
+    			map.setLevel(mapLevel);
+    		}
+    		console.log('1');
+    		console.log(coords);
+    		map.setCenter(coords);
+			map.panTo(coords);
+    	}
+    }
 	window.onload = clickableDelBtn;
+	
 	$(function() {
+		$('.dropdown.sports_genre').dropdown({
+			action: 'activate',
+			onChange: function(value, text, $selectedItem) {
+				console.log(value);
+				console.log(text);
+				console.log($selectedItem);
+				if(value > 0) {
+					console.log('value가 0보다 작음');
+					console.log($(this));
+					$(this).dropdown('set selected', '0');
+					$('#sports_genre_info').removeClass('hidden').addClass('visible');
+				} else {
+					$('#sports_genre_info').removeClass('visible').addClass('hidden');
+				}
+			}
+		});
+		$('#btn_set_center').on('click', function() {
+			var btn = $('#btn_set_center');
+			var btnTxt = btn.text();
+			if (btnTxt === '확인') {
+				var addr = $('#txt_set_center').val();
+				if ((addr.trim() === '') || (addr === 'undefined')) {
+					return false;
+				}
+				map.setLevel(mapLevel, {anchor: coordsCenter}, {animate:true});
+
+                map.relayout();
+                // 지도 중심을 변경한다.
+                map.setCenter(coordsCenter);
+                
+                // 마커를 결과값으로 받은 위치로 옮긴다.
+                marker.setPosition(coordsCenter);
+                daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coordsCenter) );
+                
+				$('#txt_center').val('');
+				$('#txt_addr').val('');
+				$('#txt_addr_center').val('');
+				
+				$('#div_center').addClass('disabled');
+				$('.addr_container').addClass('disabled');
+				$('.btn-search-addr').removeAttr('onclick');
+				btn.text('취소');
+				return false;
+			} else if (btnTxt === '취소') {
+				$('#div_center').removeClass('disabled');
+				$('.addr_container').removeClass('disabled');
+				$('.btn-search-addr').attr("onclick", 'daumPostcode();');
+				btn.text('확인');
+				return false;
+			}
+		})
+		
+		$('#btn_set_addr_center').on('click', function() {
+			var btn = $('#btn_set_addr_center');
+			var btnTxt = btn.text();
+			if (btnTxt === '확인') {
+				var addr = $('#txt_addr').val();
+				var center = $('#txt_addr_center').val();
+				if ((addr.trim() === '') || (addr === 'undefined')) {
+					return false;
+				} else if((center.trim() === '') || (center === 'undefined')) {
+					return false;
+				}
+				map.setLevel(mapLevel, {anchor: coordsAddr}, {animate:true});
+
+                map.relayout();
+                // 지도 중심을 변경한다.
+                map.setCenter(coordsAddr);
+                
+                // 마커를 결과값으로 받은 위치로 옮긴다.
+                marker.setPosition(coordsAddr);
+                daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coordsAddr) );
+                
+				$('#txt_set_center').val('');
+				$('#txt_center').val('');
+				
+				$('#div_center').addClass('disabled');
+				$('.center_container').addClass('disabled');
+				$('.btn-search-addr').removeAttr('onclick');
+				btn.text('취소');
+				return false;
+			} else if (btnTxt === '취소') {
+				$('#div_center').removeClass('disabled');
+				$('.center_container').removeClass('disabled');
+				$('.btn-search-addr').attr("onclick", 'daumPostcode();');
+				btn.text('확인');
+				return false;
+			}
+		})
+		
+		$('#txt_addr').on('click', function() {
+			$('.btn-search-addr').trigger("click");
+		})
+		
+		
 		$('.btn-create').on('click', function(e) {
 			console.log('clicked!');
 			e.preventDefault();
 			var grp = $('#grp_name').val();
-			var leader = $('#grp_leader').val();
-			if(grp.trim() === null || grp.trim().length === 0) {
-				//그룹명 정하게 Alert나 여러가지 띄울것
-				console.log('그룹명 정하세요');
-				return false;
-			}
+			var leader = '${sessionScope.SID}';
 			if(leader === null || leader.length === 0) {
 				//로그인 하라고 하기(로그인페이지로 리다이렉트)
 				console.log('로그인 안되어있음');
+				return false;
+			}
+			if(grp.trim() === null || grp.trim().length === 0) {
+				//그룹명 정하게 Alert나 여러가지 띄울것
+				console.log('그룹명 정하세요');
 				return false;
 			}
 			var checkedIds = havingCardIds();
 			$.each(checkedIds, function(index, val) {
 				console.log(val);
 			})
-
-			document.location = '/sports/makeOneGroup.do?grp_name='+grp
-					+'&grp_leader='+leader+'&memList='+checkedIds;
-			
+				
+			var genre = $('.dropdown.sports_genre').dropdown('get text');
+			console.log(genre);
+			/* document.location = '/sports/makeOneGroup.do?grp_name='+grp
+					+'&grp_leader='+leader+'&memList='+checkedIds; */
 		})
 
 		$('#center_table').on('click', '.center_tr', function() {
 			var idx = $(this).index('.center_tr');
 			var centerName = $('.center_name').eq(idx).text();
-			$('#txt_center').val(centerName);
-			$('#searchGrpCenterModal').modal('hide');
+			var centerAddr = $('.center_addr').eq(idx).text();
+			$('#txt_set_center').prop('disabled', false);
+			$('#txt_set_center').prop('readonly', true);
+			
+			$('#txt_set_center').val(centerAddr);
+			$('#searchGrpCenterModal')
+				.modal({
+					onHide	: function() {
+						$.get('ajax_center_one.do?addr='+centerAddr, function(data) {
+							marker.setMap(map);
+							coords = '';
+							coords = new daum.maps.LatLng(data.CENTER_LAT, data.CENTER_LNG);
+							coordsCenter = coords;
+
+							map.setLevel(mapLevel, {anchor: coords}, {animate:true});
+
+	                        map.relayout();
+	                        // 지도 중심을 변경한다.
+	                        map.setCenter(coords);
+	                        
+	                        // 마커를 결과값으로 받은 위치로 옮긴다.
+	                        marker.setPosition(coords);
+	                        daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coords) );
+						})
+					}
+				})
+				.modal('hide');
 		})
 		
 		$('#searchGrpCenterModal').on('hide.bs.modal', function() {
@@ -286,6 +562,7 @@
 				})
 			})
 		})
+		
 		$('#modal_btn_add_grp_mem').on('click',function(e) {
 			console.log(id_list.length);
 			$.each(id_list, function(index, val) {
@@ -340,6 +617,7 @@
 			id_list.length = 0;
 			console.log('id_list: ' + id_list.length);
 		});
+		
 		$('#mem_table').on('click', '.mem', function() {
 			var idx = $(this).index('.mem');
 			var check = $('.mem_chck').eq(idx);
@@ -361,6 +639,7 @@
 			}
 
 		});
+		
 		$('#mem_chck_all').click(function() {
 			$('#mem_table').find('.mem_chck').each(function() {
 				var row = $(this);
@@ -376,6 +655,7 @@
 				$('.mem_chck').prop('checked', false);
 			}
 		});
+			
 		$('.btn-add').on('click', function() {
 			cardIdList = havingCardIds();
 			console.log(cardIdList.length);
@@ -416,11 +696,10 @@
 					} else {
 						$('.txt_msg').html('<label>더이상 추가 가능한 멤버가 없습니다</label>');
 					}
-					
 				}
 			});
-
 		})
+		
 		$('#modal_btn_search_mem').on('click', function() {
 			var mem = $('#modal_txt_search_mem').val();
 			var myid = '${sessionScope.SID}';
@@ -459,68 +738,30 @@
 				return false;
 			}
 		})
+		
+		$('#txt_center').focus(function() {
+			$('#second_info').removeClass('visible').addClass('hidden');
+			$('#first_info').removeClass('hidden').addClass('visible');
+		})
+		
+		$('#txt_addr_center').focus(function() {
+			$('#second_info').removeClass('hidden').addClass('visible');
+			$('#first_info').removeClass('visible').addClass('hidden');
+		})
+		
+		$('#txt_center').keypress(function(e) {
+			var key = e.which;
+			if (key == 13) { //엔터키
+				$('.btn-search-center').trigger("click");
+				return false;
+			}
+		})
+		
+		
 	})
-	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-        mapOption = {
-            center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
-            level: 5 // 지도의 확대 레벨
-        };
+	
+	
 
-    //지도를 미리 생성
-    var map = new daum.maps.Map(mapContainer, mapOption);
-    //주소-좌표 변환 객체를 생성
-    var geocoder = new daum.maps.services.Geocoder();
-    //마커를 미리 생성
-    var marker = new daum.maps.Marker({
-        position: new daum.maps.LatLng(37.537187, 127.005476),
-        map: map
-    });
-
-    function daumPostcode() {
-        new daum.Postcode({
-            oncomplete: function(data) {
-                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                var fullAddr = data.address; // 최종 주소 변수
-                var extraAddr = ''; // 조합형 주소 변수
-
-                // 기본 주소가 도로명 타입일때 조합한다.
-                if(data.addressType === 'R'){
-                    //법정동명이 있을 경우 추가한다.
-                    if(data.bname !== ''){
-                        extraAddr += data.bname;
-                    }
-                    // 건물명이 있을 경우 추가한다.
-                    if(data.buildingName !== ''){
-                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                    }
-                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
-                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
-                }
-
-                // 주소 정보를 해당 필드에 넣는다.
-                document.getElementById("txt_addr").value = fullAddr;
-                // 주소로 상세 정보를 검색
-                geocoder.addressSearch(data.address, function(results, status) {
-                    // 정상적으로 검색이 완료됐으면
-                    if (status === daum.maps.services.Status.OK) {
-
-                        var result = results[0]; //첫번째 결과의 값을 활용
-
-                        // 해당 주소에 대한 좌표를 받아서
-                        var coords = new daum.maps.LatLng(result.y, result.x);
-                        // 지도를 보여준다.
-                        mapContainer.style.display = "block";
-                        map.relayout();
-                        // 지도 중심을 변경한다.
-                        map.setCenter(coords);
-                        // 마커를 결과값으로 받은 위치로 옮긴다.
-                        marker.setPosition(coords)
-                    }
-                });
-            }
-        }).open();
-    }
 </script>
 </body>
 </html>

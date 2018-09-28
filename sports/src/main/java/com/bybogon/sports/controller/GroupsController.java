@@ -49,8 +49,9 @@ public class GroupsController {
 	}
 	
 	@Transactional
-	@RequestMapping(value = "makeOneGroup.do", method = RequestMethod.GET)
-	public String openGroupP(@RequestParam(value="grp_name") String grp_name,
+	@RequestMapping(value = "makeOneGroup.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public String openGroupP(
+			@RequestParam(value="grp_name") String grp_name,
 			@RequestParam(value="grp_leader") String grp_leader,
 			@RequestParam(value="memList") String[] memList,
 			HttpServletRequest request) {
@@ -96,6 +97,21 @@ public class GroupsController {
 			List<Sports_Grp> list = gDAO.selectAllGroups();
 			model.addAttribute("list", list);
 			return "allGroups";
+		}
+	}
+	
+	@RequestMapping(value = "group_content.do", method = RequestMethod.GET)
+	public String groupContent(
+			@RequestParam(value="grp_no", defaultValue="0") int grp_no,
+			HttpSession session,
+			Model model) {
+		String id = (String) session.getAttribute("SID");
+		Sports_Grp vo = gDAO.selectGroupOne(grp_no);
+		if(vo != null) {
+			model.addAttribute("vo", vo);
+			return "group_content";
+		} else {
+			return "sports";
 		}
 	}
 }
