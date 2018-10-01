@@ -21,10 +21,11 @@ public class Sports_Grp {
 		super();
 	}
 
-	public Sports_Grp(String grp_name, String grp_leader) {
+	public Sports_Grp(String grp_name, String grp_leader, String grp_center) {
 		super();
 		this.grp_name = grp_name;
 		this.grp_leader = grp_leader;
+		this.grp_center = grp_center;
 	}
 
 	

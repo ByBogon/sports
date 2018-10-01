@@ -146,7 +146,6 @@
 			var txt = $(this).val();
 			console.log(txt);
 			if(txt.length >= 40) {
-				
 				html += '<div class="ui warning message"><i class="close icon"></i><div class="header">';
 				html += '글자수 제한</div>';
 				html += '자기소개는 40자 이상 작성할 수 없습니다</div>';

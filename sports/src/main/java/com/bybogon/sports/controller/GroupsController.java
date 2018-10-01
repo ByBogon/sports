@@ -34,10 +34,9 @@ public class GroupsController {
 	@RequestMapping(value = "open_group.do", method = RequestMethod.GET)
 	public String openGroup(Model model, 
 			HttpSession session, HttpServletRequest request) {
-		session = request.getSession();
-		System.out.println(session);
-		if (session == null) {
-			System.out.println("null");
+		String id = (String) session.getAttribute("SID");
+		if (id == null) {
+			return "redirect:login.do";
 		}
 		List<String> list = new ArrayList<String>();
 		list.add("스쿼시");
@@ -49,13 +48,34 @@ public class GroupsController {
 	}
 	
 	@Transactional
-	@RequestMapping(value = "makeOneGroup.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "makeOneGroup.do", method = RequestMethod.POST)
 	public String openGroupP(
 			@RequestParam(value="grp_name") String grp_name,
 			@RequestParam(value="grp_leader") String grp_leader,
 			@RequestParam(value="memList") String[] memList,
+			@RequestParam(value="txt_set_center", required = false) String center,
+			@RequestParam(value="txt_addr", required = false) String addr,
+			@RequestParam(value="txt_addr_center", required = false) String addr_center,
 			HttpServletRequest request) {
-		Sports_Grp vo = new Sports_Grp(grp_name,grp_leader);
+		System.out.println(grp_name);
+		System.out.println(grp_leader);
+		System.out.println(memList);
+		System.out.println(center);
+		System.out.println(addr);
+		System.out.println(addr_center);
+		
+		String final_center = null;
+		if ( !(center.equals(null)) ) {
+			final_center = center;
+		}
+		if ( ( !(addr.equals(null)) ) && ( !(addr_center.equals(null)) ) ) {
+			final_center = addr + "/ " + addr_center;
+		} else if (addr.equals(null)) {
+			final_center = addr_center;
+		} else if (addr_center.equals(null)) {
+			final_center = addr;
+		}
+		Sports_Grp vo = new Sports_Grp(grp_name, grp_leader, final_center);
 		gDAO.makeOneGrp(vo);
 		int sportsGrpNo = gDAO.selectRecentSportsGrpNo(grp_name);
 		int no = gDAO.selectRecentGrpMemNo();

@@ -32,15 +32,27 @@
 	<div class="ui container">
 		<div class="ui two column padded grid">
 			<div class="column">
-				<form method = "post" action = "makeOneGroup.do">
+				<form id="myForm">
 				<div class="ui container" style="margin: auto; margin-top: 20px;">
 					<div class="ui container" style="margin-top: 20px">
 						<label>모임명</label>
-						<input type="text" class="form-control" id="grp_name" name="grp_name" placeholder="모임명" />
+						<div class="ui fluid input grp_name_input">
+							<input type="text" id="grp_name" name="grp_name" placeholder="모임명" maxlength="20" />
+						</div>
+					</div>
+					<div class="ui container" style="margin-top: 20px">
+						<div class="ui info hidden message" id="grp_name_info">
+							<div class="header">
+								그룹명을 필히 입력해주세요.
+							</div>
+							그룹명은 20자 이하로 작성해주세요.
+						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
 						<label>주최자</label>
-						<input type="text" class="form-control" id="grp_leader" name="grp_leader" readonly value="${sessionScope.SNAME}" />
+						<div class="ui fluid input">
+							<input type="text" id="grp_leader" name="grp_leader" readonly value="${sessionScope.SNAME}" />
+						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
 						<label>운동종목</label>
@@ -74,6 +86,15 @@
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
+						<div class="ui negative hidden message mem_add_warn" id="mem_add_warn">
+							<i class="close icon"></i>
+							<div class="header">
+								운동종목 미선택
+							</div>
+							운동종목을 필히 선택하셔야 합니다.
+						</div>
+					</div>
+					<div class="ui container" style="margin-top: 20px">
 						<label>센터 찾기</label>
 						<div class="ui fluid action input" id="div_center">
 							<input type="text" id="txt_center" name="txt_center" placeholder="센터명/주소" autocomplete="off"/>
@@ -90,13 +111,14 @@
 					<div class="ui container" style="margin-top: 20px">
 						<div class="ui info hidden message" id="first_info">
 							<div class="header">
-								센터정보 입력
+								센터 지정
 							</div>
 							<ul class="list">
 								<li>
 									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
 								</li>
-								<li>센터제보는 위에 센터제보를 통해서 제보해주세요</li>
+								<li>원하는 센터명/주소를 입력하고 찾기를 클릭해주세요.</li>
+								<li><b>확인</b>을 눌러 해당 모임의 센터를 정해주세요.</li>
 							</ul>
 						</div>
 					</div>
@@ -108,7 +130,7 @@
 							<div class="ui button secondary btn-search-addr" onclick="daumPostcode()">주소검색</div>
 						</div>
 						
-						<div class="ui fluid labeled action input addr_container">
+						<div class="ui fluid labeled action input addr_center_container">
 							<div class="ui label">
 								센터 명
 							</div>
@@ -119,13 +141,15 @@
 					<div class="ui container" style="margin-top: 20px">
 						<div class="ui info hidden message" id="second_info">
 							<div class="header">
-								센터정보 입력
+								센터 지정
 							</div>
 							<ul class="list">
 								<li>
 									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
 								</li>
-								<li>센터제보는 위에 센터제보를 통해서 제보해주세요</li>
+								<li>원하는 센터를 위에서 찾지 못했다면 주소를 검색하고 센터 명을 입력해주세요.</li>
+								<li>센터의 주소를 몰라도 괜찮습니다. 해당 센터 명을 입력해주세요.</li>
+								<li><b>확인</b>을 눌러 해당 모임의 센터를 정해주세요.</li>
 							</ul>
 						</div>
 					</div>
@@ -138,14 +162,15 @@
 		</div>
 		<div class="ui two column padded grid">
 			<div class="column" style="margin: auto; margin-top: 20px">
-				<input type="button" class="btn btn-primary btn-add" value="멤버추가" />
-				<input type="button" class="btn btn-danger btn-rmv" id="btn-rmv" value="멤버삭제" />
+				<input type="button" class="ui button primary btn-add" value="멤버추가" />
+				<input type="button" class="ui button negative btn-rmv" id="btn-rmv" value="멤버삭제" />
+				
 			</div>
 			<div class="column" style="margin: auto; margin-top: 20px">
 				<div class="ui right aligned container">
-					
-					<input type="button" class="btn btn-success btn-create" value="모임생성" />
-					<a href="#" class="btn btn-dark">홈으로</a>
+					<input type="button" class="ui button grey" id="btn-empty" value="센터 초기화" />
+					<input type="button" class="ui button positive btn-create" value="모임생성" />
+					<a href="#" class="ui button black btn-dark">홈으로</a>
 				</div>
 			</div>
 		</div>
@@ -236,6 +261,25 @@
 		}
 	}
 	
+	function centerOneWithMarker(centerAddr) {
+		$.get('ajax_center_one.do?addr='+centerAddr, function(data) {
+			marker.setMap(map);
+			coords = '';
+			coords = new daum.maps.LatLng(data.CENTER_LAT, data.CENTER_LNG);
+			coordsCenter = coords;
+
+			map.setLevel(mapLevel, {anchor: coords}, {animate:true});
+
+            map.relayout();
+            // 지도 중심을 변경한다.
+            map.setCenter(coords);
+            
+            // 마커를 결과값으로 받은 위치로 옮긴다.
+            marker.setPosition(coords);
+            daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coords) );
+		})
+	}
+	
 	function centerSearch(txt, page) {
 		$.get('ajax_center_search.do?addr='+txt+'&page='+page, function(data) {
 			var len = data.length;
@@ -320,9 +364,23 @@
 	window.onload = clickableDelBtn;
 	
 	$(function() {
+		
+		$('#btn-empty').on('click', function() {
+			$('#txt_center').val('');
+			$('#txt_set_center').val('');
+			$('#txt_addr').val('');
+			$('#txt_addr_center').val('');
+		})
+		
+		$('.mem_add_warn .close').on('click', function() {
+		    $(this).closest('.message').transition('fade');
+		});
+		
 		$('.dropdown.sports_genre').dropdown({
 			action: 'activate',
 			onChange: function(value, text, $selectedItem) {
+
+				$('#mem_add_warn').removeClass('visible').addClass('hidden');
 				console.log(value);
 				console.log(text);
 				console.log($selectedItem);
@@ -360,13 +418,37 @@
 				
 				$('#div_center').addClass('disabled');
 				$('.addr_container').addClass('disabled');
+				$('.addr_center_container').addClass('disabled');
+				
+				$('.btn-search-addr').addClass('disabled');
+				$('#btn_set_addr_center').addClass('disabled');
+				
 				$('.btn-search-addr').removeAttr('onclick');
+				
+				$('#btn-empty').addClass('disabled');
+				
+				if ( $('#first_info').hasClass('visible') ) {
+					$('#first_info').transition('fade down');
+				} else {
+					$('#first_info').transition('tada');
+				}
+				
 				btn.text('취소');
 				return false;
 			} else if (btnTxt === '취소') {
 				$('#div_center').removeClass('disabled');
 				$('.addr_container').removeClass('disabled');
+				$('.addr_center_container').removeClass('disabled');
+				$('.btn-search-addr').removeClass('disabled');
+				$('#btn_set_addr_center').removeClass('disabled');
 				$('.btn-search-addr').attr("onclick", 'daumPostcode();');
+
+				$('#btn-empty').removeClass('disabled');
+				
+				if ( $('#first_info').hasClass('hidden') ) {
+					$('#first_info').transition('fade down');
+				}
+				
 				btn.text('확인');
 				return false;
 			}
@@ -378,10 +460,35 @@
 			if (btnTxt === '확인') {
 				var addr = $('#txt_addr').val();
 				var center = $('#txt_addr_center').val();
-				if ((addr.trim() === '') || (addr === 'undefined')) {
+				if ( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('fade down');	
+				} else {
+					$('#second_info').transition('tada');	
+				}
+				if ( ( ( (addr.trim() === '') || (addr === 'undefined') ) &&
+						( (center.trim() === '') || (center === 'undefined') ) ) ) {
 					return false;
-				} else if((center.trim() === '') || (center === 'undefined')) {
-					return false;
+				}
+				   
+				$('#txt_set_center').val('');
+				$('#txt_center').val('');
+				
+				$('#div_center').addClass('disabled');
+				$('.center_container').addClass('disabled');
+				$('.addr_container').addClass('disabled');
+				
+				$('.btn-search-center').addClass('disabled');
+				$('#btn_set_center').addClass('disabled');
+				$('.btn-search-addr').addClass('disabled');
+
+				$('.btn-search-addr').removeAttr('onclick');
+
+				$('#btn-empty').addClass('disabled');
+				
+				btn.text('취소');
+				
+				if ((addr.trim() === '') && (center.trim() !== '')) {
+					return false;	
 				}
 				map.setLevel(mapLevel, {anchor: coordsAddr}, {animate:true});
 
@@ -392,19 +499,24 @@
                 // 마커를 결과값으로 받은 위치로 옮긴다.
                 marker.setPosition(coordsAddr);
                 daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coordsAddr) );
-                
-				$('#txt_set_center').val('');
-				$('#txt_center').val('');
-				
-				$('#div_center').addClass('disabled');
-				$('.center_container').addClass('disabled');
-				$('.btn-search-addr').removeAttr('onclick');
-				btn.text('취소');
+             
 				return false;
 			} else if (btnTxt === '취소') {
 				$('#div_center').removeClass('disabled');
 				$('.center_container').removeClass('disabled');
+				$('.addr_container').removeClass('disabled');
+				
+				$('.btn-search-center').removeClass('disabled');
+				$('#btn_set_center').removeClass('disabled');
+
+				$('.btn-search-addr').removeClass('disabled');
 				$('.btn-search-addr').attr("onclick", 'daumPostcode();');
+
+				$('#btn-empty').removeClass('disabled');
+				
+				if ( $('#second_info').hasClass('hidden') ) {
+					$('#second_info').transition('fade down');	
+				}
 				btn.text('확인');
 				return false;
 			}
@@ -412,22 +524,82 @@
 		
 		$('#txt_addr').on('click', function() {
 			$('.btn-search-addr').trigger("click");
+			
 		})
 		
+		$('.btn-search-addr').on('click', function() {
+			if ( $('#first_info').hasClass('visible') ) {
+				$('#first_info').transition('fade down');
+			}
+			if ( $('#second_info').hasClass('hidden') ) {
+				$('#second_info').transition('fade down');
+			} else {
+				$('#second_info').transition('tada');
+			}
+		})
 		
 		$('.btn-create').on('click', function(e) {
 			console.log('clicked!');
 			e.preventDefault();
+			var txt_addr = $('#txt_addr').val();
+			var txt_addr_center = $('#txt_addr_center').val();
+			var txt_set_center = $('#txt_set_center').val();
+			var btn_addr = $('#btn_set_addr_center').text();
+			var btn_center = $('#btn_set_center').text();
+			if ( ( (btn_center === '확인') && !( $('#btn_set_center').hasClass('disabled') ) ) && ( (txt_set_center.trim() !== '') && 
+					( (txt_addr_center.trim() === '') || (txt_addr.trim() === '') ) ) ) {
+				if( $('#first_info').hasClass('visible') ) {
+					$('#first_info').transition('tada');	
+				} else if ( $('#first_info').hasClass('hidden') ) {
+					$('#first_info').transition('fade down');
+				}
+				if( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('fade down');	
+				}
+			}
+			if ( ( ( (txt_addr_center.trim() === '') && (txt_addr.trim() !== '') ) ||
+					( (txt_addr_center.trim() !== '') && (txt_addr.trim() === '') ) ) && 
+					 (txt_set_center.trim() === '') ) {
+				if( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('tada');	
+				} else if ( $('#second_info').hasClass('hidden') ) {
+					$('#second_info').transition('fade down');
+				}	
+				if( $('#first_info').hasClass('visible') ) {
+					$('#first_info').transition('fade down');	
+				}
+			}
+			if ( (txt_set_center.trim() !== '') && 
+					( (txt_addr_center.trim() !== '') || (txt_addr.trim() !== '') ) ) {
+				if( $('#first_info').hasClass('visible') ) {
+					$('#first_info').transition('tada');	
+				} else if ( $('#first_info').hasClass('hidden') ) {
+					$('#first_info').transition('fade down');
+				}
+				if( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('tada');	
+				} else if ( $('#second_info').hasClass('hidden') ) {
+					$('#second_info').transition('fade down');
+				}
+			}
 			var grp = $('#grp_name').val();
 			var leader = '${sessionScope.SID}';
-			if(leader === null || leader.length === 0) {
+			if( (leader === null) || (leader.length === 0) ) {
 				//로그인 하라고 하기(로그인페이지로 리다이렉트)
 				console.log('로그인 안되어있음');
 				return false;
 			}
-			if(grp.trim() === null || grp.trim().length === 0) {
+			if( (grp.trim() === null) || (grp.trim().length === 0) ) {
 				//그룹명 정하게 Alert나 여러가지 띄울것
+				$('#grp_name').focus();
 				console.log('그룹명 정하세요');
+
+				$('.grp_name_input').addClass('error');
+				if( $('#grp_name_info').hasClass('hidden') ) {
+					$('#grp_name_info').transition('fade down');
+				} else {
+					$('#grp_name_info').transition('tada');
+				}
 				return false;
 			}
 			var checkedIds = havingCardIds();
@@ -437,6 +609,24 @@
 				
 			var genre = $('.dropdown.sports_genre').dropdown('get text');
 			console.log(genre);
+			
+			var center = $('#txt_set_center').val();
+			var addr = $('#txt_addr').val();
+			var final_addr = center + addr;
+			console.log(center);
+			console.log(addr);
+			console.log(final_addr);
+			var form = document.getElementById("myForm");
+			var formData = new FormData(form);
+			formData.append("memList", checkedIds);
+			console.log(form);
+			console.log(formData);
+			
+			var request = new XMLHttpRequest();
+			request.open("POST", "makeOneGroup.do");
+			request.send(formData);
+			
+			
 			/* document.location = '/sports/makeOneGroup.do?grp_name='+grp
 					+'&grp_leader='+leader+'&memList='+checkedIds; */
 		})
@@ -449,28 +639,12 @@
 			$('#txt_set_center').prop('readonly', true);
 			
 			$('#txt_set_center').val(centerAddr);
-			$('#searchGrpCenterModal')
-				.modal({
-					onHide	: function() {
-						$.get('ajax_center_one.do?addr='+centerAddr, function(data) {
-							marker.setMap(map);
-							coords = '';
-							coords = new daum.maps.LatLng(data.CENTER_LAT, data.CENTER_LNG);
-							coordsCenter = coords;
-
-							map.setLevel(mapLevel, {anchor: coords}, {animate:true});
-
-	                        map.relayout();
-	                        // 지도 중심을 변경한다.
-	                        map.setCenter(coords);
-	                        
-	                        // 마커를 결과값으로 받은 위치로 옮긴다.
-	                        marker.setPosition(coords);
-	                        daum.maps.event.addListener(marker, 'click', makeClickListener(map, marker, coords) );
-						})
-					}
-				})
-				.modal('hide');
+			$('#searchGrpCenterModal').modal({
+				onHide	: function() {
+					centerOneWithMarker(centerAddr);
+				}
+			})
+			.modal('hide');
 		})
 		
 		$('#searchGrpCenterModal').on('hide.bs.modal', function() {
@@ -485,6 +659,18 @@
 				return false;
 			}
 			var btn = '';
+			var loader = '';
+			loader += '<div class="ui segment">';
+			loader += '<div class="ui active dimmer">';
+			loader += '<div class="ui text loader">Loading</div></div></div>';
+			$('#searchGrpCenterModal')
+				.modal({
+					onShow	: function() {
+						console.log('onShow');
+						$('#modal_container_loader').html(loader);
+					}
+				})
+				.modal('show');
 			$.get('ajax_center_searchCNT.do?addr='+center, function(data) {
 				var cntlength = data+1;
 				console.log(data);
@@ -495,11 +681,10 @@
 				}
 				btn += '</div>';
 				$('#modal_container_pagination').html(btn);
+				$('#modal_container_loader').empty();
 				centerSearch(center, defaultPage);
 			})
-			$('#searchGrpCenterModal').modal('show');
 		})
-		
 
 		$('#modal_btn_rmv').on('click', function() {
 			console.log(rmIdList.length);
@@ -657,16 +842,36 @@
 		});
 			
 		$('.btn-add').on('click', function() {
+			var no = $('.dropdown.sports_genre').dropdown('get value');
+			if (no === '') {
+				$('#mem_add_warn').removeClass('hidden').addClass('visible');
+				return false;
+			}
 			cardIdList = havingCardIds();
 			console.log(cardIdList.length);
 			$.each(cardIdList, function(index, val) {
 				console.log('cardIds: ' + val);
 			})
 			$('.tbody').empty();
-			var no = $('#sports_genre').val();
+			
 			var id = '${sessionScope.SID}';
 			console.log(no);
 			console.log(id);
+			if( (id === 'undefined') || (id === '') ) {
+				window.location.href = "login.do";
+			}
+			var loader = '';
+			loader += '<div class="ui segment">';
+			loader += '<div class="ui active dimmer">';
+			loader += '<div class="ui text loader">Loading</div></div></div>';
+			$('#insertGrpMemModal')
+				.modal({
+					onShow	: function() {
+						console.log('onShow');
+						$('#modal_addGrpMem_loader').html(loader);
+					}
+				})
+				.modal('show');
 			$.ajax({
 				url : 'ajax_grp_mem_list.do',
 				data : {
@@ -691,7 +896,7 @@
 							html += '</tr>';
 						}
 						$('#tbody_group_mem').html(html);
-						$('#insertGrpMemModal').modal('show');
+						$('#modal_addGrpMem_loader').empty();
 						return false;	
 					} else {
 						$('.txt_msg').html('<label>더이상 추가 가능한 멤버가 없습니다</label>');
@@ -717,12 +922,12 @@
 				if (data != null && len != 0) {
 					for (var i = 0; i < len; i++) {
 						//$('#tbody_group_mem').append(
-							html += '<tr class="mem">';
-							html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
-							html += 'value="'+data[i].mem_id+'"/></td>';
-							html += '<td class="mem_id">'+data[i].mem_id+'</td>';
-							html += '<td>'+data[i].mem_name+'</td>';
-							html += '</tr>';
+						html += '<tr class="mem">';
+						html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+						html += 'value="'+data[i].mem_id+'"/></td>';
+						html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+						html += '<td>'+data[i].mem_name+'</td>';
+						html += '</tr>';
 					}
 					$('#tbody_group_mem').html(html)
 				} else {
@@ -739,14 +944,44 @@
 			}
 		})
 		
+		$('#grp_name').keyup(function() {
+			var grp = $('#grp_name').val();
+			console.log(grp);
+			if( grp.trim().length > 20 ) {
+				$('.grp_name_input').addClass('error');
+				if( $('#grp_name_info').hasClass('hidden') ) {
+					$('#grp_name_info').transition('fade down');
+				} else if ( $('#grp_name_info').hasClass('visible') ) {
+					$('#grp_name_info').transition('tada');
+				}
+			} else {
+				$('.grp_name_input').removeClass('error');
+				if( $('#grp_name_info').hasClass('visible') ) {
+					$('#grp_name_info').transition('fade down');
+				}
+			}
+		})
+		
 		$('#txt_center').focus(function() {
-			$('#second_info').removeClass('visible').addClass('hidden');
-			$('#first_info').removeClass('hidden').addClass('visible');
+			if ( $('#second_info').hasClass('visible') ) {
+				$('#second_info').transition('fade down');
+			}
+			if ( $('#first_info').hasClass('hidden') ) {
+				$('#first_info').transition('fade down');
+			} else {
+				$('#first_info').transition('tada');
+			}
 		})
 		
 		$('#txt_addr_center').focus(function() {
-			$('#second_info').removeClass('hidden').addClass('visible');
-			$('#first_info').removeClass('visible').addClass('hidden');
+			if ( $('#first_info').hasClass('visible') ) {
+				$('#first_info').transition('fade down');
+			}
+			if ( $('#second_info').hasClass('hidden') ) {
+				$('#second_info').transition('fade down');
+			} else {
+				$('#second_info').transition('tada');
+			}
 		})
 		
 		$('#txt_center').keypress(function(e) {

@@ -27,8 +27,9 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="container txt_msg">
-		</div>
+		<div class="container txt_msg"></div>
+		<div class="ui center aligned container" id="modal_addGrpMem_loader" style="margin-top: 20px; width: auto; height: 100%"></div>
+		
 	</div>
 
 	<div class="actions">

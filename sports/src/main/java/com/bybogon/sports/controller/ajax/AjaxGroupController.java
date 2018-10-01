@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +28,7 @@ public class AjaxGroupController {
 	
 	@RequestMapping(value = "ajax_grp_mem_list.do", method = RequestMethod.GET,
 			produces="application/json")
-	public @ResponseBody List<Sports_Member>grpMemList(
+	public @ResponseBody List<Sports_Member> grpMemList(
 			@RequestParam(value="no") int no,
 			@RequestParam(value="mem_id") String mem_id,
 			@RequestParam(value="idList", required=false) String[] ids) {

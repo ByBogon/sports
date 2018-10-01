@@ -5,7 +5,8 @@
 		<i class="building outline icon"></i>
 		센터 목록
 		<div class="ui right aligned container">
-			<div class="ui mini action input modal_search_center">
+			<div class="ui mini action input labeled modal_search_center">
+				<div class="ui label">검색  내 재검색</div>
 				<input type="text" id="modal_input_search_center" placeholder="센터명/주소">
 				<button class="ui primary icon button" id="modal_btn_search_center">
 					<i class="search icon"></i>
@@ -28,8 +29,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="ui center aligned container" id="modal_container_pagination" style="margin-top: 20px">
-		
-		</div>
+		<div class="ui center aligned container" id="modal_container_pagination" style="margin-top: 20px"></div>
+		<div class="ui center aligned container" id="modal_container_loader" style="margin-top: 20px; width: auto; height: 100%"></div>
 	</div>
 </div>
