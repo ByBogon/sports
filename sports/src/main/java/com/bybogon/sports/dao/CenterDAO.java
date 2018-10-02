@@ -31,17 +31,22 @@ public List<Map<String, Object>> searchCenterWOMine(
 			" CENTER_LAT, CENTER_LNG FROM SPORTS_CENTER"})
 	public List<Map<String, Object>> selectCenterLocations();
 	
-	@Select({"SELECT NVL(COUNT(*), 0) ", 
+	@Select({"<script>",
+			" SELECT NVL(COUNT(*), 0) ", 
 			" FROM SPORTS_CENTER c ", 
 			" JOIN SPORTS_CENTER_AREA a ON c.CENTER_AREA_NO = a.CENTER_AREA_NO ", 
-			" WHERE CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%'"
+			" WHERE ",
+			" <foreach collection='addrList' item='addr' index='index' separator='AND' >",
+			" (CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%') ",
+			" </foreach>",
+			"</script>"
 	})
-	public int searchCenterCNT(@Param("addr") String addr);
+	public int searchCenterCNT(@Param("addrList") String[] addrList);
 	
-	
-	@Select({"SELECT ", 
+	@Select({"<script>",
+			" SELECT ", 
 			"	e.rnum, e.CENTER_AREA_NAME, e.CENTER_NAME, e.CENTER_ADDR, e.CENTER_TEL ", 
-			"FROM ", 
+			" FROM ", 
 			"	(SELECT ", 
 			"		ROWNUM as rnum, d.CENTER_AREA_NAME, d.CENTER_NAME, d.CENTER_ADDR, d.CENTER_TEL ", 
 			"	FROM ", 
@@ -49,12 +54,19 @@ public List<Map<String, Object>> searchCenterWOMine(
 			"			a.CENTER_AREA_NAME, CENTER_NAME, CENTER_ADDR, CENTER_TEL ", 
 			"		FROM SPORTS_CENTER c ", 
 			"		JOIN SPORTS_CENTER_AREA a ON c.CENTER_AREA_NO = a.CENTER_AREA_NO ", 
-			"		WHERE CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%' ", 
+			"		WHERE ",
+			"		<foreach collection='addrList' item='addr' index='index' separator='AND' >",
+			"			(CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%') ",
+			"		</foreach>", 
 			"		ORDER BY CENTER_AREA_NAME, CENTER_NAME, CENTER_ADDR ASC) d ", 
+			" <![CDATA[",
 			"	WHERE rownum <= #{end} ) e ", 
-			"WHERE e.rnum >= #{start}"})
+			" WHERE e.rnum >= #{start}",
+			" ]]>",
+			" </script>"
+	})
 	public List<Map<String, Object>> searchCenter(
-			@Param("addr") String addr,
+			@Param("addrList") String[] addrList,
 			@Param("start") int start,
 			@Param("end") int end);
 	

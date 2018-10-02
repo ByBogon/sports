@@ -32,7 +32,7 @@
 	<div class="ui container">
 		<div class="ui two column padded grid">
 			<div class="column">
-				<form id="myForm">
+			<form id="myForm" method="post" action="makeOneGroup">
 				<div class="ui container" style="margin: auto; margin-top: 20px;">
 					<div class="ui container" style="margin-top: 20px">
 						<label>모임명</label>
@@ -65,11 +65,6 @@
 									<div class="item genre" data-value="${i.index}">${genre}</div>
 								</c:forEach>
 							</div>
-							<%-- <select class="form-control" id="sports_genre" name="grp_leader">
-								<c:forEach var="genre" items="${list}" varStatus="i">
-									<option value="${i.index}">${genre}</option>
-								</c:forEach>
-							</select> --%>
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
@@ -81,7 +76,7 @@
 								<li>
 									<p>현재는 <b>스쿼시</b>만 지원합니다.</p>
 								</li>
-								<li>빠른 시일 내에 타 종목들을 지원하겠습니다.</li>
+								<li>빠른 시일 내에 타 종목들을 지원할 예정입니다.</li>
 							</ul>
 						</div>
 					</div>
@@ -175,9 +170,10 @@
 			</div>
 		</div>
 		<div class="ui container">
-			<div class="ui link special cards members" style="margin-top: 20px">
+			<div class="ui link special centered three stackable cards members" style="margin-top: 20px">
 			</div>
 		</div>
+	
 	</div>
 	
 	<!-- Modal -->
@@ -207,6 +203,10 @@
 <jsp:include page="modal_search_group_center.jsp"></jsp:include>
 
 <script type="text/javascript">
+	
+	var searchKeywordList = [];
+	var searchKeywordLabel;
+	
 	var id_list = [];
 	var cardIdList = [];
 	var rmIdList = [];
@@ -280,8 +280,8 @@
 		})
 	}
 	
-	function centerSearch(txt, page) {
-		$.get('ajax_center_search.do?addr='+txt+'&page='+page, function(data) {
+	function centerSearch(searchKeywordList, page) {
+		$.get('ajax_center_search.do?addr='+searchKeywordList+'&page='+page, function(data) {
 			var len = data.length;
 			var html = '';
 			for (var i = 0; i < len; i++) {
@@ -364,6 +364,32 @@
 	window.onload = clickableDelBtn;
 	
 	$(function() {
+		$('#modal_btn_search_center').on('click', function() {
+			var center = $('#txt_center').val();
+			var txt_search = $('#modal_input_search_center').val();
+			console.log(center);
+			console.log(txt_search);
+			searchKeywordList.push(txt_search);
+			console.log(searchKeywordList);
+			searchKeywordLabel = '<div class="ui teal tag label">'+searchKeywordList[searchKeywordList.length-1]+'</div>'
+			$('#searchKeyword').append(searchKeywordLabel);
+			var btn = '';
+			$.get('ajax_center_searchCNT.do?addr='+searchKeywordList, function(data) {
+				if(data.length !== 0) {
+					var cntlength = data+1;
+					console.log(data);
+					console.log(cntlength);
+					btn += '<div class="ui buttons">';
+					for (var n=1; n < cntlength; n++) {
+						btn += '<a href="#" onclick="centerSearch(\''+searchKeywordList+','+n+')" class="ui button">'+n+'</a>';
+					}
+					btn += '</div>';
+					$('#modal_container_pagination').html(btn);
+					centerSearch(searchKeywordList, defaultPage);
+					$('#modal_input_search_center').val('');
+				}
+			})
+		})
 		
 		$('#btn-empty').on('click', function() {
 			$('#txt_center').val('');
@@ -394,6 +420,7 @@
 				}
 			}
 		});
+		
 		$('#btn_set_center').on('click', function() {
 			var btn = $('#btn_set_center');
 			var btnTxt = btn.text();
@@ -426,14 +453,17 @@
 				$('.btn-search-addr').removeAttr('onclick');
 				
 				$('#btn-empty').addClass('disabled');
-				
+
+				btn.text('취소');
 				if ( $('#first_info').hasClass('visible') ) {
 					$('#first_info').transition('fade down');
-				} else {
-					$('#first_info').transition('tada');
+				} else if ( $('#first_info').hasClass('hidden') ) {
+					return false;
+				}
+				if ( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('fade down');
 				}
 				
-				btn.text('취소');
 				return false;
 			} else if (btnTxt === '취소') {
 				$('#div_center').removeClass('disabled');
@@ -447,6 +477,11 @@
 				
 				if ( $('#first_info').hasClass('hidden') ) {
 					$('#first_info').transition('fade down');
+				} else {
+					$('#first_info').transition('tada');
+				}
+				if ( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('fade down');
 				}
 				
 				btn.text('확인');
@@ -549,7 +584,8 @@
 			if ( ( (btn_center === '확인') && !( $('#btn_set_center').hasClass('disabled') ) ) && ( (txt_set_center.trim() !== '') && 
 					( (txt_addr_center.trim() === '') || (txt_addr.trim() === '') ) ) ) {
 				if( $('#first_info').hasClass('visible') ) {
-					$('#first_info').transition('tada');	
+					$('#first_info').transition('tada');
+					return false;
 				} else if ( $('#first_info').hasClass('hidden') ) {
 					$('#first_info').transition('fade down');
 				}
@@ -561,7 +597,8 @@
 					( (txt_addr_center.trim() !== '') && (txt_addr.trim() === '') ) ) && 
 					 (txt_set_center.trim() === '') ) {
 				if( $('#second_info').hasClass('visible') ) {
-					$('#second_info').transition('tada');	
+					$('#second_info').transition('tada');
+					return false;
 				} else if ( $('#second_info').hasClass('hidden') ) {
 					$('#second_info').transition('fade down');
 				}	
@@ -572,12 +609,14 @@
 			if ( (txt_set_center.trim() !== '') && 
 					( (txt_addr_center.trim() !== '') || (txt_addr.trim() !== '') ) ) {
 				if( $('#first_info').hasClass('visible') ) {
-					$('#first_info').transition('tada');	
+					$('#first_info').transition('tada');
+					return false;
 				} else if ( $('#first_info').hasClass('hidden') ) {
 					$('#first_info').transition('fade down');
 				}
 				if( $('#second_info').hasClass('visible') ) {
-					$('#second_info').transition('tada');	
+					$('#second_info').transition('tada');
+					return false;
 				} else if ( $('#second_info').hasClass('hidden') ) {
 					$('#second_info').transition('fade down');
 				}
@@ -616,16 +655,38 @@
 			console.log(center);
 			console.log(addr);
 			console.log(final_addr);
-			var form = document.getElementById("myForm");
-			var formData = new FormData(form);
-			formData.append("memList", checkedIds);
+			var form = $('#myForm').serializeArray();
+			form.push({name: "memList", value: checkedIds});
 			console.log(form);
+			/* var formData = new FormData(form);
+			formData.append("memList", checkedIds);
 			console.log(formData);
-			
-			var request = new XMLHttpRequest();
-			request.open("POST", "makeOneGroup.do");
-			request.send(formData);
-			
+			 */
+			/* var xhr = new XMLHttpRequest();
+			xhr.open("POST", "makeOneGroup.do", true);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+			xhr.send(form); */
+			$.ajax({
+				type	: "POST",
+				url 	: "makeOneGroup.do",
+				data	: form,
+				success	: function(data) {
+					if (data !== 0) {
+						var url = "sports.do";
+						var msg = "그룹 생성";
+						var encodedMsg = encodeURIComponent(msg);
+						var encodedUrl = encodeURIComponent(url);
+						var googleSafeComponentMsg = encodedMsg.replace(/%20/g, '+');
+						var googleSafeComponentUrl = encodedUrl.replace(/%20/g, '+');
+						var completeURI = 
+							'alert.do?msg=' + googleSafeComponentMsg 
+							+ '&url=' + googleSafeComponentUrl;
+						console.log(completeURI);
+						window.location = completeURI;
+					}
+				}
+			})
 			
 			/* document.location = '/sports/makeOneGroup.do?grp_name='+grp
 					+'&grp_leader='+leader+'&memList='+checkedIds; */
@@ -639,12 +700,8 @@
 			$('#txt_set_center').prop('readonly', true);
 			
 			$('#txt_set_center').val(centerAddr);
-			$('#searchGrpCenterModal').modal({
-				onHide	: function() {
-					centerOneWithMarker(centerAddr);
-				}
-			})
-			.modal('hide');
+			centerOneWithMarker(centerAddr);
+			$('#searchGrpCenterModal').modal('hide');
 		})
 		
 		$('#searchGrpCenterModal').on('hide.bs.modal', function() {
@@ -659,30 +716,42 @@
 				return false;
 			}
 			var btn = '';
-			var loader = '';
-			loader += '<div class="ui segment">';
-			loader += '<div class="ui active dimmer">';
-			loader += '<div class="ui text loader">Loading</div></div></div>';
+			var txt_search = '';
+			searchKeywordLabel = '';
+			searchKeywordList = [center];
+			searchKeywordLabel = '<div class="ui teal tag label">'+center+'</div>'
+			console.log(searchKeywordList);
 			$('#searchGrpCenterModal')
 				.modal({
 					onShow	: function() {
 						console.log('onShow');
-						$('#modal_container_loader').html(loader);
+						$('#modal_container_loader').addClass('active');						
+					},
+					onVisible : function() {
+						console.log('onVisible');
+						$('#searchKeyword').append(searchKeywordLabel);
+					},
+					onHidden	: function() {
+						console.log('onHidden');
+						searchKeywordList.length = 0;
+						console.log(searchKeywordLabel);
+						searchKeywordLabel = '';
+						$('#searchKeyword').empty();
 					}
-				})
+				})	
 				.modal('show');
-			$.get('ajax_center_searchCNT.do?addr='+center, function(data) {
+			$.get('ajax_center_searchCNT.do?addr='+searchKeywordList, function(data) {
 				var cntlength = data+1;
 				console.log(data);
 				console.log(cntlength);
 				btn += '<div class="ui buttons">';
 				for(var n=1; n < cntlength; n++) {
-					btn += '<a href="#" onclick="centerSearch(\''+center+'\','+n+')" class="ui button">'+n+'</a>';
+					btn += '<a href="#" onclick="centerSearch(\''+searchKeywordList+'\','+n+')" class="ui button">'+n+'</a>';
 				}
 				btn += '</div>';
 				$('#modal_container_pagination').html(btn);
-				$('#modal_container_loader').empty();
-				centerSearch(center, defaultPage);
+				$('#modal_container_loader').removeClass('active');
+				centerSearch(searchKeywordList, defaultPage);
 			})
 		})
 
@@ -860,15 +929,15 @@
 			if( (id === 'undefined') || (id === '') ) {
 				window.location.href = "login.do";
 			}
-			var loader = '';
+			/* var loader = '';
 			loader += '<div class="ui segment">';
 			loader += '<div class="ui active dimmer">';
-			loader += '<div class="ui text loader">Loading</div></div></div>';
+			loader += '<div class="ui text loader">Loading</div></div></div>'; */
 			$('#insertGrpMemModal')
 				.modal({
 					onShow	: function() {
 						console.log('onShow');
-						$('#modal_addGrpMem_loader').html(loader);
+						//$('#modal_addGrpMem_loader').html(loader);
 					}
 				})
 				.modal('show');
@@ -896,7 +965,7 @@
 							html += '</tr>';
 						}
 						$('#tbody_group_mem').html(html);
-						$('#modal_addGrpMem_loader').empty();
+						//$('#modal_addGrpMem_loader').empty();
 						return false;	
 					} else {
 						$('.txt_msg').html('<label>더이상 추가 가능한 멤버가 없습니다</label>');
@@ -906,6 +975,7 @@
 		})
 		
 		$('#modal_btn_search_mem').on('click', function() {
+			console.log(id_list);
 			var mem = $('#modal_txt_search_mem').val();
 			var myid = '${sessionScope.SID}';
 			var myname = '${sessionScope.SNAME}';
@@ -919,15 +989,81 @@
 				var len = data.length;
 				console.log(len);
 				var html= '';
-				if (data != null && len != 0) {
-					for (var i = 0; i < len; i++) {
-						//$('#tbody_group_mem').append(
-						html += '<tr class="mem">';
-						html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
-						html += 'value="'+data[i].mem_id+'"/></td>';
-						html += '<td class="mem_id">'+data[i].mem_id+'</td>';
-						html += '<td>'+data[i].mem_name+'</td>';
-						html += '</tr>';
+				console.log(id_list.length);
+				if ( (data != null) && (len != 0) ) {
+					if ( (mem.trim() !== '') && (id_list.length > 0) ) {
+						for (var i = 0; i < len; i++) {
+							var flag = 0;
+							console.log('i: '+i);
+							console.log('idList: '+id_list);
+							for (var j = 0; j < id_list.length; j++) {
+								console.log('j: '+j);
+								if(id_list[j] === data[i].mem_id) {
+									console.log('AAA: '+j);
+									//$('').addClass("highlight");
+									console.log(id_list[j]);
+									html += '<tr class="mem highlight">';
+									html += '<td><input type="checkbox" class="mem_chck" name="chk[]"';
+									html += 'value="'+data[i].mem_id+'" checked/></td>';
+									html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+									html += '<td>'+data[i].mem_name+'</td>';
+									html += '</tr>';
+									flag = 1;
+									break;
+								}
+							}
+							if(flag == 0) {
+								console.log('AAA111: '+j);
+								html += '<tr class="mem">';
+								html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+								html += 'value="'+data[i].mem_id+'"/></td>';
+								html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+								html += '<td>'+data[i].mem_name+'</td>';
+								html += '</tr>';
+							}
+						} 
+					} else if ( (mem.trim() === '') && (id_list.length > 0) ) {
+						for (var i = 0; i < len; i++) {
+							var flag = 0;
+							console.log('i: '+i);
+							console.log('idList: '+id_list);
+							
+							for (var j = 0; j < id_list.length; j++) {
+								console.log('j: '+j);
+								if(id_list[j] === data[i].mem_id) {
+									console.log('AAA: '+j);
+									//$('').addClass("highlight");
+									console.log(id_list[j]);
+									html += '<tr class="mem highlight">';
+									html += '<td><input type="checkbox" class="mem_chck" name="chk[]"';
+									html += 'value="'+data[i].mem_id+'" checked/></td>';
+									html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+									html += '<td>'+data[i].mem_name+'</td>';
+									html += '</tr>';
+									flag = 1;
+									break;
+								}
+							}
+							if(flag == 0) {
+								console.log('AAA111: '+j);
+								html += '<tr class="mem">';
+								html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+								html += 'value="'+data[i].mem_id+'"/></td>';
+								html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+								html += '<td>'+data[i].mem_name+'</td>';
+								html += '</tr>';
+							}
+						} 
+						
+					} else if ( (mem.trim() === '') && (id_list.length === 0) ) {
+						for (var i = 0; i < len; i++) {
+							html += '<tr class="mem">';
+							html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+							html += 'value="'+data[i].mem_id+'"/></td>';
+							html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+							html += '<td>'+data[i].mem_name+'</td>';
+							html += '</tr>';
+						}
 					}
 					$('#tbody_group_mem').html(html)
 				} else {
@@ -936,14 +1072,6 @@
 			})
 		})
 
-		$('#modal_txt_search_mem').keypress(function(e) {
-			var key = e.which;
-			if (key == 13) { //엔터키
-				$('#modal_btn_search_mem').trigger("click");
-				return false;
-			}
-		})
-		
 		$('#grp_name').keyup(function() {
 			var grp = $('#grp_name').val();
 			console.log(grp);
@@ -984,6 +1112,14 @@
 			}
 		})
 		
+		$('#modal_txt_search_mem').keypress(function(e) {
+			var key = e.which;
+			if (key == 13) { //엔터키
+				$('#modal_btn_search_mem').trigger("click");
+				return false;
+			}
+		})
+		
 		$('#txt_center').keypress(function(e) {
 			var key = e.which;
 			if (key == 13) { //엔터키
@@ -992,11 +1128,14 @@
 			}
 		})
 		
-		
+		$('#modal_input_search_center').keypress(function(e) {
+			var key = e.which;
+			if (key == 13) { //엔터키
+				$('#modal_btn_search_center').trigger("click");
+				return false;
+			}
+		})
 	})
-	
-	
-
 </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.bybogon.sports.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
@@ -11,6 +12,25 @@ import com.bybogon.sports.vo.Sports_Grp;
 import com.bybogon.sports.vo.Sports_Member;
 
 public interface GroupDAO {
+	
+	@Select({"SELECT ", 
+			"    GRP_MEM, mems.MEM_NAME, mems.MEM_AGE, mems.MEM_IMG, mems.MEM_DETAIL, ", 
+			"    mems.CENTER_NAME, mems.CENTER_NO, a.CENTER_AREA_NAME ",
+			"FROM " + 
+			"    (SELECT ", 
+			"        gmem.GRP_MEM, gmem.MEM_NAME, gmem.MEM_AGE, gmem.CENTER_NO, gmem.MEM_IMG, ", 
+			"        gmem.MEM_DETAIL, c.CENTER_NAME, c.CENTER_AREA_NO ",
+			"    FROM ", 
+			"        (SELECT GRP_MEM, MEM_NAME, MEM_AGE, CENTER_NO, MEM_IMG, MEM_DETAIL FROM ", 
+			"            (SELECT GRP_MEM FROM SPORTS_GRP_MEM ",
+			"            WHERE GRP_NO = #{grp_no} ) grp ", 
+			"            INNER JOIN SPORTS_MEMBER mem ON mem.MEM_ID = grp.GRP_MEM ", 
+			"        ) gmem ",
+			"    LEFT JOIN SPORTS_CENTER c ON c.CENTER_NO = gmem.CENTER_NO ", 
+			"    ) mems ", 
+			"LEFT JOIN SPORTS_CENTER_AREA a ON a.CENTER_AREA_NO = mems.CENTER_AREA_NO " 
+	})
+	public List<Map<String, Object>> selectMemsOfGroup(@Param("grp_no") int grp_no);
 	
 	@Select({"SELECT ", 
 			"    g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
@@ -47,7 +67,10 @@ public interface GroupDAO {
 	@Select({"SELECT NVL(MAX(GRP_MEM_NO), 0) FROM SPORTS_GRP_MEM"})
 	public int selectRecentGrpMemNo();
 	
-	@Select({"SELECT GRP_NO FROM SPORTS_GRP WHERE GRP_NAME = #{grp_name}"})
+	@Select({"SELECT * FROM ( ",
+			 "	SELECT GRP_NO FROM SPORTS_GRP WHERE GRP_NAME = #{grp_name} ORDER BY GRP_DATE DESC ",
+			 "	) ",
+			 "WHERE ROWNUM = 1"})
 	public int selectRecentSportsGrpNo(@Param("grp_name") String grp_name);
 	
 	
@@ -63,8 +86,6 @@ public interface GroupDAO {
 			 "VALUES( #{no}, #{mem}, #{sportsGrpNo})"})
 	public int makeGrpMems(@Param("mem") String mem, @Param("no") int no, 
 			@Param("sportsGrpNo") int grp_no);
-
-	
 	
 	@Select({"SELECT g.GRP_NO, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
 			"	grp.cnt, g.GRP_LEADER, s.SPORTS_NAME FROM ", 

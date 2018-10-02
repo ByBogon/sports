@@ -34,8 +34,10 @@ public class AjaxCenterController {
 	
 	@RequestMapping(value = "ajax_center_searchCNT.do",
 			method = {RequestMethod.GET, RequestMethod.POST})
-	public int searchCenterCNT(@RequestParam(value = "addr", required=false, defaultValue=" " ) String addr) {
-		int totalCnt = cDAO.searchCenterCNT(addr);
+	public int searchCenterCNT(
+			@RequestParam(value = "addr", required=false, defaultValue=" " ) String[] addrList) {
+		System.out.println(addrList[0]);
+		int totalCnt = cDAO.searchCenterCNT(addrList);
 		int total_pageCnt = (totalCnt/pageContentCNT)+1;
 		System.out.println(totalCnt);
 		System.out.println(total_pageCnt);
@@ -46,13 +48,12 @@ public class AjaxCenterController {
 			method = {RequestMethod.GET, RequestMethod.POST},
 			produces = "application/json")
 	public @ResponseBody List<Map<String, Object>> searchCenter(
-			@RequestParam(value = "addr") String addr,
+			@RequestParam(value = "addr") String[] addrList,
 			@RequestParam(value = "page", defaultValue="1") int page) {
-		System.out.println("ADDR: "+addr);
-		
+		System.out.println("ADDR: "+addrList[0] );
 		int start = (page * pageContentCNT) - pageContentCNT + 1;
 		int end = (page * pageContentCNT);
-		List<Map<String, Object>> list = cDAO.searchCenter(addr, start, end);
+		List<Map<String, Object>> list = cDAO.searchCenter(addrList, start, end);
 		System.out.println(list);
 		System.out.println(list.size());
 		return list;

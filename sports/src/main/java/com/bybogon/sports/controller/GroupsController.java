@@ -3,6 +3,7 @@ package com.bybogon.sports.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,7 +22,7 @@ import com.bybogon.sports.vo.Sports_Grp;
 
 @Controller
 public class GroupsController {
-	int ret2 = 0;
+	
 	@Autowired
 	private GroupDAO gDAO;
 	
@@ -46,52 +47,7 @@ public class GroupsController {
 		
 		return "open_group";
 	}
-	
-	@Transactional
-	@RequestMapping(value = "makeOneGroup.do", method = RequestMethod.POST)
-	public String openGroupP(
-			@RequestParam(value="grp_name") String grp_name,
-			@RequestParam(value="grp_leader") String grp_leader,
-			@RequestParam(value="memList") String[] memList,
-			@RequestParam(value="txt_set_center", required = false) String center,
-			@RequestParam(value="txt_addr", required = false) String addr,
-			@RequestParam(value="txt_addr_center", required = false) String addr_center,
-			HttpServletRequest request) {
-		System.out.println(grp_name);
-		System.out.println(grp_leader);
-		System.out.println(memList);
-		System.out.println(center);
-		System.out.println(addr);
-		System.out.println(addr_center);
-		
-		String final_center = null;
-		if ( !(center.equals(null)) ) {
-			final_center = center;
-		}
-		if ( ( !(addr.equals(null)) ) && ( !(addr_center.equals(null)) ) ) {
-			final_center = addr + "/ " + addr_center;
-		} else if (addr.equals(null)) {
-			final_center = addr_center;
-		} else if (addr_center.equals(null)) {
-			final_center = addr;
-		}
-		Sports_Grp vo = new Sports_Grp(grp_name, grp_leader, final_center);
-		gDAO.makeOneGrp(vo);
-		int sportsGrpNo = gDAO.selectRecentSportsGrpNo(grp_name);
-		int no = gDAO.selectRecentGrpMemNo();
-		for(String mem : memList) {
-			no++;
-			ret2 = gDAO.makeGrpMems(mem, no, sportsGrpNo);
-		}
-		
-		if (ret2 > 0) {
-			request.setAttribute("msg", "그룹 생성!");
-			request.setAttribute("url", "sports.do");
-			return "alert";
-		} else {
-			return "redirect:open_group.do";
-		}
-	}
+
 	
 	@RequestMapping(value = "myGroups.do", method = RequestMethod.GET)
 	public String myGroup(HttpSession session, Model model) {
@@ -127,8 +83,11 @@ public class GroupsController {
 			Model model) {
 		String id = (String) session.getAttribute("SID");
 		Sports_Grp vo = gDAO.selectGroupOne(grp_no);
+		List<Map<String, Object>> mem_list = gDAO.selectMemsOfGroup(grp_no);
+		
 		if(vo != null) {
 			model.addAttribute("vo", vo);
+			model.addAttribute("list", mem_list);
 			return "group_content";
 		} else {
 			return "sports";

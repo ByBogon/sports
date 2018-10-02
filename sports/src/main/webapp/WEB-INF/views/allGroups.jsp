@@ -46,12 +46,9 @@
 				</div>
 			</div>
 			<div class="ui container">
-				
 				<c:if test="${list != null}">
 				<div class="ui three stackable special cards">
-					
 					<c:forEach var="vo" items="${list}">
-					
 						<div class="ui link card">
 							<div class="blurring dimmable image">
 								<div class="ui dimmer">
@@ -78,10 +75,10 @@
 					
 				</div>
 				</c:if>
-					<c:if test="${list == null}">
-						<label>활동중인 모임이 없습니다</label>
-						<a href="open_group.do" class="ui blue button">모임 만들기</a>
-					</c:if>
+				<c:if test="${list == null}">
+					<label>활동중인 모임이 없습니다</label>
+					<a href="open_group.do" class="ui blue button">모임 만들기</a>
+				</c:if>
 			</div>
 		</div>
 	</div>

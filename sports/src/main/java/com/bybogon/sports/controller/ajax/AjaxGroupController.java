@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bybogon.sports.dao.GroupDAO;
 import com.bybogon.sports.dao.MemberDAO;
+import com.bybogon.sports.vo.Sports_Grp;
 import com.bybogon.sports.vo.Sports_Member;
 
 @RestController
@@ -25,6 +28,58 @@ public class AjaxGroupController {
 	
 	@Autowired
 	private MemberDAO mDAO;
+	
+	
+	@Transactional
+	@RequestMapping(value = "makeOneGroup.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public @ResponseBody int openGroupP(
+			@RequestParam(value="grp_name") String grp_name,
+			@RequestParam(value="grp_leader") String grp_leader,
+			@RequestParam(value="memList") String[] memList,
+			@RequestParam(value="txt_set_center", required = false) String center,
+			@RequestParam(value="txt_addr", required = false) String addr,
+			@RequestParam(value="txt_addr_center", required = false) String addr_center,
+			HttpServletRequest request, HttpSession session) {
+		System.out.println(grp_name);
+		System.out.println(grp_leader);
+		System.out.println(memList);
+		System.out.println(center);
+		System.out.println(addr);
+		System.out.println(addr_center);
+		int ret2 = 0;
+		grp_leader = (String) session.getAttribute("SID");
+		System.out.println(grp_leader);
+		
+		String final_center = null;
+		if ( !(center.equals(null)) ) {
+			final_center = center;
+		} else if ( ( !(addr.equals("")) ) && ( !(addr_center.equals("")) ) ) {
+			final_center = addr + "/ " + addr_center;
+		} else if (addr.equals(null)) {
+			final_center = addr_center;
+		} else if (addr_center.equals(null)) {
+			final_center = addr;
+		}
+		Sports_Grp vo = new Sports_Grp(grp_name, grp_leader, final_center);
+		gDAO.makeOneGrp(vo);
+		int sportsGrpNo = gDAO.selectRecentSportsGrpNo(grp_name);
+		int no = gDAO.selectRecentGrpMemNo();
+		for(String mem : memList) {
+			no++;
+			ret2 = gDAO.makeGrpMems(mem, no, sportsGrpNo);
+		}
+		return ret2;
+		
+		/*if (ret2 > 0) {
+			request.setAttribute("msg", "그룹 생성!");
+			request.setAttribute("url", "sports.do");
+			return "alert";
+		} else {
+			return "redirect:open_group.do";
+		}*/
+	}
+	
+	
 	
 	@RequestMapping(value = "ajax_grp_mem_list.do", method = RequestMethod.GET,
 			produces="application/json")

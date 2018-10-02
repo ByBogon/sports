@@ -2,18 +2,18 @@
     pageEncoding="UTF-8"%>
 <div class="ui modal" id="insertGrpMemModal">
 	<div class="header">
-		<div class="container" >
+		<div class="container">
 			멤버목록
 			<div class="ui right aligned container">
-				<div class="ui action input">
-					<input type="text" class="form-control" id="modal_txt_search_mem" placeholder="멤버검색"/>
-					<input type="button" class="ui blue button" id="modal_btn_search_mem" value="검색"/>
+				<div class="ui action mini input">
+					<input type="text" id="modal_txt_search_mem" placeholder="멤버검색"/>
+					<div class="ui blue button" id="modal_btn_search_mem">검색</div>
 				</div>			
 			</div>
 		</div>
 	</div>
 
-	<div class="content">
+	<div class="scrolling content">
 		<div class="container" style="margin-bottom: 5px">
 			<table class="table table-hover" id="mem_table" style="text-align:center">
 				<thead>
@@ -28,7 +28,6 @@
 			</table>
 		</div>
 		<div class="container txt_msg"></div>
-		<div class="ui center aligned container" id="modal_addGrpMem_loader" style="margin-top: 20px; width: auto; height: 100%"></div>
 		
 	</div>
 
