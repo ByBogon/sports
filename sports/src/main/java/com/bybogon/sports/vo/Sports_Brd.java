@@ -10,6 +10,7 @@ public class Sports_Brd {
 	
 	private String mem_name = null;
 	private String mem_img = null;
+	private int cnt = 0;
 	
 	public Sports_Brd() {
 		super();
@@ -30,8 +31,14 @@ public class Sports_Brd {
 		this.brd_group = brd_group;
 	}
 
-	
-	
+	public int getCnt() {
+		return cnt;
+	}
+
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
+	}
+
 	public String getMem_img() {
 		return mem_img;
 	}

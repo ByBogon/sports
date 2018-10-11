@@ -2,8 +2,8 @@ package com.bybogon.sports.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +32,19 @@ public class BoardController {
 	@Value("${aws_namecard_bucket}")
 	private String bucketName;
 	
-	@RequestMapping(value = "writeCommentOnBoard.do", method = RequestMethod.POST)
+	/*@RequestMapping(value = "writeCommentOnBoard.do", method = RequestMethod.GET)
 	public String writeCommentOnBoard(
 			@RequestParam(value="brd_no") int brd_no,
+			@RequestParam(value="grp_no") int grp_no,
 			@RequestParam(value="rpl_content") String rpl_content,
 			@RequestParam(value="rpl_writer") String rpl_writer) {
-		
+		System.out.println(brd_no);
+		System.out.println(rpl_content);
+		System.out.println(rpl_writer);
 		bDAO.insertCommentOnBoard(brd_no, rpl_content, rpl_writer);
 		
-		return null;
-	}
+		return "redirect:group_content.do?grp_no="+grp_no;
+	}*/
 	
 	@RequestMapping(value="writeFeedOnBoard.do", method=RequestMethod.POST)
 	public String writeFeedOnBoard(

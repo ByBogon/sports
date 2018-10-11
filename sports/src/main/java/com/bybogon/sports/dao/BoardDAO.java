@@ -19,9 +19,18 @@ public interface BoardDAO {
 	})
 	public int insertBoardOne(@Param("vo") Sports_Brd vo);
 	
-	@Select({"SELECT MEM_NAME, MEM_IMG, b.* FROM SPORTS_BRD b ", 
-			"JOIN SPORTS_MEMBER m ", 
-			"ON MEM_ID = BRD_WRITER WHERE BRD_GROUP = #{grp_no} ORDER BY BRD_DATE DESC"})
+	@Select({"SELECT ", 
+			"    cnt, MEM_NAME, MEM_IMG, b.* ", 
+			"FROM SPORTS_BRD b ", 
+			"LEFT JOIN ( ", 
+			"    SELECT ", 
+			"        COUNT(*) cnt, r.BRD_NO ", 
+			"    FROM SPORTS_BRD_REPLY r, SPORTS_BRD b ", 
+			"    WHERE r.BRD_NO = b.BRD_NO AND BRD_GROUP = #{grp_no} GROUP BY r.BRD_NO ", 
+			") r ON r.BRD_NO = b.BRD_NO ", 
+			"JOIN SPORTS_MEMBER m ON m.MEM_ID = BRD_WRITER " ,
+			"WHERE BRD_GROUP = #{grp_no} ORDER BY BRD_DATE DESC ", 
+	})
 	public List<Sports_Brd> selectBoardOne(@Param("grp_no") int grp_no);
 
 	

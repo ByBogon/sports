@@ -21,6 +21,9 @@
 	<div class="ui page grid">
 	<jsp:include page="nav_main.jsp"></jsp:include>
 		<div class="ui container" style="margin-top: 30px">
+			<div class="ui disabled" id="joinGrpContainer">
+				<button class="ui teal right floated button">참가하기</button>
+			</div>
 			<div class="ui centered card">
 				<div class="ui slide masked reveal image">
 					
@@ -94,9 +97,10 @@
 				</div>
 				<div class="ui cards disabled" id="boardContainer">
 					<c:forEach items="${board}" var="bo">
-						<div class="ui fluid card">
+						<div class="ui fluid card board_card">
 							<div class="content">
 								<div class="header">
+									<input type="hidden" class="brd_no" name="brd_no" value="${bo.brd_no}">
 									<span class="right floated time">${bo.brd_date}</span>
 									<div class="left floated author">
 										<c:if test="${bo.mem_img == null}">	
@@ -116,25 +120,18 @@
 								</div>
 							</div>
 							<div class="extra content">
-								<div>
-									<span class="right floated">
-										<i class="heart outline like icon"></i>
-										17 likes
-									</span>
-									<i class="comment icon"></i>
-									3 comments
+								<div class="ui conatiner">
+									<div class="tiny ui blue button commentsBtn">
+										<i class="comment icon"></i>
+										${bo.cnt} comments
+									</div>
 								</div>
-								
-							<form class="commentForm" action="writeCommentOnBoard.do" method="post">
-								<input type="hidden" class="brd_no" value="${bo.brd_no}">
-								<div class="ui large fluid inverted left icon action input" id="reply_div" style="margin-top: 20px">
-									<button class="ui icon black button">
-										<i class="heart outline icon"></i>
-									</button>
-									<input class="txt_brd_reply" type="text" id="brd_reply" name="rpl_content" placeholder="Add Comment...">
-									<button class="ui teal button reply_post">POST</button>
+								<div class="ui conatiner">
+									<div class="ui large fluid inverted action input reply_div" id="reply_div" style="margin-top: 20px">
+										<input class="txt_brd_reply" type="text" id="brd_reply" name="rpl_content" placeholder="Add Comment..." autocomplete="off">
+										<button class="ui teal button reply_post">POST</button>
+									</div>
 								</div>
-							</form>
 							</div>
 						</div>
 					</c:forEach>
@@ -178,6 +175,9 @@
 				document.getElementById("boardContainer").className =
 					document.getElementById("boardContainer").className.replace
 						("disabled", "active");
+				document.getElementById("joinGrpContainer").className =
+					document.getElementById("joinGrpContainer").className.replace
+						("disabled", "active");
 			}
 		}
 		memIdList.push(JSON.stringify(vo));
@@ -186,30 +186,56 @@
 	
 	console.log(memIdList);
 	$(function() {
-		$('.reply_post').on('click', function() {
-			let id = '${sessionScope.SID}';
+		//comment 누르면 ajax로 코멘트 불러와서 카드안에 보여주기 할것
+		
+		
+		$('.board_card').on('click', '.reply_post', function(e) {
+			e.preventDefault();
+			
+			var index = $(this).index('.reply_post');
+			console.log(index);			
+			
+			var id = '${sessionScope.SID}';
 			if (id === '') {
 				window.location = "login.do";
 			}
-			let index = $(this).index();
-			let repl = $('.txt_brd_reply').eq(index).val();
-			let brd_no = $('.brd_no').eq(index).val();
+			var repl = $('.txt_brd_reply').eq(index).val();
+			console.log(repl);
 			if (repl.trim() === '') {
-				$('#reply_div').addClass('error');
+				$('.reply_div').eq(index).addClass('error');
 				return false;
 			}
-			let 
+
+			var grp_no = "${vo.grp_no}";
+			var rpl_writer = "${sessionScope.SID}";
+			var brd_no = $('.brd_no').eq(index).val();
+			console.log(brd_no);
+			console.log(grp_no);
+			console.log(rpl_writer);
+			
 			$('.reply_modal').modal({
 					onApprove : function() {
+						$.get("writeCommentOnBoard.do", 
+							{
+								brd_no: brd_no,
+								rpl_writer: rpl_writer,
+								rpl_content: repl
+							},
+							function(data) {
+								if (data > 0) {
+									$('.txt_brd_reply').eq(index).val('');
+									window.location = "group_content.do?grp_no="+grp_no;
+								}
+							})
 					}
 				})
-				.modal('show');
+				.modal('show'); 
 		})
-		$('#brd_reply').keyup(function() {
-			var repl = $('#brd_reply').val();
-			if ( repl.trim() !== '' ) {
-				$('#reply_div').removeClass('error');
-			}
+		
+		$(document).on('focus', '.txt_brd_reply', function() {
+			var index = $(this).index('.txt_brd_reply');
+			console.log(index);
+			$('.reply_div').eq(index).removeClass('error');
 		})
 		
 		
@@ -263,10 +289,11 @@
 				})
 				.modal('show');
 		});
-		$('#brd_reply').keypress(function(e) {
+		$('.brd_reply').keypress(function(e) {
+			var index = $(this).index('.brd_reply');
 			var key = e.which;
 			if (key == 13) { //엔터키
-				$('.reply_post').trigger("click");
+				$('.reply_post').eq(index).trigger("click");
 				return false;
 			}
 		})
