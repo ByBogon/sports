@@ -22,27 +22,47 @@ public interface GroupDAO {
 			"        gmem.MEM_DETAIL, c.CENTER_NAME, c.CENTER_AREA_NO ",
 			"    FROM ", 
 			"        (SELECT GRP_MEM, MEM_NAME, MEM_AGE, CENTER_NO, MEM_IMG, MEM_DETAIL FROM ", 
-			"            (SELECT GRP_MEM FROM SPORTS_GRP_MEM ",
-			"            WHERE GRP_NO = #{grp_no} ) grp ", 
-			"            INNER JOIN SPORTS_MEMBER mem ON mem.MEM_ID = grp.GRP_MEM ", 
+			"            (WITH mems_info as ( ", 
+			"                (SELECT GRP_MEM as grp_mem, ROWNUM as num FROM SPORTS_GRP_MEM m ", 
+			"                INNER JOIN SPORTS_GRP g ", 
+			"                ON g.GRP_NO = m.GRP_NO ", 
+			"                WHERE m.GRP_NO = '63' AND GRP_MEM = GRP_LEADER ", 
+			"                ) ", 
+			"                UNION ", 
+			"                (SELECT GRP_MEM as grp_mem, ROWNUM as num FROM SPORTS_GRP_MEM m1 ", 
+			"                INNER JOIN SPORTS_GRP g1 ",
+			"                ON g1.GRP_NO = m1.GRP_NO ", 
+			"                WHERE m1.GRP_NO = '63' AND GRP_MEM != GRP_LEADER ", 
+			"                ) ", 
+			"            )", 
+			"            SELECT grp_mem FROM mems_info order by num ",
+			"            ) grp ", 
+			"        INNER JOIN SPORTS_MEMBER mem ON mem.MEM_ID = grp.GRP_MEM ", 
 			"        ) gmem ",
 			"    LEFT JOIN SPORTS_CENTER c ON c.CENTER_NO = gmem.CENTER_NO ", 
 			"    ) mems ", 
 			"LEFT JOIN SPORTS_CENTER_AREA a ON a.CENTER_AREA_NO = mems.CENTER_AREA_NO " 
 	})
-	public List<Map<String, Object>> selectMemsOfGroup(@Param("grp_no") int grp_no);
+	public List<Map<String, Object>> selectMemsOfGroup(
+			@Param("grp_no") int grp_no);
 	
 	@Select({"SELECT ", 
-			"    g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
-			"    g.GRP_LEADER, grp.cnt, s.SPORTS_NAME ",
-			"FROM ", 
-			"    (SELECT ", 
-			"        GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
-			"	 FROM SPORTS_GRP_MEM ", 
-			"	 WHERE GRP_NO = #{grp_no} ", 
-			"	 GROUP BY GRP_NO) grp ", 
-			"INNER JOIN SPORTS_GRP g ON g.GRP_NO = grp.GRP_NO ",
-			"JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO"})
+			"    MEM_NAME, b.GRP_NO, b.GRP_NAME, b.grp_date, ", 
+			"    b.GRP_LEADER, b.cnt, b.SPORTS_NAME ", 
+			"FROM ",
+			"	(SELECT ", 
+			"    	g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
+			"   	 g.GRP_LEADER, grp.cnt, s.SPORTS_NAME ",
+			"	FROM ", 
+			"		(SELECT ", 
+			"			GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
+			"		FROM SPORTS_GRP_MEM ", 
+			"		WHERE GRP_NO = #{grp_no} ", 
+			"		GROUP BY GRP_NO) grp ", 
+			"	INNER JOIN SPORTS_GRP g ON g.GRP_NO = grp.GRP_NO ",
+			"	JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO) b ",
+			"INNER JOIN SPORTS_MEMBER m ON m.MEM_ID = b.GRP_LEADER" 
+	})
 	public Sports_Grp selectGroupOne(@Param("grp_no") int grp_no);
 	
 	@Select({"<script>",

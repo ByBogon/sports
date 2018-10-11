@@ -62,24 +62,16 @@ public class AjaxGroupController {
 		}
 		Sports_Grp vo = new Sports_Grp(grp_name, grp_leader, final_center);
 		gDAO.makeOneGrp(vo);
+		List<String> memIdList = new ArrayList<String>(Arrays.asList(memList));
+		memIdList.add(grp_leader);
 		int sportsGrpNo = gDAO.selectRecentSportsGrpNo(grp_name);
 		int no = gDAO.selectRecentGrpMemNo();
-		for(String mem : memList) {
+		for(String mem : memIdList) {
 			no++;
 			ret2 = gDAO.makeGrpMems(mem, no, sportsGrpNo);
 		}
 		return ret2;
-		
-		/*if (ret2 > 0) {
-			request.setAttribute("msg", "그룹 생성!");
-			request.setAttribute("url", "sports.do");
-			return "alert";
-		} else {
-			return "redirect:open_group.do";
-		}*/
 	}
-	
-	
 	
 	@RequestMapping(value = "ajax_grp_mem_list.do", method = RequestMethod.GET,
 			produces="application/json")

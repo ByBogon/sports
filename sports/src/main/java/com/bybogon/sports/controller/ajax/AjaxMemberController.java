@@ -19,7 +19,8 @@ import com.bybogon.sports.vo.Sports_Member;
 @RestController
 public class AjaxMemberController {
 	String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
-
+	String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
+	
 	@Autowired
 	private MemberDAO mDAO;
 	
@@ -122,7 +123,7 @@ public class AjaxMemberController {
 			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
 			AES256Encrypt aes256 = new AES256Encrypt(key);
 			String encPw = aes256.aesEncode(pw);
-			String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
+			
 			img = amazonUrl+img;
 			System.out.println(img);
 			System.out.println(pw);
