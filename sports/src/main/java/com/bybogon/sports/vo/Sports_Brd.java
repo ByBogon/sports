@@ -16,6 +16,19 @@ public class Sports_Brd {
 		super();
 	}
 	
+	
+	
+	public Sports_Brd(int brd_no, String brd_content, String brd_writer, int brd_group, String brd_img) {
+		super();
+		this.brd_no = brd_no;
+		this.brd_content = brd_content;
+		this.brd_writer = brd_writer;
+		this.brd_group = brd_group;
+		this.brd_img = brd_img;
+	}
+
+
+
 	public Sports_Brd(String brd_content, String brd_writer, int brd_group, String brd_img) {
 		super();
 		this.brd_content = brd_content;

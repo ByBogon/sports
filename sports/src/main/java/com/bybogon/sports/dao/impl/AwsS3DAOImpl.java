@@ -30,6 +30,30 @@ public class AwsS3DAOImpl implements AwsS3DAO {
 		
 	@Value("${aws_namecard_bucket}")
 	private String bucketName;
+
+
+	@Override
+	public void deleteFile(String bucketName, String keyName) {
+		try {
+			String fileNameInS3 = keyName;
+			s3client.deleteObject(bucketName, fileNameInS3);
+			
+		}catch (AmazonServiceException ase) {
+			logger.info("Caught an AmazonServiceException from PUT requests, rejected reasons:");
+			logger.info("Error Message:    " + ase.getMessage());
+			logger.info("HTTP Status Code: " + ase.getStatusCode());
+			logger.info("AWS Error Code:   " + ase.getErrorCode());
+			logger.info("Error Type:       " + ase.getErrorType());
+			logger.info("Request ID:       " + ase.getRequestId());
+			throw ase;
+        } catch (AmazonClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+            logger.info("Error Message: " + ace.getMessage());
+            throw ace;
+        }
+		
+	}
+	
 	
 	@Override
 	public void uploadFile(MultipartFile uploadFile, String keyname) {

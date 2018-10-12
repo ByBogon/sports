@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <div class="ui modal" id="writeFeedOnGroup">
 	<i class="close icon"></i>
-	<div class="header">
+	<div class="header modal_header">
 		글쓰기
 	</div>
 		<form id="writeFeedForm" action="writeFeedOnBoard.do" method="post" enctype="multipart/form-data">
@@ -18,6 +18,7 @@
 					<div class="ten wide column">
 						<div class="description" style="width:100%">
 							<div class="ui form">
+								<input type="hidden" id="modal_brd_no" name="modal_brd_no">
 								<input type="hidden" id="modal_grp_no" name="modal_grp_no">
 								<div class="ui fluid field">
 									<textarea rows="13" style="resize: none" id="textarea_content" name="textarea_content"></textarea>
