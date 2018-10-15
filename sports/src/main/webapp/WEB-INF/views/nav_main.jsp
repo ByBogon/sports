@@ -5,8 +5,11 @@
  <div class="computer tablet only row">
 	<div class="ui inverted menu navbar" style="width:100%">
 		<a class="brand item" href="sports.do">Squash</a>
+		
+		<!-- 
 		<a class="item" href="#">Home </a>
 		<a class="item" href="#">관리자모드</a>
+		 -->
 		<div class="ui dropdown item">
 			마이페이지
 			<i class="dropdown icon"></i>
@@ -37,6 +40,7 @@
 				<a class="item" href="#">Something else here</a>
 			</div>
 		</div>
+		<!-- 
 		<div class="ui dropdown item">
 			채팅
 			<i class="dropdown icon"></i>
@@ -47,7 +51,7 @@
 				<a class="item" href="#">Something else here</a>
 			</div>
 		</div>
-		
+		 -->
 		<div class="right menu">
 			<a class="item" href="#">센터 제보</a>
 			<c:if test="${sessionScope.SID eq null}">
@@ -70,8 +74,10 @@
 		</div>
 	</div>
 	<div class="ui vertical navbar menu" style="display:none">
+		<!-- 
 		<a class="item" href="#">Home </a>
 		<a class="item" href="#">관리자모드</a>
+		 -->
 		<c:if test="${sessionScope.SID eq null}">
 			<a class="item" href="join.do">회원가입</a>
 			<a class="item" href="login.do">로그인</a>
@@ -100,6 +106,7 @@
 				<div class="ui inverted divider"></div>
 			</div>
 		</div>
+		<!-- 
 		<div class="item">
 			<div class="header">채팅</div>
 			<div class="menu">
@@ -108,6 +115,7 @@
 				<div class="ui inverted divider"></div>
 			</div>
 		</div>
+		 -->
 		<c:if test="${sessionScope.SID ne null}">
 			<a class="item" href="logout.do">${sessionScope.SNAME}님 로그아웃</a>
 		</c:if>

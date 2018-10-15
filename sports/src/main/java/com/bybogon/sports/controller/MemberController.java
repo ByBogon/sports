@@ -34,7 +34,7 @@ public class MemberController {
 			@RequestParam(value="pw") String pw,
 			@RequestParam(value="name") String name,
 			@RequestParam(value="age") int age,
-			@RequestParam(value="email") String email,
+			@RequestParam(value="emails") String email,
 			HttpSession session) {
 		try {
 			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
@@ -66,7 +66,7 @@ public class MemberController {
 	public String login(HttpSession session) {
 		String id = (String) session.getAttribute("SID");
 		if(id == null) {
-			return "login_v4";
+			return "login";
 		} else {
 			String backUrl = (String) session.getAttribute("BACK_URL");
 			System.out.println("--:"+backUrl);

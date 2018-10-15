@@ -31,11 +31,11 @@
 				</div>
 				<form action="login.do" method="post">
 					<div class="content">
-						<div class="ui large input focus">
-							<input type="text" id="id" name="id" placeholder="아이디"/>
+						<div class="ui large fluid input focus">
+							<input type="text" id="id" name="username" placeholder="아이디"/>
 						</div>
-						<div class="ui large input focus">
-							<input type="password" id="pw" name="pw" placeholder="비밀번호"/>
+						<div class="ui large fluid input focus">
+							<input type="password" id="pw" name="pass" placeholder="비밀번호"/>
 						</div>
 					</div>
 					<div class="content" style="margin-top:10px; text-align:right">
@@ -47,7 +47,6 @@
 		</div>
 	</div>
 	    
-	<!-- jQuery and Bootstrap -->
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/sweetalert2.js"></script>
 	<script src="resources/js/semantic.min.js"></script>

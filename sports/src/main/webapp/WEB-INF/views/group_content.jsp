@@ -21,7 +21,7 @@
 	<div class="ui page grid">
 	<jsp:include page="nav_main.jsp"></jsp:include>
 		<div class="ui container" style="margin-top: 30px">
-			<div class="ui disabled" id="joinGrpContainer">
+			<div class="ui container" id="joinGrpContainer">
 				<button class="ui teal right floated button">참가하기</button>
 			</div>
 			<div class="ui centered card">
@@ -227,21 +227,17 @@
 	<c:forEach items="${list}" var="mem">
 		var vo = new Object();
 		vo.grp_mem = '${mem.GRP_MEM}';
-		if ( document.getElementById("write_feed")
-				.className.match("disabled") ) {
-			if ( ('${mem.GRP_MEM}' === '${sessionScope.SID}') || 
-					('${sessionScope.SID}' === '${vo.grp_leader}') ) {
-				console.log('Current: disabled');
-				document.getElementById("write_feed").className =
-					document.getElementById("write_feed").className.replace
-						("disabled", "active");
-				document.getElementById("boardContainer").className =
-					document.getElementById("boardContainer").className.replace
-						("disabled", "active");
-				document.getElementById("joinGrpContainer").className =
-					document.getElementById("joinGrpContainer").className.replace
-						("disabled", "active");
-			}
+		if ( ('${mem.GRP_MEM}' === '${sessionScope.SID}') || 
+				('${sessionScope.SID}' === '${vo.grp_leader}') ) {
+			console.log('Current: disabled');
+			document.getElementById("write_feed").className =
+				document.getElementById("write_feed").className.replace
+					("disabled", "active");
+			document.getElementById("boardContainer").className =
+				document.getElementById("boardContainer").className.replace
+					("disabled", "active");
+			document.getElementById("joinGrpContainer").style.display="none";
+			
 		}
 		memIdList.push(JSON.stringify(vo));
 		console.log(vo);
