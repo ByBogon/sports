@@ -16,7 +16,7 @@ import com.bybogon.sports.exception.PageNotFoundException;
 public class HomeController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home() {
-		return "redirect:sports.do";
+		return "redirect:squash.do";
 	}
 	
 	@RequestMapping(value = "alert.do", method = RequestMethod.GET)
@@ -34,7 +34,7 @@ public class HomeController {
 	public String page(@PathVariable("page") String page) {
 		System.out.println(page);
 		if (page.equals("home")) {
-			return "redirect:sports.do";
+			return "redirect:squash.do";
 		} else {
 			//오류 강제 발생시킴 - 오류 종류는 PageNotFoundException
 			throw new PageNotFoundException();

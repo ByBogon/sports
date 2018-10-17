@@ -15,39 +15,43 @@
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/semantic.min.js"></script>
 	<script src="resources/js/nav_bar.js"></script>
-		
+	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services,clusterer"></script>
 </head>
 <body>
 	<div class="ui page grid">
 	<jsp:include page="nav_main.jsp"></jsp:include>
 		<div class="ui container" style="margin-top: 30px">
-			<div class="ui container" id="joinGrpContainer">
-				<button class="ui teal right floated button">참가하기</button>
+			<div class="ui right floated container" id="joinGrpContainer" style="display: none; ">
+				<button class="ui teal right floated button joinGrpBtn" id="joinGrpBtn">참가</button>
 			</div>
 			<div class="ui centered card">
 				<div class="ui slide masked reveal image">
-					
-					<c:if test="${vo.grp_mainimg == null}">
+					<c:if test="${vo.grp_mainimg eq null}">
 						<img class="visible content" src="resources/images/jenny.jpg">
 					</c:if>
-					<c:if test="${vo.grp_mainimg != null}">
+					<c:if test="${vo.grp_mainimg ne null}">
 						<img class="visible content" src="${vo.grp_mainimg}">
 					</c:if>
 					<div id="map2" class="hidden content" style="width: 200px; height:310px; 
-						max-height: 100%; min-width: 100%; margin:auto;"></div>
+						min-height: 100%; min-width: 100%; margin:auto;"></div>
 				</div>
-				<div class="content">
+				<div class="center aligned content">
 					<div class="header">
 						${vo.grp_name}
 					</div>
 					<div class="meta right floated">모임장: ${vo.mem_name}</div>
+					<div class="description">
+						${vo.grp_detail}
+					</div>
 				</div>
 				<div class="extra content">
 					<c:if test="${vo.grp_leader == sessionScope.SID}">
 						<div class="ui teal fluid button profile_update">프로필 업데이트</div>
 					</c:if>
 				</div>
-			
+				<div class="center aligned content">
+					${vo.center_name}
+				</div>
 			</div>
 			<div class="ui segment" style="margin-top: 20px">
 				<div class="ui top left attached label">모임 구성원</div>
@@ -95,7 +99,7 @@
 						<div class="ui right floated primary disabled button write_feed" id="write_feed">글쓰기</div>
 					</div>
 				</div>
-				<div class="ui cards disabled" id="boardContainer">
+				<div class="ui cards" id="boardContainer" style="display: none">
 					<c:forEach items="${board}" var="bo">
 						<div class="ui fluid card board_card">
 							<div class="content">
@@ -150,7 +154,14 @@
 										${bo.cnt} comments
 									</div>
 									</c:if>
-									<div class="ui container commentsList" style="margin-bottom: 20px">
+									<div class="ui container commentsListContainer" style="margin-bottom: 20px; display:none">
+										<div class="ui container commentsList">
+										
+										</div>
+									
+										<div class="ui right aligned container">
+											<button class="mini ui gray button foldCommentListBtn">접기</button>
+										</div>
 									</div>
 								</div>
 								<div class="ui conatiner">
@@ -219,11 +230,57 @@
 			</div>
 		</div>
 	</div>
+	
+	<div class="ui mini modal grpMemAddOrRmv_modal">
+		<div class="header">
+		</div>
+		<div class="content">
+		</div>
+		<div class="actions">
+			<div class="ui black deny button">
+				취소
+			</div>
+			<div class="ui green ok right labeled icon button approveBtn">
+				확인
+				<i class="checkmark icon approveIcon"></i>
+			</div>
+		</div>
+	</div>
+	
+	<div class="ui mini modal updateGrpProfile_modal">
+		<form id="updateGrpProfileForm" action="updateGrpProfile.do" method="post" enctype="multipart/form-data">
+		<div class="ui fluid centered card">
+			<input type="hidden" name="grp_no" value="${vo.grp_no}"/>
+			<div class="image">
+				<input id="grpProfileFile" name="grpProfileFile" type="file" accept=".jpg, .jpeg, .png, .gif" style="display: none">
+			<c:if test="${vo.grp_mainimg == null}">
+				<img src="resources/images/jenny.jpg" id="updateGrpProfileImg">
+			</c:if>
+			<c:if test="${vo.grp_mainimg != null}">
+				<img src="${vo.grp_mainimg}" id="updateGrpProfileImg">
+			</c:if>
+			</div>
+			<div class="content" style="width: 100%">
+				<div class="header ui input" style="width: 100%">
+					<input type="text" class="updateGrpName" name="updateGrpName" style="width: 100%" placeholder="모임명">
+				</div>
+			</div>
+			<div class="extra content">
+				<div class="ui two buttons">
+					<div class="ui basic green button profile_update_btn">확인</div>
+					<div class="ui basic red button profile_update_btn_cancel">취소</div>
+				</div>
+			</div>
+		</div>
+		</form>	
+	</div>
 <jsp:include page="modal_write_feed_group.jsp"></jsp:include>
 
 <script type="text/javascript">
 	var memIdList = new Array();
 	var myFile;
+	var mapLevel = 5;
+
 	<c:forEach items="${list}" var="mem">
 		var vo = new Object();
 		vo.grp_mem = '${mem.GRP_MEM}';
@@ -233,18 +290,158 @@
 			document.getElementById("write_feed").className =
 				document.getElementById("write_feed").className.replace
 					("disabled", "active");
-			document.getElementById("boardContainer").className =
-				document.getElementById("boardContainer").className.replace
-					("disabled", "active");
-			document.getElementById("joinGrpContainer").style.display="none";
-			
-		}
+			document.getElementById("boardContainer").style.display="inline-block";
+			document.getElementById("joinGrpBtn").innerHTML="탈퇴";
+			document.getElementById("joinGrpBtn").className =
+				   document.getElementById("joinGrpBtn").className.replace
+				      ( /(?:^|\s)teal(?!\S)/g , '' );
+			document.getElementById("joinGrpBtn").classList.add("red");
+		} 
 		memIdList.push(JSON.stringify(vo));
 		console.log(vo);
 	</c:forEach>	
 	console.log(memIdList);
 	
 	$(function() {
+		var coords2 = new daum.maps.LatLng('${vo.center_lat}', '${vo.center_lng}');
+		var mapContainer2 = document.getElementById('map2'), // 지도를 표시할 div		
+		    mapOption2 = {
+		        center: coords2, // 지도의 중심좌표
+		        level: mapLevel // 지도의 확대 레벨
+	    };	
+		//지도를 미리 생성
+		var map2 = new daum.maps.Map(mapContainer2, mapOption2);
+		map2.setZoomable(false);
+		map2.setDraggable(false);
+		var marker2 = new daum.maps.Marker({
+			map: map2,
+			position: coords2
+		});
+		
+		
+		if ( ${sessionScope.SID == vo.grp_leader} ) {
+			$('.joinGrpBtn').addClass('disabled');
+		}
+		
+		$('.profile_update').on('click', function() {
+			console.log('clicked');
+			if( ${sessionScope.SID == ''} ) {
+				window.location = "login.do";
+			}
+			$('.updateGrpProfile_modal').modal('show');
+		})
+		$('.profile_update_btn_cancel').on('click', function() {
+			$('.updateGrpProfile_modal').modal('hide');
+		})
+		
+		$('.profile_update_btn').on('click', function() {
+			console.log('1');
+			var grpUpdateProfileImg;
+			var grp_name = $('.updateGrpName').val();
+			if ( grp_name.trim() == '' ) {
+				console.log('2');
+				$('.updateGrpName').parent().addClass('error');
+				return false;
+			}
+			console.log('3');
+			var grp_profile = $('#updateGrpProfileImg').attr('src');
+			console.log(grp_profile);
+			$('#updateGrpProfileForm').submit();
+	
+		})
+		
+		$('.updateGrpName').focus(function() {
+			console.log('focused');
+			$('.updateGrpName').parent().removeClass('error');
+		})
+		
+		$('#updateGrpProfileImg').on('click', function() {
+			console.log('imgClicked');
+			$('#grpProfileFile').click();
+		})
+		$(document).on('change', '#grpProfileFile', function() {
+			console.log('change');
+			var input = this;
+			var url = $(this).val();
+			var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
+			if (input.files && input.files[0] && (ext == "gif" || ext == "png" || ext == "jpeg" || ext == "jpg")) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$('#updateGrpProfileImg').attr('src', e.target.result);
+					$('#grpProfileFile').attr('src', e.target.result);
+					console.log($('#file').val());
+					console.log($('#file').attr('src'));
+					console.log($('#updateGrpProfileImg').val());
+					console.log($('#updateGrpProfileImg').attr('src'));
+				 };
+				 reader.readAsDataURL(input.files[0]);
+				 myFile = input.files[0];
+			} else {
+				$('#grpProfileFile').attr('src', null);
+			}
+			console.log($('#grpProfileFile').val());
+			console.log($('#updateGrpProfileImg').attr('src'));
+		});
+		
+		$('#joinGrpContainer').transition('fly left');
+		$('.joinGrpBtn').on('click', function() {
+			if ( '${sessionScope.SID}' === '' ) {
+				window.location = 'login.do';
+				return false;
+			}
+			if( $('.joinGrpBtn').text() === '참가' ) {
+				$('.grpMemAddOrRmv_modal')
+					.modal({
+						onShow	: function() {
+							$('.grpMemAddOrRmv_modal > .header').text('모임 참가');
+							$('.grpMemAddOrRmv_modal > .content').text('해당 모임에 참가 하시겠습니까?');
+						},
+						onApprove : function() {
+							$.ajax({
+								url		: "ajaxAddExtraGrpMem.do",
+								data	: {
+									grp_no : '${vo.grp_no}',
+									extra_id : '${sessionScope.SID}'
+								}
+							})
+							.done(function(data) {
+								window.location.reload(true);
+							})
+						}
+					})
+					.modal('show');
+				
+			} else if ( $('.joinGrpBtn').text() === '탈퇴' ) {
+				$('.grpMemAddOrRmv_modal')
+					.modal({
+						onShow	: function() {
+							$('.grpMemAddOrRmv_modal > .header').text('모임 탈퇴');
+							$('.grpMemAddOrRmv_modal > .content').text('해당 모임에서 탈퇴 하시겠습니까?');
+							$('.grpMemAddOrRmv_modal > .actions > .approveBtn').removeClass('green');
+							$('.grpMemAddOrRmv_modal > .actions > .approveBtn').addClass('red');
+						},
+						onHidden: function() {
+							$('.grpMemAddOrRmv_modal > .actions > .approveBtn').removeClass('red');
+							$('.grpMemAddOrRmv_modal > .actions > .approveBtn').addClass('green');
+						},
+						onApprove : function() {
+							$.ajax({
+								url		: "ajaxResignCurGrpMem.do",
+								data	: {
+									grp_no : '${vo.grp_no}',
+									cur_id : '${sessionScope.SID}'
+								}
+							})
+							.done(function(data) {
+								window.location.reload(true);
+							})
+						}
+					})
+					.modal('show');
+			}
+				
+		})
+		
 		$('.board_card').on('click', '.updateBoardBtn', function(e) {
 			e.preventDefault();
 			if( '${sessionScope.SID}' === '' ) {
@@ -258,36 +455,36 @@
 			console.log(brd_content);
 			console.log(brd_no);
 			$('#writeFeedOnGroup').modal({
-					onShow	: function() {
-						$('#modal_brd_no').val(brd_no);
+				onShow	: function() {
+					$('#modal_brd_no').val(brd_no);
 
-						$('#modal_grp_no').val( ${vo.grp_no} );
-						console.log($('#modal_grp_no').val());
-						$('.ui.modal > .modal_header').text('글수정');
-						$('#writeFeedForm').attr('action', "updateOneBoard.do");
-						$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
-						$('#textarea_content').text(brd_content.trim());
-					},
-					onHidden : function() {
-						$('#modal_brd_no').val('');
-						$('.ui.modal > .modal_header').text('글쓰기');
-						$('#writeFeedForm').attr('action', "writeFeedOnBoard.do");
-						$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
-						$('#textarea_content').text(brd_content.trim());
-					},
-					onApprove: function() {
-						if( $('#textarea_content').val() !== '' ) {
-							console.log('bbb');
-							$('#writeFeedForm').submit();
-							$('#textarea_content').val('');
-						} else {
-							console.log('false');
-							$('#textarea_content').focus();
-							return false;
-						}
+					$('#modal_grp_no').val( ${vo.grp_no} );
+					console.log($('#modal_grp_no').val());
+					$('.ui.modal > .modal_header').text('글수정');
+					$('#writeFeedForm').attr('action', "updateOneBoard.do");
+					$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
+					$('#textarea_content').text(brd_content.trim());
+				},
+				onHidden : function() {
+					$('#modal_brd_no').val('');
+					$('.ui.modal > .modal_header').text('글쓰기');
+					$('#writeFeedForm').attr('action', "writeFeedOnBoard.do");
+					$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
+					$('#textarea_content').text(brd_content.trim());
+				},
+				onApprove: function() {
+					if( $('#textarea_content').val() !== '' ) {
+						console.log('bbb');
+						$('#writeFeedForm').submit();
+						$('#textarea_content').val('');
+					} else {
+						console.log('false');
+						$('#textarea_content').focus();
+						return false;
 					}
-				})
-				.modal('show');
+				}
+			})
+			.modal('show');
 		})		
 		
 		$('.board_card').on('click', '.delBoardBtn', function(e) {
@@ -393,14 +590,14 @@
 			e.preventDefault();
 			var idx = $(this).index('.foldCommentListBtn');
 			console.log(idx);
-			$('.commentsList').eq(idx).empty();
+			$('.commentsListContainer').eq(idx).attr('style', 'display: none');
 		})
 		
 		$('.board_card').on('click', '.commentsBtn', function(e) {
 			e.preventDefault();
 			var idx = $(this).index('.commentsBtn');
 			console.log(idx);
-			if ( $('.commentsList').eq(idx).children().length > 0 ) {
+			if ( $('.commentsListContainer').eq(idx).css('display') == 'block' ) {
 				console.log('이미 불러와있음');
 				return false;
 			}
@@ -417,7 +614,7 @@
 				var list = '';
 				for(var i=0; i<data.length; i++) {
 					var img = '';
-					list += '<div class="ui fluid card commentCard" style="margin-top: 20px">';
+					list += '<div class="ui fluid card commentCard" style="margin-top: 15px; margin-bottom: 20px">';
 					list += '<div class="content">';
 					if( myid === data[i].RPL_WRITER ) {
 						list += '<div class="right floated">';
@@ -440,11 +637,10 @@
 					list += '<div class="ui right aligned time container">'+data[i].RPL_DATE+'</div>';
 					list += '<div class="description rpl_content">'+data[i].RPL_CONTENT+'</div>';
 					list += '<div class="extra content rpl_no" style="display:none" >'+data[i].RPL_NO+'</div>';
-					list += '</div>';
-					list += '</div>';
+					list += '</div></div></div>';
 				}
-				list += '<div class="ui right aligned conatiner"><button class="mini ui gray button foldCommentListBtn">접기</button></div>';
 				$('.commentsList').eq(idx).html(list);
+				$('.commentsListContainer').eq(idx).attr('style', 'display: block');
 			})
 		})
 		
@@ -468,7 +664,6 @@
 			var rpl_writer = "${sessionScope.SID}";
 			var brd_no = $('.brd_no').eq(index).val();
 			console.log(brd_no);
-			console.log(grp_no);
 			console.log(rpl_writer);
 			
 			$('.reply_modal').modal({
@@ -518,8 +713,8 @@
 			}
 			console.log($('#file').val());
 			console.log($('#modal_img').attr('src'));
-			
 		});
+		
 		$('#modal_img').on('click', function() {
 			console.log('imgClicked');
 			$('#file').click();

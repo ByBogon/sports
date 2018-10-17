@@ -32,7 +32,7 @@
 	<div class="ui container">
 		<div class="ui two column padded grid">
 			<div class="column">
-			<form id="myForm" method="post" action="makeOneGroup">
+			<form id="myForm">
 				<div class="ui container" style="margin: auto; margin-top: 20px;">
 					<div class="ui container" style="margin-top: 20px">
 						<label>모임명</label>
@@ -65,6 +65,12 @@
 									<div class="item genre" data-value="${i.index}">${genre}</div>
 								</c:forEach>
 							</div>
+						</div>
+					</div>
+					<div class="ui container" style="margin-top: 20px">
+						<label>간략한 그룹 설명</label>
+						<div class="ui fluid input">
+							<input type="text" id="grp_detail" name="grp_detail" />
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
@@ -129,7 +135,7 @@
 							<div class="ui label">
 								센터 명
 							</div>
-							<input type="text" id="txt_addr_center" name="txt_addr_center" autocomplete="off"/>
+							<input type="text" id="txt_name_center" name="txt_name_center" autocomplete="off"/>
 							<div class="ui button primary" id="btn_set_addr_center">확인</div>
 						</div>
 					</div>
@@ -143,7 +149,7 @@
 									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
 								</li>
 								<li>원하는 센터를 위에서 찾지 못했다면 주소를 검색하고 센터 명을 입력해주세요.</li>
-								<li>센터의 주소를 몰라도 괜찮습니다. 해당 센터 명을 입력해주세요.</li>
+								<li>센터의 주소를 모르면 해당 센터 명을 입력해주세요.</li>
 								<li><b>확인</b>을 눌러 해당 모임의 센터를 정해주세요.</li>
 							</ul>
 						</div>
@@ -151,8 +157,8 @@
 				</div>
 				</form>
 			</div>
-			<div class="column" style="margin: auto; margin-top: 30px">
-				<div id="map" style="width:400px; height:500px; margin:auto;"></div>
+			<div class="column" style="margin: auto; margin-top: 50px">
+				<div id="map" style="width:400px; height:550px; margin:auto;"></div>
 			</div>
 		</div>
 		<div class="ui two column padded grid">
@@ -213,7 +219,7 @@
 	var defaultPage = 1;
 	
 	var mapLevel = 3;
-	var coords, coordsCenter, coordsAddr;
+	var coords, coordsCenter, coordsAddr, informingCenterLat, informingCenterLng;
 	var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
@@ -329,6 +335,8 @@
                         coords = '';
                         // 해당 주소에 대한 좌표를 받아서
                         coords = new daum.maps.LatLng(result.y, result.x);
+                        informingCenterLat = result.y;
+                        informingCenterLng = result.x;
                         coordsAddr = coords;
                         // 지도를 보여준다.
                         //mapContainer.style.display = "block";
@@ -395,7 +403,7 @@
 			$('#txt_center').val('');
 			$('#txt_set_center').val('');
 			$('#txt_addr').val('');
-			$('#txt_addr_center').val('');
+			$('#txt_name_center').val('');
 		})
 		
 		$('.mem_add_warn .close').on('click', function() {
@@ -441,7 +449,7 @@
                 
 				$('#txt_center').val('');
 				$('#txt_addr').val('');
-				$('#txt_addr_center').val('');
+				$('#txt_name_center').val('');
 				
 				$('#div_center').addClass('disabled');
 				$('.addr_container').addClass('disabled');
@@ -494,7 +502,7 @@
 			var btnTxt = btn.text();
 			if (btnTxt === '확인') {
 				var addr = $('#txt_addr').val();
-				var center = $('#txt_addr_center').val();
+				var center = $('#txt_name_center').val();
 				if ( $('#second_info').hasClass('visible') ) {
 					$('#second_info').transition('fade down');	
 				} else {
@@ -577,12 +585,12 @@
 			console.log('clicked!');
 			e.preventDefault();
 			var txt_addr = $('#txt_addr').val();
-			var txt_addr_center = $('#txt_addr_center').val();
+			var txt_name_center = $('#txt_name_center').val();
 			var txt_set_center = $('#txt_set_center').val();
 			var btn_addr = $('#btn_set_addr_center').text();
 			var btn_center = $('#btn_set_center').text();
 			if ( ( (btn_center === '확인') && !( $('#btn_set_center').hasClass('disabled') ) ) && ( (txt_set_center.trim() !== '') && 
-					( (txt_addr_center.trim() === '') || (txt_addr.trim() === '') ) ) ) {
+					( (txt_name_center.trim() === '') || (txt_addr.trim() === '') ) ) ) {
 				if( $('#first_info').hasClass('visible') ) {
 					$('#first_info').transition('tada');
 					return false;
@@ -593,8 +601,8 @@
 					$('#second_info').transition('fade down');	
 				}
 			}
-			if ( ( ( (txt_addr_center.trim() === '') && (txt_addr.trim() !== '') ) ||
-					( (txt_addr_center.trim() !== '') && (txt_addr.trim() === '') ) ) && 
+			if ( ( ( (txt_name_center.trim() === '') && (txt_addr.trim() !== '') ) ||
+					( (txt_name_center.trim() !== '') && (txt_addr.trim() === '') ) ) && 
 					 (txt_set_center.trim() === '') ) {
 				if( $('#second_info').hasClass('visible') ) {
 					$('#second_info').transition('tada');
@@ -607,7 +615,7 @@
 				}
 			}
 			if ( (txt_set_center.trim() !== '') && 
-					( (txt_addr_center.trim() !== '') || (txt_addr.trim() !== '') ) ) {
+					( (txt_name_center.trim() !== '') || (txt_addr.trim() !== '') ) ) {
 				if( $('#first_info').hasClass('visible') ) {
 					$('#first_info').transition('tada');
 					return false;
@@ -649,12 +657,6 @@
 			var genre = $('.dropdown.sports_genre').dropdown('get text');
 			console.log(genre);
 			
-			var center = $('#txt_set_center').val();
-			var addr = $('#txt_addr').val();
-			var final_addr = center + addr;
-			console.log(center);
-			console.log(addr);
-			console.log(final_addr);
 			var form = $('#myForm').serializeArray();
 			form.push({name: "memList", value: checkedIds});
 			console.log(form);
@@ -671,25 +673,23 @@
 				type	: "POST",
 				url 	: "makeOneGroup.do",
 				data	: form,
-				success	: function(data) {
-					if (data !== 0) {
-						var url = "sports.do";
-						var msg = "그룹 생성";
-						var encodedMsg = encodeURIComponent(msg);
-						var encodedUrl = encodeURIComponent(url);
-						var googleSafeComponentMsg = encodedMsg.replace(/%20/g, '+');
-						var googleSafeComponentUrl = encodedUrl.replace(/%20/g, '+');
-						var completeURI = 
-							'alert.do?msg=' + googleSafeComponentMsg 
-							+ '&url=' + googleSafeComponentUrl;
-						console.log(completeURI);
-						window.location = completeURI;
-					}
+			})
+			.done(function(data) {
+				if (data !== 0) {
+					var url = "squash.do";
+					var msg = "그룹 생성";
+					var encodedMsg = encodeURIComponent(msg);
+					var encodedUrl = encodeURIComponent(url);
+					var googleSafeComponentMsg = encodedMsg.replace(/%20/g, '+');
+					var googleSafeComponentUrl = encodedUrl.replace(/%20/g, '+');
+					var completeURI = 
+						'alert.do?msg=' + googleSafeComponentMsg 
+						+ '&url=' + googleSafeComponentUrl;
+					console.log(completeURI);
+					window.location = completeURI;
 				}
 			})
 			
-			/* document.location = '/sports/makeOneGroup.do?grp_name='+grp
-					+'&grp_leader='+leader+'&memList='+checkedIds; */
 		})
 
 		$('#center_table').on('click', '.center_tr', function() {
@@ -713,6 +713,7 @@
 			var center = $('#txt_center').val();
 			console.log(center);
 			if( (typeof center === 'undefined') || (center.trim() === '')) {
+				$('#div_center').addClass('error');
 				return false;
 			}
 			var btn = '';
@@ -1091,6 +1092,7 @@
 		})
 		
 		$('#txt_center').focus(function() {
+			$('#div_center').removeClass('error');
 			if ( $('#second_info').hasClass('visible') ) {
 				$('#second_info').transition('fade down');
 			}
@@ -1101,7 +1103,7 @@
 			}
 		})
 		
-		$('#txt_addr_center').focus(function() {
+		$('#txt_name_center').focus(function() {
 			if ( $('#first_info').hasClass('visible') ) {
 				$('#first_info').transition('fade down');
 			}

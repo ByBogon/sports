@@ -146,7 +146,7 @@ margin-top: 25px !important;
 						  },
 				success : function(data) {
 					if(data === 1) {
-						window.location.href = "sports.do";
+						window.location.href = "squash.do";
 					} else {
 						console.log('삭제 실패');
 					}

@@ -4,7 +4,7 @@
  <!-- Nav Menu -->
  <div class="computer tablet only row">
 	<div class="ui inverted menu navbar" style="width:100%">
-		<a class="brand item" href="sports.do">Squash</a>
+		<a class="brand item" href="squash.do">Squash</a>
 		
 		<!-- 
 		<a class="item" href="#">Home </a>
@@ -66,7 +66,7 @@
  </div>
  <div class="mobile only narrow row" style="margin-left:5px">
 	<div class="ui inverted menu navbar" style="width: 100%">
-		<a class="item" href="sports.do">Squash</a>
+		<a class="item" href="squash.do">Squash</a>
 		<div class="right menu open">
 			<a href="" class="menu item">
 				<i class="bars icon"></i>

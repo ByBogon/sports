@@ -123,6 +123,7 @@
 					<hr />
 					<div align="right">
 						<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
+						<a href="squash.do" class="ui black button">홈으로</a>
 					</div>
 				</div>
 			</form>

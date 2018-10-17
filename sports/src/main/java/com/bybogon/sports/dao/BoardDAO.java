@@ -53,8 +53,8 @@ public interface BoardDAO {
 			@Result(property = "MEM_IMG", column = "MEM_IMG"),
 	})
 	@Select({"SELECT RPL_NO, RPL_CONTENT, RPL_WRITER, RPL_DATE, MEM_NAME, MEM_IMG FROM SPORTS_BRD_REPLY r ",
-			" JOIN SPORTS_MEMBER m ON RPL_WRITER = MEM_ID",
-			" WHERE BRD_NO = #{brd_no} AND BRD_CHECK = 1", 
+			" JOIN SPORTS_MEMBER m ON RPL_WRITER = MEM_ID ",
+			" WHERE BRD_NO = #{brd_no} ", 
 			" ORDER BY RPL_DATE DESC"})
 	public List<Map<String, Object>> selectCommentsListOnBoard(
 			@Param("brd_no") int brd_no);
@@ -69,18 +69,27 @@ public interface BoardDAO {
 	public int insertBoardOne(@Param("vo") Sports_Brd vo);
 	
 	@Select({"SELECT ", 
-			"    cnt, MEM_NAME, MEM_IMG, b.* ", 
-			"FROM SPORTS_BRD b ", 
-			"LEFT JOIN ( ", 
+			"    cnt, MEM_NAME, MEM_IMG, grp.BRD_NO, grp.BRD_CONTENT, grp.BRD_WRITER, ", 
+			"    grp.BRD_DATE, grp.BRD_GROUP, grp.BRD_CHECK, grp.BRD_IMG ", 
+			"FROM ( ",
+			"    SELECT ", 
+			"        * ", 
+			"    FROM SPORTS_GRP_MEM g ", 
+			"    INNER JOIN SPORTS_MEMBER m ON g.GRP_MEM = m.MEM_ID ", 
+			"    INNER JOIN SPORTS_BRD br ON br.BRD_WRITER = g.GRP_MEM ", 
+			"    WHERE GRP_MEM_CHECK = 1 AND br.BRD_GROUP = #{grp_no} AND g.GRP_NO = #{grp_no} ", 
+			") grp ", 
+			"FULL JOIN ( ", 
 			"    SELECT ", 
 			"        COUNT(*) cnt, r.BRD_NO ", 
-			"    FROM SPORTS_BRD_REPLY r, SPORTS_BRD b ", 
-			"    WHERE r.BRD_NO = b.BRD_NO AND BRD_GROUP = #{grp_no} GROUP BY r.BRD_NO ", 
-			") r ON r.BRD_NO = b.BRD_NO ", 
-			"JOIN SPORTS_MEMBER m ON m.MEM_ID = BRD_WRITER " ,
-			"WHERE BRD_GROUP = #{grp_no} AND BRD_CHECK = 1 ORDER BY BRD_DATE DESC ", 
+			"    FROM SPORTS_BRD_REPLY r ", 
+			"    LEFT JOIN SPORTS_BRD b ON b.BRD_NO = r.BRD_NO ", 
+			"    LEFT JOIN SPORTS_GRP_MEM ON GRP_MEM = BRD_WRITER ", 
+			"    WHERE BRD_GROUP = #{grp_no} AND GRP_MEM_CHECK = 1 GROUP BY r.BRD_NO ", 
+			") rpl ON rpl.BRD_NO = grp.BRD_NO ", 
+			" ORDER BY grp.BRD_DATE DESC ", 
 	})
-	public List<Sports_Brd> selectBoardOne(@Param("grp_no") int grp_no);
+	public List<Sports_Brd> selectBoardsOfGroup(@Param("grp_no") int grp_no);
 
 	
 	@Options(useGeneratedKeys=false)

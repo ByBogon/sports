@@ -1,8 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page session="true"%>
-<%@ page import="com.bybogon.sports.vo.Sports_Grp" %>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -31,7 +31,6 @@
 				</div>
 			</div>
 			<div class="ui right aligned container tag example" style="margin: 20px">
-				<div class="ui left aligned sub header">검색</div>
 				<div class="ui fluid multiple search selection dropdown">
 					<input name="tags" type="hidden"/>
 					<i class="dropdown icon"></i>
@@ -64,12 +63,18 @@
 								<div class="header">${vo.grp_name}</div>
 								<div class="meta">${vo.grp_leader}</div>
 							</div>
-							<div class="description"></div>
+							<div class="description">${vo.grp_detail}</div>
 							<div class="extra content">
 								<span class="right floated">${vo.grp_date}</span>
 								<span class="left floated"><i class="users icon"></i>${vo.cnt} Members</span>	
 							</div>
-							
+							<div class="content">
+								<c:set var="cname" value="${vo.center_name}"/>
+                       			${fn:substring(cname, 0, 25)}
+                       			<c:if test="${fn:length(cname) gt 25}">
+                       			...
+                       			</c:if>
+							</div>
 						</div>
 					</c:forEach>
 					

@@ -7,11 +7,74 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.Update;
 
 import com.bybogon.sports.vo.Sports_Grp;
 import com.bybogon.sports.vo.Sports_Member;
 
 public interface GroupDAO {
+
+	@Select({"SELECT ", 
+			"    MEM_NAME, b.GRP_NO, b.GRP_NAME, b.grp_date, ", 
+			"    b.GRP_MAINIMG, b.GRP_LEADER, b.GRP_DETAIL, b.SPORTS_NAME, ",
+			"	 scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
+			"FROM ",
+			"	(SELECT ", 
+			"    	g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
+			"   	g.GRP_MAINIMG, g.GRP_LEADER, g.GRP_DETAIL, s.SPORTS_NAME, grp.CENTER_NO ",
+			"	FROM ",
+			"		(SELECT ",
+			"			* ",
+			"		FROM ",
+			"			(SELECT ", 
+			"                GRP_NO, GRP_NAME, TO_CHAR(GRP_DATE, 'YYYYMMDD') grp_date, ", 
+			"                GRP_MAINIMG, GRP_LEADER, GRP_DETAIL, CENTER_NO ", 
+			"            FROM SPORTS_GRP ", 
+			"            ORDER BY GRP_NO DESC) ", 
+			"        WHERE ROWNUM <= 3 ",
+			" 		) grp ", 
+			"	INNER JOIN SPORTS_GRP g ON g.GRP_NO = grp.GRP_NO ",
+			"	JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO) b ",
+			"INNER JOIN SPORTS_MEMBER m ON m.MEM_ID = b.GRP_LEADER ",
+			"INNER JOIN SPORTS_CENTER_MASTER scm ON scm.CENTER_NO = b.CENTER_NO"
+		})
+	public List<Sports_Grp> selectThreeNewGrp();
+	
+	@Options(useGeneratedKeys=false)
+	@Update({"UPDATE SPORTS_GRP SET ",
+			" 	GRP_NAME = #{vo.grp_name}, ",
+			"	GRP_MAINIMG = #{vo.grp_mainimg} ",
+			" WHERE GRP_NO = #{vo.grp_no}"
+	})
+	public int updateGroupOne(@Param("vo") Sports_Grp vo);
+	
+	@Options(useGeneratedKeys=false)
+	@Update({"UPDATE SPORTS_GRP_MEM SET ", 
+			"	GRP_MEM_CHECK = 0 ", 
+			" WHERE GRP_MEM = #{cur_id} AND GRP_NO = #{grp_no} ", 
+	})
+	public int resignGrpMem(
+			@Param("grp_no") int grp_no, 
+			@Param("cur_id") String cur_id);
+	
+	@Options(useGeneratedKeys=false)
+	@Insert({"MERGE INTO SPORTS_GRP_MEM ", 
+		"    USING DUAL ", 
+		"    ON ( GRP_MEM = #{extra_id} AND GRP_NO = #{grp_no} ) ", 
+		"    WHEN MATCHED THEN ",
+		"        UPDATE SET ", 
+		"            GRP_MEM_CHECK = 1 ", 
+		"        WHERE GRP_MEM = #{extra_id} AND GRP_NO = #{grp_no} ", 
+		"    WHEN NOT MATCHED THEN ", 
+		"        INSERT (GRP_MEM_NO, GRP_MEM, GRP_NO, GRP_MEM_CHECK, GRP_MEM_DATE) ", 
+		"        VALUES (#{grp_mem_no}, #{extra_id}, #{grp_no}, 1, SYSDATE)" 
+	})
+	public int addExtraGrpMem(
+			@Param("grp_mem_no") int grp_mem_no,
+			@Param("grp_no") int grp_no, 
+			@Param("extra_id") String extra_id);
+	
 	
 	@Select({"SELECT ", 
 			"    GRP_MEM, mems.MEM_NAME, mems.MEM_AGE, mems.MEM_IMG, mems.MEM_DETAIL, ", 
@@ -32,7 +95,7 @@ public interface GroupDAO {
 			"                (SELECT GRP_MEM as grp_mem, ROWNUM as num FROM SPORTS_GRP_MEM m1 ", 
 			"                INNER JOIN SPORTS_GRP g1 ",
 			"                ON g1.GRP_NO = m1.GRP_NO ", 
-			"                WHERE m1.GRP_NO = #{grp_no} AND GRP_MEM != GRP_LEADER ", 
+			"                WHERE m1.GRP_NO = #{grp_no} AND GRP_MEM != GRP_LEADER AND GRP_MEM_CHECK = 1 ", 
 			"                ) ", 
 			"            )", 
 			"            SELECT grp_mem FROM mems_info order by num ",
@@ -47,12 +110,13 @@ public interface GroupDAO {
 			@Param("grp_no") int grp_no);
 	
 	@Select({"SELECT ", 
-			"    MEM_NAME, b.GRP_NO, b.GRP_NAME, b.grp_date, ", 
-			"    b.GRP_LEADER, b.cnt, b.SPORTS_NAME ", 
-			"FROM ",
+			"	MEM_NAME, b.GRP_NO, b.GRP_NAME, b.grp_date, b.GRP_DETAIL, ", 
+			"	b.GRP_MAINIMG, b.GRP_LEADER, b.cnt, b.SPORTS_NAME, ",
+			"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
+			" FROM ",
 			"	(SELECT ", 
-			"    	g.GRP_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
-			"   	 g.GRP_LEADER, grp.cnt, s.SPORTS_NAME ",
+			"    	g.GRP_NO, g.CENTER_NO, g.GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ", 
+			"   	g.GRP_DETAIL, g.GRP_MAINIMG, g.GRP_LEADER, grp.cnt, s.SPORTS_NAME ",
 			"	FROM ", 
 			"		(SELECT ", 
 			"			GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
@@ -61,7 +125,8 @@ public interface GroupDAO {
 			"		GROUP BY GRP_NO) grp ", 
 			"	INNER JOIN SPORTS_GRP g ON g.GRP_NO = grp.GRP_NO ",
 			"	JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO) b ",
-			"INNER JOIN SPORTS_MEMBER m ON m.MEM_ID = b.GRP_LEADER" 
+			" INNER JOIN SPORTS_CENTER_MASTER scm ON scm.CENTER_NO = b.CENTER_NO ",
+			" INNER JOIN SPORTS_MEMBER m ON m.MEM_ID = b.GRP_LEADER" 
 	})
 	public Sports_Grp selectGroupOne(@Param("grp_no") int grp_no);
 	
@@ -88,18 +153,38 @@ public interface GroupDAO {
 	public int selectRecentGrpMemNo();
 	
 	@Select({"SELECT * FROM ( ",
-			 "	SELECT GRP_NO FROM SPORTS_GRP WHERE GRP_NAME = #{grp_name} ORDER BY GRP_DATE DESC ",
+			 "	SELECT GRP_NO FROM SPORTS_GRP ORDER BY GRP_DATE DESC ",
 			 "	) ",
 			 "WHERE ROWNUM = 1"})
-	public int selectRecentSportsGrpNo(@Param("grp_name") String grp_name);
+	public int selectRecentGrpNo();
 	
+
+	@SelectKey(before=false, keyProperty = "vo.grp_no", resultType = int.class, 
+			statement = { "SELECT * FROM ( ", 
+							" SELECT GRP_NO FROM SPORTS_GRP ORDER BY GRP_NO DESC ", 
+						"  ) ", 
+						" WHERE ROWNUM = 1"})
+	@Insert({"INSERT INTO SPORTS_GRP ",
+			" 	(GRP_NO, GRP_NAME, GRP_DATE, GRP_CHK, SPORTS_NO, ",
+			" 	GRP_CENTER, GRP_LEADER, CENTER_NO, GRP_DETAIL) ",			
+			" VALUES ",
+			" 	(SEQ_SPORTS_GRP_NO.NEXTVAL, #{vo.grp_name}, SYSDATE, 1, 0, ",
+			" 	#{vo.grp_center}, #{vo.grp_leader}, #{vo.center_no}, #{vo.grp_detail})"})
+	public int makeOneGrp(@Param("vo") Sports_Grp vo);
 	
 	@Options(useGeneratedKeys=false)
-	@Insert({"INSERT INTO SPORTS_GRP (GRP_NO, GRP_NAME, GRP_DATE, GRP_CHK, SPORTS_NO, ",
-			" GRP_CENTER, GRP_LEADER) ",			
-			" VALUES (SEQ_SPORTS_GRP_NO.NEXTVAL, #{vo.grp_name}, SYSDATE, 1, 0, ",
-				" #{vo.grp_center}, #{vo.grp_leader})"})
-	public int makeOneGrp(@Param("vo") Sports_Grp vo);
+	@Insert({"INSERT INTO SPORTS_GRP_MEM(GRP_MEM_NO, GRP_MEM, GRP_NO) ",
+			 "VALUES( #{no}, #{mem}, #{grp_no})"})
+	public int makeGrpMemsForLeader(
+			@Param("mem") String mem,
+			@Param("no") int no, 
+			@Param("grp_no") int grp_no);
+	
+	@Insert({"INSERT INTO SPORTS_GRP_LEADER(GRP_LEADER_NO, GRP_MEM_NO) ",
+			" VALUES(SEQ_SPORTS_GRP_LEADER_NO.NEXTVAL, #{grp_mem_no})"
+	})
+	@Options(useGeneratedKeys=false)
+	public int insertGrpLeader(@Param("grp_mem_no") int grpLeaderMemNo);
 	
 	@Options(useGeneratedKeys=false)
 	@Insert({"INSERT INTO SPORTS_GRP_MEM(GRP_MEM_NO, GRP_MEM, GRP_NO) ",
@@ -107,8 +192,11 @@ public interface GroupDAO {
 	public int makeGrpMems(@Param("mem") String mem, @Param("no") int no, 
 			@Param("sportsGrpNo") int grp_no);
 	
-	@Select({"SELECT g.GRP_NO, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
-			"	grp.cnt, g.GRP_LEADER, s.SPORTS_NAME FROM ", 
+	@Select({"SELECT ",
+			"	g.GRP_NO, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
+			"	GRP_DETAIL, grp.cnt, g.GRP_LEADER, s.SPORTS_NAME, ",
+			"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
+			" FROM ", 
 			"    (SELECT ", 
 			"        GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
 			"    FROM SPORTS_GRP_MEM ", 
@@ -117,17 +205,24 @@ public interface GroupDAO {
 			" JOIN ( ", 
 			"    SELECT DISTINCT g.GRP_NO FROM SPORTS_GRP g ", 
 			"    INNER JOIN SPORTS_GRP_MEM m ON g.GRP_NO = m.GRP_NO ", 
-			"    WHERE GRP_LEADER = #{id} OR GRP_MEM = #{id} ", 
+			"    WHERE GRP_MEM_CHECK = 1 AND (GRP_LEADER = #{id} OR GRP_MEM = #{id}) ", 
 			"    ) grpno ON grpno.GRP_NO = g.GRP_NO ", 
-			"JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
+			" INNER JOIN SPORTS_CENTER_MASTER scm ON scm.CENTER_NO = g.CENTER_NO ",
+			" JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
 	public List<Sports_Grp> selectMyGroups(@Param("id") String id);
 	
-	@Select({"SELECT g.GRP_NO, GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, s.SPORTS_NAME, g.GRP_LEADER, grp.cnt FROM ",
+	@Select({"SELECT ",
+			"	g.GRP_NO, GRP_DETAIL, GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ",
+			"	s.SPORTS_NAME, g.GRP_LEADER, grp.cnt, ",
+			"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
+			"FROM ",
 			"	(SELECT " , 
 			"		GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
-			"	FROM SPORTS_GRP_MEM ", 
+			"	FROM SPORTS_GRP_MEM ",
+			"	WHERE GRP_MEM_CHECK = 1 ", 
 			"	GROUP BY GRP_NO) grp ",
 			" INNER JOIN SPORTS_GRP g on g.GRP_NO = grp.GRP_NO ",
+			" LEFT JOIN SPORTS_CENTER_MASTER scm ON scm.CENTER_NO = g.CENTER_NO",
 			" JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ORDER BY GRP_DATE DESC"})
 	public List<Sports_Grp> selectAllGroups();
 

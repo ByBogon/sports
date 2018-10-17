@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page session="true"%>
 <html>
 <head>
@@ -35,20 +36,19 @@
 				<div class="ui three stackable cards">
 					<c:forEach var="vo" items="${list}">
 						<div class="ui link card">
-							<div class="content">
+							<input type="hidden" class="grp_no" value="${vo.grp_no}"/>
+							<!-- <div class="content">
 								<div class="right floated meta">
 									<div class="ui left pointing dropdown">
 										<input type="hidden" name="">
 										<i class="dropdown icon"></i>
 										<div class="menu">
 											<div class="item" data-value="view">그룹 정보</div>
-											<div class="item" data-value="mems">그룹 멤버</div>
-											<div class="item" data-value="edit">그룹 수정</div>
-											<div class="item" data-value="delete">그룹 삭제</div>
+											<div class="item" data-value="delete">그룹 탈퇴</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="image">
 								<img src="resources/images/molly.png">
 							</div>
@@ -56,12 +56,19 @@
 								<div class="header">${vo.grp_name}</div>
 								<div class="meta right floated">모임장: ${vo.grp_leader}</div>
 							</div>
-							<div class="description"></div>
+							<div class="description">${vo.grp_detail}</div>
 							<div class="extra content">
 								<span class="right floated">${vo.grp_date}</span>
 								<span class="left floated"><i class="users icon"></i>${vo.cnt} Members</span>	
 							</div>
 							
+							<div class="content">
+								<c:set var="cname" value="${vo.center_name}"/>
+                       			${fn:substring(cname, 0, 20)}
+                       			<c:if test="${fn:length(cname) gt 20}">
+                       			...
+                       			</c:if>
+							</div>
 						</div>
 					</c:forEach>
 					
@@ -76,14 +83,19 @@
 	</div>
 	<script>
 		$(function() {
+			
 			$('.cards').on('click', '.card', function() {
 				var idx = $(this).index();
-				console.log('clicked');
 				console.log(idx);
+				var grp_no = $('.grp_no').eq(idx).val();
+				window.location = "group_content.do?grp_no="+grp_no;
+				/* 
 				var dropdown = $('.right.meta > .ui.dropdown').eq(idx);
 				console.log(dropdown);
 				$(dropdown).dropdown('show');
+				 */
 			});
+			 
 		})
 	</script>
 </body>
