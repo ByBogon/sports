@@ -799,23 +799,7 @@
 		})
 
 		$('#insertGrpMemModal').on('shown.bs.modal', function() {
-			$('.members').find('.card').each(function() {
-				var idx = $(this).index('.card');
-				console.log(idx);
-				var id = $('.meta').eq(idx).text();
-				console.log(id);
-				$('#mem_table').find('.mem').each(function() {
-					var i = $(this).index('.mem');
-					var check = $('.mem_chck').eq(i);
-					var mem_id_eq = $('.mem_id').eq(i);
-					var mem_id = mem_id_eq.text();
-					console.log(mem_id);
-					if (id == mem_id) {
-						mem_id_eq.parent().addClass("highlight");
-						check.prop('checked', true);
-					}
-				})
-			})
+			
 		})
 		
 		$('#modal_btn_add_grp_mem').on('click',function(e) {
@@ -868,9 +852,7 @@
 		// 모달이 hide 이벤트를 시작할때는 .on('hide.bs.modal')
 		// 모달이 없어진뒤 함수
 		$('#insertGrpMemModal').on('hidden.bs.modal', function() {
-			$('.members').remove();
-			id_list.length = 0;
-			console.log('id_list: ' + id_list.length);
+			
 		});
 		
 		$('#mem_table').on('click', '.mem', function() {
@@ -938,7 +920,32 @@
 				.modal({
 					onShow	: function() {
 						console.log('onShow');
+						$('#modal_container_loader').addClass('active');						
 						//$('#modal_addGrpMem_loader').html(loader);
+					},
+					onVisible : function() {
+						$('.addGrpMemTbody > .members').find('.card').each(function() {
+							var idx = $(this).index('.card');
+							console.log(idx);
+							var id = $('.meta').eq(idx).text();
+							console.log(id);
+							$('#mem_table').find('.mem').each(function() {
+								var i = $(this).index('.mem');
+								var check = $('.mem_chck').eq(i);
+								var mem_id_eq = $('.mem_id').eq(i);
+								var mem_id = mem_id_eq.text();
+								console.log(mem_id);
+								if (id == mem_id) {
+									mem_id_eq.parent().addClass("highlight");
+									check.prop('checked', true);
+								}
+							})
+						})
+					},
+					onHidden : function() {
+						$('.addGrpMemTbody > .members').remove();
+						id_list.length = 0;
+						console.log('id_list: ' + id_list.length);
 					}
 				})
 				.modal('show');

@@ -44,9 +44,9 @@ public class MemberController {
 			Sports_Member vo = new Sports_Member(id, encPw, name, age, email);
 			int ret = mDAO.joinMember(vo);
 			if (ret == 1) {
-				return "redirect:sports.do";
+				return "redirect:squash.do";
 			}
-			return "redirect:sports.do";
+			return "redirect:squash.do";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -59,7 +59,7 @@ public class MemberController {
 		session.removeAttribute("SID");
 		session.removeAttribute("SNAME");
 		session.invalidate();
-		return "redirect:sports.do";
+		return "redirect:squash.do";
 	}
 	
 	@RequestMapping(value = "login.do", method=RequestMethod.GET)
@@ -71,7 +71,7 @@ public class MemberController {
 			String backUrl = (String) session.getAttribute("BACK_URL");
 			System.out.println("--:"+backUrl);
 			if(backUrl.equals("login.do")) {
-				backUrl = "sports.do";
+				backUrl = "squash.do";
 			}		
 			return "redirect:"+backUrl;
 		}
@@ -100,7 +100,7 @@ public class MemberController {
 					String backUrl = (String) session.getAttribute("BACK_URL");
 					System.out.println("00:"+backUrl);
 					if(backUrl.equals("login.do")) {
-						backUrl = "sports.do";
+						backUrl = "squash.do";
 					}			
 					request.setAttribute("msg", "로그인 성공");
 					request.setAttribute("url", backUrl);
@@ -121,7 +121,7 @@ public class MemberController {
 				String backUrl = (String) session.getAttribute("BACK_URL");
 				System.out.println("11:"+backUrl);
 				if(backUrl.equals("login.do")) {
-					backUrl = "sports.do";
+					backUrl = "squash.do";
 				}		
 				return "redirect:"+backUrl;
 			}
@@ -135,7 +135,7 @@ public class MemberController {
 	public String mypage(HttpSession session) {
 		String id = (String) session.getAttribute("SID");
 		if(id == null) {
-			return "login_v4";
+			return "login";
 		} else {
 			return "myPage";
 		}
@@ -204,7 +204,7 @@ public class MemberController {
 	public String resign(HttpSession session) {
 		String id = (String) session.getAttribute("SID");
 		if(id == null) {
-			return "login_v4";
+			return "login";
 		} else {
 			return "resign";
 		}

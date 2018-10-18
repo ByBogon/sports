@@ -20,7 +20,7 @@
 <body>
 	<div class="ui page grid">
 	<jsp:include page="nav_main.jsp"></jsp:include>
-		<div class="ui container" style="margin-top: 30px">
+		<div class="ui fluid container" style="margin-top: 30px">
 			<div class="ui right floated container" id="joinGrpContainer" style="display: none; ">
 				<button class="ui teal right floated button joinGrpBtn" id="joinGrpBtn">참가</button>
 			</div>
@@ -44,11 +44,11 @@
 						${vo.grp_detail}
 					</div>
 				</div>
-				<div class="extra content">
-					<c:if test="${vo.grp_leader == sessionScope.SID}">
+				<c:if test="${vo.grp_leader == sessionScope.SID}">
+					<div class="extra content">
 						<div class="ui teal fluid button profile_update">프로필 업데이트</div>
-					</c:if>
-				</div>
+					</div>
+				</c:if>
 				<div class="center aligned content">
 					${vo.center_name}
 				</div>
@@ -90,7 +90,7 @@
 					</c:forEach>
 				</div>
 			</div>
-			<div class="container" style="margin-bottom: 50px">
+			<div class="ui fluid container" style="margin-bottom: 50px">
 				<div class="ui two column padded grid">
 					<div class="column">
 						<div class="ui large label">피드 목록</div>
@@ -99,9 +99,10 @@
 						<div class="ui right floated primary disabled button write_feed" id="write_feed">글쓰기</div>
 					</div>
 				</div>
-				<div class="ui cards" id="boardContainer" style="display: none">
+				<div class="ui fluid segment container" style="margin-top: 20px">
+				<div class="ui fluid cards" id="boardContainer" style="width: 100%; display: none">
 					<c:forEach items="${board}" var="bo">
-						<div class="ui fluid card board_card">
+						<div class="ui fluid centerd card board_card">
 							<div class="content">
 								<c:if test="${bo.brd_writer == sessionScope.SID}">
 									<div class="right floated">
@@ -173,6 +174,8 @@
 							</div>
 						</div>
 					</c:forEach>
+				</div>
+				
 				</div>
 			</div>			
 		</div>

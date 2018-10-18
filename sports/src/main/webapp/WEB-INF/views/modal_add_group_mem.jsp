@@ -15,15 +15,18 @@
 
 	<div class="scrolling content">
 		<div class="container" style="margin-bottom: 5px">
+			<div class="ui dimmer" id="modal_container_loader">
+				<div class="ui text loader">Loading</div>
+			</div>
 			<table class="table table-hover" id="mem_table" style="text-align:center">
 				<thead>
 					<tr>
-						<th scope="col"><input type="checkbox" id="mem_chck_all" /></th>
+						<th scope="col"></th>
 						<th>멤버 아이디</th>
 						<th>멤버 이름</th>
 					</tr>
 				</thead>
-				<tbody class="tbody" id="tbody_group_mem">
+				<tbody class="tbody addGrpMemTbody" id="tbody_group_mem">
 				</tbody>
 			</table>
 		</div>

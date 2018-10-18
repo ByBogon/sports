@@ -24,7 +24,12 @@ public class SportsController {
 			Model model) {
 		if (sports.equals("squash")) {
 			List<Sports_Grp> list = gDAO.selectThreeNewGrp();
+			for (Sports_Grp mem: list) {
+				System.out.println(mem.getCenter_addr());
+			}
+			List<Sports_Grp> bestList = gDAO.selectThreeBestGrp();
 			model.addAttribute("list", list);
+			model.addAttribute("bestList", bestList);
 			
 		} else if (sports.equals("basketball")) {
 			
