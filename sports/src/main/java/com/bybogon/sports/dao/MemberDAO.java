@@ -13,6 +13,45 @@ import com.bybogon.sports.vo.Sports_Member;
 
 public interface MemberDAO {
 	
+	@Select({"<script>",
+			" SELECT * FROM SPORTS_MEMBER ",
+			" WHERE ",
+			" <if test=\"idList.size > 0\">",
+			" MEM_ID NOT IN ",
+			" <foreach collection='idList' item='item' index='index' separator=',' open='(' close=') AND '> ",
+			" #{item} ",
+			" </foreach>",
+			" </if> ",
+			" ( (MEM_ID != #{myid} AND MEM_ID LIKE #{mem}||'%') ",
+			" OR (MEM_NAME != #{myname} AND MEM_NAME LIKE #{mem}||'%') ) ",
+			"</script>"
+	})
+	public List<Sports_Member> searchAddableMemberList(
+			@Param("mem") String mem,
+			@Param("myid") String myid,
+			@Param("myname") String myname,
+			@Param("idList") List<String> idList);
+	
+	@Select({"<script>",
+			"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE MEM_ID NOT IN ",
+			" <foreach collection='idList' item='item' index='index' separator=',' open='(' close=')'> ",
+			" #{item} ",
+			" </foreach>",
+			" AND SPORTS_NO = #{sportsGenreNo}",
+			"</script>"
+	})
+	public List<Sports_Member> showAddableMemberList(
+			@Param("sportsGenreNo") int sportsGenreNo, 
+			@Param("idList") List<String> idList);
+	
+	@Select({"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE MEM_ID NOT IN #{mem_id} AND SPORTS_NO = #{sportsGenreNo}"})
+	public List<Sports_Member> showAllMemberList(
+		@Param("sportsGenreNo") int sportsGenreNo, 
+		@Param("mem_id") String mem_id);
+	
+	
 	@Options(useGeneratedKeys = false)
 	@Update({"UPDATE SPORTS_MEMBER SET MEM_CHECK = 0 WHERE MEM_ID = #{id} AND MEM_PW = #{encPw}"})
 	public int blockMember(@Param("id") String id, @Param("encPw") String pw);
@@ -39,24 +78,19 @@ public interface MemberDAO {
 	
 	@Options(useGeneratedKeys=false)
 	@Update({"<script> ",
-			 "UPDATE SPORTS_MEMBER SET ",
-			 "<if test=\"vo.mem_pw eq null\">",
-			 "	MEM_NAME = #{vo.mem_name}, ",
-			 "	MEM_AGE = #{vo.mem_age}, ",
-			 "	MEM_EMAIL = #{vo.mem_email}, ",
-			 "	MEM_IMG = #{vo.mem_img}, ",
-			 "	MEM_DETAIL = #{vo.mem_detail} ",
-			 "WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
-			 "</if>",
-			 "<if test=\"vo.mem_pw neq null\">",
+			 " UPDATE SPORTS_MEMBER SET ",
+			 " <if test=\"vo.mem_pw neq null\">",
 			 "	MEM_PW = #{vo.mem_pw}, ",
+			 " </if>",
 			 "	MEM_NAME = #{vo.mem_name}, ",
 			 "	MEM_AGE = #{vo.mem_age}, ",
 			 "	MEM_EMAIL = #{vo.mem_email}, ",
-			 "	MEM_IMG = #{vo.mem_img}, ",
 			 "	MEM_DETAIL = #{vo.mem_detail} ",
-			 "WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
-			 "</if>",
+			 " <if test=\"vo.mem_img neq null\"> ",
+			 "	, MEM_IMG = #{vo.mem_img} ",
+			 " </if> ",
+			 " WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
+			 
 	"</script>"})
 	public int ajaxUpdateMemOne(@Param("vo") Sports_Member vo);
 	
@@ -84,24 +118,16 @@ public interface MemberDAO {
 		" VALUES(#{mem_id}, #{mem_pw}, #{mem_name}, #{mem_age}, #{mem_email}, 1, 0, 1, SYSDATE)"})
 	public int joinMember(Sports_Member vo);
 	
-	@Select({"SELECT * FROM SPORTS_MEMBER WHERE ", 
-			" MEM_ID = #{mem_id} AND MEM_PW = #{mem_pw} AND MEM_CHECK = 1"})
+	@Select({"SELECT * FROM SPORTS_MEMBER ",
+			" WHERE MEM_ID = #{mem_id} AND MEM_PW = #{mem_pw} "})
 	public Sports_Member loginMember(Sports_Member vo);
 	
-	public Sports_Member selectMemberOne(String id);
-	
-	public int updateMemberOne(Sports_Member vo);
-	
-	@Select({"SELECT * FROM SPORTS_MEMBER ",
-			" WHERE (MEM_ID != #{myid} AND MEM_ID LIKE #{mem}||'%') ",
-			" OR (MEM_NAME != #{myname} AND MEM_NAME LIKE #{mem}||'%')"})
-	public List<Sports_Member> searchMemberList(
-			@Param("mem") String mem,
-			@Param("myid") String myid,
-			@Param("myname") String myname);
-	
 	@Select({"<script>",
-			"SELECT MEM_ID, MEM_NAME, l.LEVEL_NAME FROM SPORTS_MEMBER m JOIN SPORTS_MEM_LEVEL l ON m.LEVEL_NO = l.LEVEL_NO WHERE MEM_ID IN ",
+			" SELECT ",
+			"	MEM_ID, MEM_IMG, MEM_NAME, l.LEVEL_NAME ",
+			" FROM SPORTS_MEMBER m ",
+			" JOIN SPORTS_MEM_LEVEL l ON m.LEVEL_NO = l.LEVEL_NO ",
+			" WHERE MEM_ID IN ",
 			" <foreach collection='list' item='item' index='index' separator=',' open='(' close=')'> ",
 			" #{item} ",
 			" </foreach>",

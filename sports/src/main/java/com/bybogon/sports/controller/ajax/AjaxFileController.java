@@ -30,26 +30,30 @@ public class AjaxFileController {
 	
 	@Value("${aws_namecard_bucket}")
 	private String bucketName;
+
+	String dir = "profile";
 	
 	@RequestMapping(value="/ajaxFileIntoS3.do", method = RequestMethod.POST)
 	public @ResponseBody String fileUpload(
 			@RequestParam("file") MultipartFile uploadFile,
 			HttpSession session
 			) throws IOException {
-		String dir = "/profile";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHHmmss");
 		String date = sdf.format(new Date());
 		System.out.println(date);
 		String id = (String) session.getAttribute("SID");
 		String originName = uploadFile.getOriginalFilename();
 		String extension = originName.substring(originName.indexOf("."));
-		String keyName = id+"/"+id+"_"+date+extension; 
+		String keyName = dir+"/"+id+"/"+id+"_"+date+extension; 
 		// S3 는 하위 디렉토리 개념이 아니라 /를 통한 key들을 읽음
 		// 그래서 /를 붙이면 s3 console 에서 볼때 folder가 만들어짐
 		// 폴더가 실제 트리구조의 하위 디렉토리가 아니라 key 값으로 읽음
 
+		//s3 upload 할때 keyname 앞에 / 가 자동으로 한번 더 붙어짐.
+		//아마 default부터 시작하게 하려고 해서 그런듯.
 		s3DAO.uploadFile(uploadFile, keyName);
-		String S3ImgUrl = bucketName+dir+"/"+keyName;
+		
+		String S3ImgUrl = bucketName+"/"+keyName;
 		System.out.println(S3ImgUrl);
 		return S3ImgUrl;
 	}

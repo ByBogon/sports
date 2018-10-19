@@ -30,9 +30,6 @@ public class AjaxGroupController {
 	private GroupDAO gDAO;
 	
 	@Autowired
-	private MemberDAO mDAO;
-	
-	@Autowired
 	private CenterDAO cDAO;
 	
 	@RequestMapping(value = "ajaxResignCurGrpMem.do", method = RequestMethod.GET)
@@ -59,6 +56,8 @@ public class AjaxGroupController {
 			@RequestParam(value="grp_leader") String grp_leader,
 			@RequestParam(value="grp_detail") String grp_detail,
 			@RequestParam(value="memList") String[] memList,
+			@RequestParam(value="lat", required = false) float lat,
+			@RequestParam(value="lng", required = false) float lng,
 			@RequestParam(value="txt_set_center", 
 				required = false, defaultValue="") String center,
 			@RequestParam(value="txt_addr", 
@@ -89,7 +88,7 @@ public class AjaxGroupController {
 		Sports_Grp vo;
 		if ( center.equals("") ) {
 			if ( !(addr.equals("")) ) {
-				cVO = new Sports_Infrm_Center(name_center, addr);
+				cVO = new Sports_Infrm_Center(name_center, addr, lat, lng);
 			} else {
 				cVO = new Sports_Infrm_Center(name_center);
 			}
@@ -125,45 +124,5 @@ public class AjaxGroupController {
 		}
 		return ret;
 	}
-	
-	@RequestMapping(value = "ajax_grp_mem_list.do", method = RequestMethod.GET,
-			produces="application/json")
-	public @ResponseBody List<Sports_Member> grpMemList(
-			@RequestParam(value="no") int no,
-			@RequestParam(value="mem_id") String mem_id,
-			@RequestParam(value="idList", required=false) String[] ids) {
-		System.out.println(no);
-		System.out.println(mem_id);
-		
-		List<Sports_Member> list = new ArrayList<Sports_Member>();
-		if(ids == null) {
-			list = gDAO.showAllMemberList(no, mem_id);
-			return list;
-		} else {
-			List<String> idList = new ArrayList<String>(Arrays.asList(ids));
-			System.out.println(ids.length);
-			idList.add(mem_id);
-			for(String a :idList) {
-				System.out.println("idList: "+a);
-			}
-			list = gDAO.showAddableMemberList(no, idList);
-			System.out.println(list.size());
-			return list;
-		}
-	}
-	
-	@RequestMapping(value = "ajax_add_grp_mem.do", 
-			method = {RequestMethod.GET, RequestMethod.POST},
-			produces="application/json")
-	public @ResponseBody List<Sports_Member> addGrpMem(
-			@RequestParam(value="id_list") String[] id_list) {
-		System.out.println("AJAX: " + id_list.length);
-		for(String a : id_list) {
-			System.out.println("id_list: "+a);
-		}
-		
-		List<Sports_Member> list = mDAO.selectMemberList(id_list);
-		
-		return list;
-	}
+
 }

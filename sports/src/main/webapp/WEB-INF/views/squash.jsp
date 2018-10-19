@@ -85,7 +85,7 @@
 		            	<c:forEach items="${list}" var="vo">
 			            	<div class="ui card">
 		                    	<div class="image">
-		                    		<img src="${vo.grp_mainimg}" onerror="this.src='resources/images/matthew.png'"/>
+		                    		<img class="ui fluid image" src="${vo.grp_mainimg}" onerror="this.src='resources/images/matthew.png'"/>
 		                    	</div>
 		                    	<div class="center aligned content">
 		                    		<input type="hidden" class="grp_no" value="${vo.grp_no}"/>

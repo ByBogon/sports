@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<div class="ui modal" id="writeFeedOnGroup">
+<div class="ui modal writeFeedOnGroup" id="writeFeedOnGroup">
 	<i class="close icon"></i>
 	<div class="header modal_header">
 		글쓰기
@@ -11,7 +11,7 @@
 					<div class="six wide column">
 						<div class="ui medium rounded fluid image">
 							<input id="file" name="file" type="file" accept=".jpg, .jpeg, .png, .gif" style="display: none">
-							<img id="modal_img" class="center aligned" src="resources/images/default.png">
+							<img id="modal_img" class="center aligned" src="resources/images/default.png" onerror="this.src='resources/images/default.png'">
 							
 						</div>
 					</div>

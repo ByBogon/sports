@@ -10,11 +10,10 @@
 	<!-- Bootstrap CSS -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css">
-	<!-- jQuery and Bootstrap -->
+	
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/semantic.min.js"></script>
 	<script src="resources/js/nav_bar.js"></script>
@@ -68,9 +67,12 @@
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
-						<label>간략한 그룹 설명</label>
-						<div class="ui fluid input">
-							<input type="text" id="grp_detail" name="grp_detail" />
+						<div class="ui negative hidden message mem_add_warn" id="mem_add_warn">
+							<i class="close icon"></i>
+							<div class="header">
+								운동종목 미선택
+							</div>
+							운동종목을 필히 선택하셔야 합니다.
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
@@ -87,14 +89,12 @@
 						</div>
 					</div>
 					<div class="ui container" style="margin-top: 20px">
-						<div class="ui negative hidden message mem_add_warn" id="mem_add_warn">
-							<i class="close icon"></i>
-							<div class="header">
-								운동종목 미선택
-							</div>
-							운동종목을 필히 선택하셔야 합니다.
+						<label>간략한 그룹 설명</label>
+						<div class="ui fluid input">
+							<input type="text" id="grp_detail" name="grp_detail" />
 						</div>
 					</div>
+					
 					<div class="ui container" style="margin-top: 20px">
 						<label>센터 찾기</label>
 						<div class="ui fluid action input" id="div_center">
@@ -118,6 +118,7 @@
 								<li>
 									<p>센터는 <b>센터찾기</b>나 <b>직접입력</b> 중 하나만 입력 가능합니다.</p>
 								</li>
+								<li>센터명을 모르거나 찾을 수 없다면, 아래의 직접 입력을 이용하여 주세요.</li>
 								<li>원하는 센터명/주소를 입력하고 찾기를 클릭해주세요.</li>
 								<li><b>확인</b>을 눌러 해당 모임의 센터를 정해주세요.</li>
 							</ul>
@@ -181,29 +182,20 @@
 		</div>
 	
 	</div>
-	
-	<!-- Modal -->
-	<div class="modal" id="modal_del_grp_mem" tabindex="-1"
-		role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalCenterTitle">멤버 삭제</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">선택하신 멤버를 제외하시겠습니까?</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-secondary" data-dismiss="modal"
-						value="취소" /> <input type="button" class="btn btn-danger"
-						id="modal_btn_rmv" value="삭제" />
-				</div>
-			</div>
-		</div>
-	</div>
 </div>	
+<!-- Modal -->
+<div class="ui mini modal modal_del_grp_mem">
+	<div class="header">
+		멤버 삭제
+	</div>
+	<div class="content">
+		선택하신 멤버를 제외하시겠습니까?
+	</div>
+	<div class="actions">
+		<div class="ui black deny button">취소</div>
+		<div class="ui red ok button" id="modal_btn_rmv">삭제</div>
+	</div>
+</div>
 
 <jsp:include page="modal_add_group_mem.jsp"></jsp:include>
 <jsp:include page="modal_search_group_center.jsp"></jsp:include>
@@ -658,7 +650,12 @@
 			console.log(genre);
 			
 			var form = $('#myForm').serializeArray();
-			form.push({name: "memList", value: checkedIds});
+			console.log(informingCenterLat+" / "+informingCenterLng);
+			form.push(
+					{name: "memList", value: checkedIds}, 
+					{name: "lat", value: informingCenterLat}, 
+					{name: "lng", value: informingCenterLng}
+			);		
 			console.log(form);
 			/* var formData = new FormData(form);
 			formData.append("memList", checkedIds);
@@ -730,6 +727,7 @@
 					},
 					onVisible : function() {
 						console.log('onVisible');
+						$('#modal_container_loader').removeClass('active');
 						$('#searchKeyword').append(searchKeywordLabel);
 					},
 					onHidden	: function() {
@@ -769,7 +767,7 @@
 					}
 				})
 			})
-			$('#modal_del_grp_mem').modal('hide');
+			$('.modal_del_grp_mem').modal('hide');
 		})
 
 		$('#btn-rmv').on('click', function() {
@@ -783,7 +781,11 @@
 				}
 			})
 			console.log(rmIdList.length);
-			$('#modal_del_grp_mem').modal('show');
+			$('.modal_del_grp_mem')
+				.modal({
+					centered: true
+				})
+				.modal('show');
 		})
 		$('.members').on('click', '.card', function() {
 			var idx = $(this).index('.card');
@@ -797,17 +799,15 @@
 				clickableDelBtn();
 			}
 		})
-
-		$('#insertGrpMemModal').on('shown.bs.modal', function() {
-			
-		})
 		
 		$('#modal_btn_add_grp_mem').on('click',function(e) {
+			e.preventDefault();
+
+			$('#modal_btn_add_grp_mem').addClass('disabled');
 			console.log(id_list.length);
 			$.each(id_list, function(index, val) {
 				console.log(val);
 			})
-			e.preventDefault();
 			$.ajax({
 				traditional : true,
 				type : "POST",
@@ -824,7 +824,7 @@
 						$('.members').append(
 							'<div class="card">'
 								+ '<div class="image">'
-									+ '<img src="resources/images/elyse.png">'
+	                    			+ '<img src="'+data[i].mem_img+'" onerror="this.src=\'resources/images/elyse.png\'"/>'
 								+ '</div>'
 								+ '<div class="content">'
 									+ '<div class="header">'+data[i].mem_name+'</div>'
@@ -846,14 +846,8 @@
 				}
 			})
 			$('#insertGrpMemModal').modal('hide');
-			return false;
 		})
 
-		// 모달이 hide 이벤트를 시작할때는 .on('hide.bs.modal')
-		// 모달이 없어진뒤 함수
-		$('#insertGrpMemModal').on('hidden.bs.modal', function() {
-			
-		});
 		
 		$('#mem_table').on('click', '.mem', function() {
 			var idx = $(this).index('.mem');
@@ -912,18 +906,50 @@
 			if( (id === 'undefined') || (id === '') ) {
 				window.location.href = "login.do";
 			}
-			/* var loader = '';
-			loader += '<div class="ui segment">';
-			loader += '<div class="ui active dimmer">';
-			loader += '<div class="ui text loader">Loading</div></div></div>'; */
 			$('#insertGrpMemModal')
 				.modal({
 					onShow	: function() {
+						$('#modal_btn_add_grp_mem').removeClass('disabled');
+						$('#modal_txt_search_mem').val('');
 						console.log('onShow');
-						$('#modal_container_loader').addClass('active');						
-						//$('#modal_addGrpMem_loader').html(loader);
+						$('#insertGrpMemModal_loader').addClass('active');
 					},
 					onVisible : function() {
+						console.log('onVisible');
+						$.ajax({
+							url : 'ajax_grp_mem_list.do',
+							data : {
+								no : no,
+								mem_id : id,
+								idList : cardIdList
+							},
+							dataType : 'json',
+							traditional : true,
+							success : function(data) {
+								console.log(data);
+								var len = data.length;
+								console.log(len);
+								var html = '';
+								if(len > 0) {
+									for (var i = 0; i < len; i++) {
+										html += '<tr class="mem" id="mem">';
+										html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+										html += 'value="'+data[i].mem_id+'"/></td>';
+										html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+										html += '<td>'+data[i].mem_name+'</td>';
+										html += '</tr>';
+									}
+									$('#tbody_group_mem').html(html);
+									return false;	
+								} else {
+									$('.txt_msg').html('<label>더이상 추가 가능한 멤버가 없습니다</label>');
+								}
+							}
+						})
+						.done(function() {
+							$('#insertGrpMemModal_loader').removeClass('active');
+						})
+						
 						$('.addGrpMemTbody > .members').find('.card').each(function() {
 							var idx = $(this).index('.card');
 							console.log(idx);
@@ -943,43 +969,14 @@
 						})
 					},
 					onHidden : function() {
+						console.log('hidden');
 						$('.addGrpMemTbody > .members').remove();
 						id_list.length = 0;
 						console.log('id_list: ' + id_list.length);
 					}
 				})
 				.modal('show');
-			$.ajax({
-				url : 'ajax_grp_mem_list.do',
-				data : {
-					no : no,
-					mem_id : id,
-					idList : cardIdList
-				},
-				dataType : 'json',
-				traditional : true,
-				success : function(data) {
-					console.log(data);
-					var len = data.length;
-					console.log(len);
-					var html = '';
-					if(len > 0) {
-						for (var i = 0; i < len; i++) {
-							html += '<tr class="mem" id="mem">';
-							html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
-							html += 'value="'+data[i].mem_id+'"/></td>';
-							html += '<td class="mem_id">'+data[i].mem_id+'</td>';
-							html += '<td>'+data[i].mem_name+'</td>';
-							html += '</tr>';
-						}
-						$('#tbody_group_mem').html(html);
-						//$('#modal_addGrpMem_loader').empty();
-						return false;	
-					} else {
-						$('.txt_msg').html('<label>더이상 추가 가능한 멤버가 없습니다</label>');
-					}
-				}
-			});
+			
 		})
 		
 		$('#modal_btn_search_mem').on('click', function() {
@@ -990,7 +987,7 @@
 			console.log(mem);
 			console.log(myid);
 			console.log(myname);
-			$.get('ajax_search_member.do?mem='+mem+'&myid='+myid+'&myname='+myname, function(data) {
+			$.get('ajax_search_member.do?mem='+mem+'&myid='+myid+'&myname='+myname+'&idList='+cardIdList, function(data) {
 				$('#tbody_group_mem').empty();
 				$('.txt_msg').empty();
 				console.log(data);
@@ -1040,7 +1037,6 @@
 								console.log('j: '+j);
 								if(id_list[j] === data[i].mem_id) {
 									console.log('AAA: '+j);
-									//$('').addClass("highlight");
 									console.log(id_list[j]);
 									html += '<tr class="mem highlight">';
 									html += '<td><input type="checkbox" class="mem_chck" name="chk[]"';
@@ -1062,8 +1058,8 @@
 								html += '</tr>';
 							}
 						} 
-						
-					} else if ( (mem.trim() === '') && (id_list.length === 0) ) {
+					} else if ( (id_list.length === 0) && (len !== 0 ) ) {
+						console.log('저기');
 						for (var i = 0; i < len; i++) {
 							html += '<tr class="mem">';
 							html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
@@ -1072,7 +1068,17 @@
 							html += '<td>'+data[i].mem_name+'</td>';
 							html += '</tr>';
 						}
-					}
+					} else if ( (mem.trim() === '') && (id_list.length === 0) ) {
+						console.log('여기');
+						for (var i = 0; i < len; i++) {
+							html += '<tr class="mem">';
+							html += '<td><input type="checkbox" class="mem_chck" name="chk[]" ';
+							html += 'value="'+data[i].mem_id+'"/></td>';
+							html += '<td class="mem_id">'+data[i].mem_id+'</td>';
+							html += '<td>'+data[i].mem_name+'</td>';
+							html += '</tr>';
+						}
+					} 
 					$('#tbody_group_mem').html(html)
 				} else {
 					$('.txt_msg').html('<label>원하는 멤버를 찾지 못하였습니다</label>');

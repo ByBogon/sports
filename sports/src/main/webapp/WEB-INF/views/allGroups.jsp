@@ -57,7 +57,7 @@
 										</div>
 									</div>
 								</div>
-								<img src="resources/images/molly.png">
+	                    		<img src="${vo.grp_mainimg}" onerror="this.src='resources/images/molly.png'"/>
 							</div>
 							<div class="content">
 								<div class="header">${vo.grp_name}</div>

@@ -7,7 +7,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>마이페이지</title>
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="resources/css/bootstrap.min.css">
 <link rel="stylesheet" href="resources/css/semantic.min.css">
 <link rel="stylesheet" href="resources/css/nav_bar.css?ver=2">
 <!-- jQuery and Bootstrap -->
@@ -67,9 +66,14 @@
 			var id = '${sessionScope.SID}';
 			var defaultImgsrc = $('#img').attr('src');
 			console.log(defaultImgsrc);
-			if(defaultImgsrc.includes('resources/images/')) {
+			console.log(myFile);
+			if ( (defaultImgsrc.includes('resources/images/')) || (myFile === '')) {
+				console.log('1');
 				$('#update_form').submit();
-			} else {
+				return false;
+			} 
+			if (myFile !== '') {
+				console.log('2');
 				var formData = new FormData();
 				formData.append('file', myFile);
 				console.log(myFile);
@@ -238,7 +242,7 @@
 												html += '<div class="content"> <div class="center">';
 												html += '<div class="ui inverted button" id="profile">이미지 변경</div>';
 											    html += '</div></div></div>';
-									    		html += '<img name="img" id="img" src="'+img+'"></div>';
+									    		html += '<img name="img" id="img" src="'+img+'" onerror="this.src=\'resources/images/elyse.png\'"></div>';
 									    		html += '<input type="file" name="profile_img" id="file" style="display: none"/>';
 												html += '<div class="floating ui teal label">Default</div>';
 											   	html += '<div class="content">';

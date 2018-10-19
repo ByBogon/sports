@@ -11,4 +11,5 @@ public class CenterController {
 	public String centerLocation() {
 		return "center_location";
 	}
+
 }

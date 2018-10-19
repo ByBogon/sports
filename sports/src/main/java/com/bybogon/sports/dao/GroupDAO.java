@@ -209,26 +209,7 @@ public interface GroupDAO {
 			" INNER JOIN SPORTS_MEMBER m ON m.MEM_ID = b.GRP_LEADER" 
 	})
 	public Sports_Grp selectGroupOne(@Param("grp_no") int grp_no);
-	
-	@Select({"<script>",
-			"SELECT * FROM SPORTS_MEMBER ",
-			" WHERE MEM_ID NOT IN ",
-			" <foreach collection='idList' item='item' index='index' separator=',' open='(' close=')'> ",
-			" #{item} ",
-			" </foreach>",
-			" AND SPORTS_NO = #{no}",
-			"</script>"
-			})
-	public List<Sports_Member> showAddableMemberList(
-			@Param("no") int no, 
-			@Param("idList") List<String> idList);
-	
-	@Select({"SELECT * FROM SPORTS_MEMBER ",
-			" WHERE MEM_ID NOT IN #{mem_id} AND SPORTS_NO = #{no}"})
-	public List<Sports_Member> showAllMemberList(
-		@Param("no") int no, 
-		@Param("mem_id") String mem_id);
-	
+
 	@Select({"SELECT NVL(MAX(GRP_MEM_NO), 0) FROM SPORTS_GRP_MEM"})
 	public int selectRecentGrpMemNo();
 	
@@ -274,7 +255,7 @@ public interface GroupDAO {
 	
 	@Select({"SELECT ",
 			"	g.GRP_NO, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, GRP_NAME, ",
-			"	GRP_DETAIL, grp.cnt, g.GRP_LEADER, s.SPORTS_NAME, ",
+			"	GRP_DETAIL, GRP_MAINIMG, grp.cnt, g.GRP_LEADER, s.SPORTS_NAME, ",
 			"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
 			" FROM ", 
 			"    (SELECT ", 
@@ -292,7 +273,7 @@ public interface GroupDAO {
 	public List<Sports_Grp> selectMyGroups(@Param("id") String id);
 	
 	@Select({"SELECT ",
-			"	g.GRP_NO, GRP_DETAIL, GRP_NAME, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ",
+			"	g.GRP_NO, GRP_DETAIL, GRP_NAME, GRP_MAINIMG, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ",
 			"	s.SPORTS_NAME, g.GRP_LEADER, grp.cnt, ",
 			"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
 			"FROM ",

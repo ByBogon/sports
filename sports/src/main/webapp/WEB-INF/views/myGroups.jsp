@@ -37,21 +37,9 @@
 					<c:forEach var="vo" items="${list}">
 						<div class="ui link card">
 							<input type="hidden" class="grp_no" value="${vo.grp_no}"/>
-							<!-- <div class="content">
-								<div class="right floated meta">
-									<div class="ui left pointing dropdown">
-										<input type="hidden" name="">
-										<i class="dropdown icon"></i>
-										<div class="menu">
-											<div class="item" data-value="view">그룹 정보</div>
-											<div class="item" data-value="delete">그룹 탈퇴</div>
-										</div>
-									</div>
-								</div>
-							</div> -->
 							<div class="image">
-								<img src="resources/images/molly.png">
-							</div>
+	                    		<img src="${vo.grp_mainimg}" onerror="this.src='resources/images/molly.png'"/>
+	                    	</div>
 							<div class="content">
 								<div class="header">${vo.grp_name}</div>
 								<div class="meta right floated">모임장: ${vo.grp_leader}</div>

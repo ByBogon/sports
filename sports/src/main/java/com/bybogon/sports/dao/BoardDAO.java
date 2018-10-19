@@ -17,10 +17,14 @@ import com.bybogon.sports.vo.Sports_Brd;
 
 public interface BoardDAO {
 	@Options(useGeneratedKeys=false)
-	@Update({"UPDATE SPORTS_BRD SET ",
-			" BRD_CONTENT = #{vo.brd_content}, ",
-			" BRD_IMG = #{vo.brd_img} ",
-			" WHERE BRD_WRITER = #{vo.brd_writer} AND BRD_NO = #{vo.brd_no} AND BRD_CHECK = 1"
+	@Update({"<script>",
+			" UPDATE SPORTS_BRD SET ",
+			" BRD_CONTENT = #{vo.brd_content} ",
+			" <if test=\"vo.brd_img neq null\">",
+			" , BRD_IMG = #{vo.brd_img} ",
+			" </if> ",
+			" WHERE BRD_WRITER = #{vo.brd_writer} AND BRD_NO = #{vo.brd_no} AND BRD_CHECK = 1",
+			"</script>"
 	})
 	public int updateBoardOne(@Param("vo") Sports_Brd vo);
 	
@@ -82,11 +86,11 @@ public interface BoardDAO {
 			" ) grp ", 
 			" FULL JOIN ( ", 
 			"    SELECT ", 
-			"        COUNT(b.BRD_NO) cnt, r.BRD_NO ", 
+			"        COUNT( DISTINCT RPL_NO ) cnt, r.BRD_NO ", 
 			"    FROM SPORTS_BRD_REPLY r ", 
 			"    LEFT JOIN SPORTS_BRD b ON b.BRD_NO = r.BRD_NO ", 
-			"    LEFT JOIN SPORTS_GRP_MEM ON GRP_MEM = BRD_WRITER ", 
-			"    WHERE BRD_GROUP = #{grp_no} AND GRP_MEM_CHECK = 1 GROUP BY r.BRD_NO ", 
+			"    LEFT JOIN SPORTS_GRP_MEM m ON m.GRP_MEM = r.RPL_WRITER ", 
+			"    WHERE b.BRD_GROUP = #{grp_no} AND m.GRP_MEM_CHECK = 1 GROUP BY r.BRD_NO ", 
 			" ) rpl ON rpl.BRD_NO = grp.BRD_NO ",
 			" WHERE grp.BRD_CHECK = 1 ",
 			" ORDER BY grp.BRD_DATE DESC ", 

@@ -54,11 +54,11 @@
 		$('#btn_login').on("click", function() {
 			var a = $('#id').val();
 			var b = $('pw').val();
-			if (a == '' || a == undefined) {
+			if ( (a === '') || (typeof a === undefined) ) {
 				swal('입력오류', '아이디를 입력하세요.', 'warning');
 				return false;
 			}
-			if (b == '' || b == undefiend) {
+			if ( (b === '') || (typeof b === undefined) ) {
 				swal('입력오류', '패스워드를 입력하세요.', 'warning');
 				return false;
 			}

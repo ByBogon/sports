@@ -96,25 +96,26 @@ public class MemberController {
 						session.setAttribute("SID", vo.getMem_id());
 						session.setAttribute("SNAME", vo.getMem_name());
 					
-					//마지막 페이지 주소
-					String backUrl = (String) session.getAttribute("BACK_URL");
-					System.out.println("00:"+backUrl);
-					if(backUrl.equals("login.do")) {
-						backUrl = "squash.do";
-					}			
-					request.setAttribute("msg", "로그인 성공");
-					request.setAttribute("url", backUrl);
+						//마지막 페이지 주소
+						String backUrl = (String) session.getAttribute("BACK_URL");
+						System.out.println("00:"+backUrl);
+						if(backUrl.equals("login.do")) {
+							backUrl = "squash.do";
+						}			
+						request.setAttribute("msg", "로그인 성공");
+						request.setAttribute("url", backUrl);
 					return "alert"; 
-					} else if (vo.getMem_check() == 0) {
-						System.out.println("차단된 아이디입니다. 관리자에게 문의하세요");
-						return "redirect:login.do"; //login.jsp표시
 					} else {
-						System.out.println("아이디와 비밀번호를 확인해주세요.");
-						return "redirect:login.do"; //login.jsp표시
-					}
+						request.setAttribute("msg", "차단된 아이디입니다. 관리자에게 문의하세요");
+						request.setAttribute("url", "login.do");
+						System.out.println("차단된 아이디입니다. 관리자에게 문의하세요");
+						return "alert";
+					} 
 				} else {
-					System.out.println("vo가 null 입니다");
-					return "redirect:login.do";
+					request.setAttribute("msg", "아이디나 비밀번호를 확인해주세요.");
+					request.setAttribute("url", "login.do");
+					System.out.println("vo가 null 입니다. 아이디와 비밀번호를 확인해주세요.");
+					return "alert";
 				}
 			} else {
 				//session 이 존재할때(로그인 상태일때)
@@ -127,7 +128,10 @@ public class MemberController {
 			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-			return "redirect:login.do";
+			request.setAttribute("msg", "알수없는 에러 입니다");
+			request.setAttribute("url", "login.do");
+			System.out.println("에러입니다");
+			return "alert";
 		}
 	}
 	

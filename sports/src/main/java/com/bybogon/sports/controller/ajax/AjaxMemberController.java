@@ -1,5 +1,7 @@
 package com.bybogon.sports.controller.ajax;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +29,17 @@ public class AjaxMemberController {
 	@RequestMapping(value = "ajax_block_account.do", method = RequestMethod.POST)
 	public int blockAccount(
 			@RequestParam(value = "id") String id,
-			@RequestParam(value = "pw") String pw) {
+			@RequestParam(value = "pw") String pw,
+			HttpSession session) {
+		
 		int ret = 0;
 		try {
 			AES256Encrypt aes256 = new AES256Encrypt(key);
 			String encPw = aes256.aesEncode(pw);
 			ret = mDAO.blockMember(id, encPw);
+			session.removeAttribute("SID");
+			session.removeAttribute("SNAME");
+			session.invalidate();
 			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -50,16 +57,60 @@ public class AjaxMemberController {
 		return ret;
 	}
 	
+	@RequestMapping(value = "ajax_add_grp_mem.do", 
+			method = {RequestMethod.GET, RequestMethod.POST},
+			produces="application/json")
+	public @ResponseBody List<Sports_Member> addGrpMem(
+			@RequestParam(value="id_list") String[] id_list) {
+		System.out.println("id_list length: " + id_list.length);
+		for(String a : id_list) {
+			System.out.println("id_list: "+a);
+		}
+		
+		List<Sports_Member> list = mDAO.selectMemberList(id_list);
+		
+		return list;
+	}
+
+	@RequestMapping(value = "ajax_grp_mem_list.do", method = RequestMethod.GET,
+			produces="application/json")
+	public @ResponseBody List<Sports_Member> grpMemList(
+			@RequestParam(value="no") int sportsGenreNo,
+			@RequestParam(value="mem_id") String mem_id,
+			@RequestParam(value="idList", required=false) String[] ids) {
+		System.out.println(sportsGenreNo);
+		System.out.println(mem_id);
+		
+		List<Sports_Member> list = new ArrayList<Sports_Member>();
+		if(ids == null) {
+			list = mDAO.showAllMemberList(sportsGenreNo, mem_id);
+			return list;
+		} else {
+			List<String> idList = new ArrayList<String>(Arrays.asList(ids));
+			System.out.println(ids.length);
+			idList.add(mem_id);
+			for(String a :idList) {
+				System.out.println("idList: "+a);
+			}
+			list = mDAO.showAddableMemberList(sportsGenreNo, idList);
+			System.out.println(list.size());
+			return list;
+		}
+	}
+	
 	@RequestMapping(value = "ajax_search_member.do", method = RequestMethod.GET,
 			produces="application/json")
 	public @ResponseBody List<Sports_Member> searchMember(
 			@RequestParam(value="mem") String mem,
 			@RequestParam(value="myid") String myid,
-			@RequestParam(value="myname") String myname) {
+			@RequestParam(value="myname") String myname,
+			@RequestParam(value="idList", required=false) String[] ids) {
 		System.out.println(mem);
 		System.out.println(myid);
 		System.out.println(myname);
-		List<Sports_Member> list = mDAO.searchMemberList(mem, myid, myname);
+		
+		List<String> idList = new ArrayList<String>(Arrays.asList(ids));
+		List<Sports_Member> list = mDAO.searchAddableMemberList(mem, myid, myname, idList);
 		for(Sports_Member vo : list) {
 			System.out.println(vo.getMem_id());
 		}

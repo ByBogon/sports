@@ -22,6 +22,27 @@ public class AjaxCenterController {
 	@Autowired
 	private CenterDAO cDAO;
 	
+	@RequestMapping(value = "insertInformingCenter.do", method = RequestMethod.POST)
+	public String insertNewCenter(
+			@RequestParam(value="memId") String memId,
+			@RequestParam(value="centerAddr") String centerAddr,
+			@RequestParam(value="centerName") String centerName,
+			@RequestParam(value="centerDetail") String centerDetail,
+			@RequestParam(value="centerLat") float centerLat,
+			@RequestParam(value="centerLng") float centerLng) {
+		
+		int ret = cDAO.insertInfrmCenterOneByMem(
+				memId, 
+				centerAddr,
+				centerName,
+				centerDetail,
+				centerLat,
+				centerLng);
+		
+		
+		return null;
+	}
+	
 	@RequestMapping(value = "/ajax_center_locations.do",
 			method= {RequestMethod.GET, RequestMethod.POST},
 			produces="application/json")

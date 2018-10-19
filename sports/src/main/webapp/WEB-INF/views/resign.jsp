@@ -13,40 +13,33 @@
 <script src="resources/js/jquery-3.3.1.min.js"></script>
 <script src="resources/js/semantic.min.js?ver=1"></script>
 <script src="resources/js/nav_bar.js?ver=1"></script>
-<style>
-.ui.modal:not(.compact) {
-width: calc(100% - 50px) !important;
-margin-left: 25px !important;
-height: calc(100% - 50px) !important;
-margin-top: 25px !important;
-}
-</style>
+
 </head>
 <body>
-<div class="ui page grid">
-<jsp:include page="nav_main.jsp"></jsp:include>
-	<div class="ui grid" style="width:100%; margin-top: 20px">
-		<jsp:include page="myPageMenuOnLeft.jsp"></jsp:include>
-		<div class="right floated column" style="width:70%">
-			<div class="ui container context" id="context">
-				<form class="ui action input form" style="margin-top: 10px">
-					<div class="inline field">
-						<div class="ui right pointing label">
-							현재 비밀번호를 입력해주세요.
+	<div class="ui page grid">
+	<jsp:include page="nav_main.jsp"></jsp:include>
+		<div class="ui grid" style="width:100%; margin-top: 20px">
+			<jsp:include page="myPageMenuOnLeft.jsp"></jsp:include>
+			<div class="right floated column" style="width:70%">
+				<div class="ui container context" id="context">
+					<form class="ui action input form" style="margin-top: 10px">
+						<div class="inline field">
+							<div class="ui right pointing label">
+								현재 비밀번호를 입력해주세요.
+							</div>
+							<input type="password" id="pw"/>
+							<input type="submit" class="ui primary button" id="pwchk" value="확인"/>
 						</div>
-						<input type="password" id="pw"/>
-						<input type="submit" class="ui primary button" id="pwchk" value="확인"/>
-					</div>
-					<div id="message">
-					
-					</div>
-				</form>
-			</div>
-			<div class="ui right aligned container btn-container" style="margin-top: 10px">
+						<div id="message">
+						
+						</div>
+					</form>
+				</div>
+				<div class="ui right aligned container btn-container" style="margin-top: 10px">
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
 <!-- Modal -->
 <div class="ui basic modal" id="modal_resign_account">
 	<div class="ui icon header">

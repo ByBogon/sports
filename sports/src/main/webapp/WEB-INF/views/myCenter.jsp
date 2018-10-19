@@ -50,30 +50,28 @@
 				</c:if>
 				<c:if test="${map.CENTER_NO != null}">
 					<div class="ui container" style="margin-top: 20px">
-						<div>
-							<div class="ui centered card">
-								<div class="left aligned content">
-									<c:if test="${map.MEM_IMG == null}">
-										<img class="ui avatar image" src="resources/images/molly.png">
-									</c:if>
-									<c:if test="${map.MEM_IMG != null}">
-										<img class="ui avatar image" src="${map.MEM_IMG}">
-									</c:if>
-									${map.MEM_NAME}
-								</div>
-								<div class="image">
-									<div id="map2" style="width: 200px; height:310px; 
-									max-height: 100%; min-width: 100%; 
-									margin:auto;"></div>
-				
-								</div>
-								<div class="left aligned content">
-									<label>${map.CENTER_NAME}</label>
-									<div class="right floated meta">${map.CENTER_TEL}</div>
-								</div>
-								<div class="center floated content">
-									${map.CENTER_ADDR}
-								</div>
+						<div class="ui centered card">
+							<div class="left aligned content">
+								<c:if test="${map.MEM_IMG == null}">
+									<img class="ui avatar image" src="resources/images/molly.png">
+								</c:if>
+								<c:if test="${map.MEM_IMG != null}">
+									<img class="ui avatar image" src="${map.MEM_IMG}">
+								</c:if>
+								${map.MEM_NAME}
+							</div>
+							<div class="image">
+								<div id="map2" style="width: 200px; height:310px; 
+								max-height: 100%; min-width: 100%; 
+								margin:auto;"></div>
+			
+							</div>
+							<div class="center aligned content">
+								<label>${map.CENTER_NAME}</label>
+								<div class="right floated meta" style="margin-top: 10px">${map.CENTER_TEL}</div>
+							</div>
+							<div class="center aligned content">
+								${map.CENTER_ADDR}
 							</div>
 						</div>
 					</div>											

@@ -60,7 +60,7 @@ public class AwsS3DAOImpl implements AwsS3DAO {
 		try {
 		
 		String fileNameInS3 = keyname;
-		
+		System.out.println(keyname);
 		ObjectMetadata metadata = new ObjectMetadata();
 		metadata.setContentLength(uploadFile.getSize());
 		s3client.putObject(

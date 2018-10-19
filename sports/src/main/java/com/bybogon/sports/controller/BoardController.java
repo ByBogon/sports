@@ -30,7 +30,7 @@ public class BoardController {
 	private String bucketName;
 	
 	String amazonUrl = "https://s3.ap-northeast-2.amazonaws.com/";
-	String dir = "board/feed/";
+	
 	
 	@RequestMapping(value="updateOneBoard.do", method=RequestMethod.POST)
 	public String updateOneBoard(
@@ -39,6 +39,7 @@ public class BoardController {
 			@RequestParam(value="modal_grp_no") int grp_no,
 			@RequestParam(value="modal_brd_no") int brd_no,
 			HttpSession session, Model model) throws Exception {
+		String dir = "board/feed/";
 		String id = (String) session.getAttribute("SID");
 		int ret;
 		Sports_Brd vo;
@@ -89,6 +90,7 @@ public class BoardController {
 		Sports_Brd vo;
 		int ret;
 		String S3ImgUrl;
+		String dir = "board/feed/";
 		String id = (String) session.getAttribute("SID");
 		if ( !(uploadFile.isEmpty()) ) {
 			

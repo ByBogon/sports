@@ -15,10 +15,10 @@
 
 	<div class="scrolling content">
 		<div class="container" style="margin-bottom: 5px">
-			<div class="ui dimmer" id="modal_container_loader">
+			<div class="ui dimmer" id="insertGrpMemModal_loader">
 				<div class="ui text loader">Loading</div>
 			</div>
-			<table class="table table-hover" id="mem_table" style="text-align:center">
+			<table class="ui selectable celled table table_modal" id="mem_table" style="text-align:center">
 				<thead>
 					<tr>
 						<th scope="col"></th>
@@ -35,8 +35,7 @@
 	</div>
 
 	<div class="actions">
-		<input type="submit" class="ui teal button" id="modal_btn_add_grp_mem" value="추가" />
-		<button type="button" class="ui black deny button"
-			data-dismiss="modal">취소</button>
+		<div class="ui teal button" id="modal_btn_add_grp_mem">추가</div>
+		<div class="ui black deny button">취소</div>
 	</div>
 </div>

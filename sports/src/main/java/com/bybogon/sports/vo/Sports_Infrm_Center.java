@@ -21,11 +21,16 @@ public class Sports_Infrm_Center {
 		super();
 		this.infrm_center_name = infrm_center_name;
 	}
+	
+	
 
-	public Sports_Infrm_Center(String infrm_center_name, String infrm_center_addr) {
+	public Sports_Infrm_Center(String infrm_center_name, String infrm_center_addr, float infrm_center_lat,
+			float infrm_center_lng) {
 		super();
 		this.infrm_center_name = infrm_center_name;
 		this.infrm_center_addr = infrm_center_addr;
+		this.infrm_center_lat = infrm_center_lat;
+		this.infrm_center_lng = infrm_center_lng;
 	}
 
 	public Sports_Infrm_Center(String infrm_center_name, String infrm_center_addr, String infrm_center_detail) {

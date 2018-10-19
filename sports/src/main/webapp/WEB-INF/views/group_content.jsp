@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page session="true"%>
 <html>
 <head>
@@ -36,9 +37,7 @@
 						min-height: 100%; min-width: 100%; margin:auto;"></div>
 				</div>
 				<div class="center aligned content">
-					<div class="header">
-						${vo.grp_name}
-					</div>
+					<div class="header main_grp_name">${vo.grp_name}</div>
 					<div class="meta right floated">모임장: ${vo.mem_name}</div>
 					<div class="description">
 						${vo.grp_detail}
@@ -99,8 +98,18 @@
 						<div class="ui right floated primary disabled button write_feed" id="write_feed">글쓰기</div>
 					</div>
 				</div>
-				<div class="ui fluid segment container" style="margin-top: 20px">
-				<div class="ui fluid cards" id="boardContainer" style="width: 100%; display: none">
+				<div class="ui fluid segment container" id="boardContainer" style="margin-top: 20px; display: none">
+				<div class="ui fluid cards" style="width: 100%;">
+					<c:set var="board" value="${board}"/>
+                    <c:if test="${fn:length(board) eq 0}">
+                    	<div class="ui fluid centered card">
+                    		<div class="center aligned content">
+                    			<div class="header">
+                    				피드가 비어있습니다. 글을 작성해주세요.
+                    			</div>
+                    		</div>
+                    	</div>
+                    </c:if>
 					<c:forEach items="${board}" var="bo">
 						<div class="ui fluid centerd card board_card">
 							<div class="content">
@@ -132,13 +141,28 @@
 									${bo.brd_date}
 								</div>
 								<div class="description brd_content" style="margin-top: 40px">
-									<c:if test="${bo.brd_img != null}">  
-										<img class="ui left aligned medium image brd_img" src="${bo.brd_img}" >
+								
+									<c:if test="${bo.brd_img != null}"> 
+										<div class="ui grid">
+											<div class="two column row">
+												<div class="six wide column"> 
+													<img class="ui center aligned medium image brd_img" src="${bo.brd_img}" >
+												</div>
+												<div class="ten wide column">
+													<div class="ui container">
+														${bo.brd_content}		
+													</div>
+												</div>
+											</div>
+										</div>
 									</c:if>
 									<c:if test="${bo.brd_img == null}">  
-										<img class="ui left aligned medium image brd_img" style="display: none" >
+										<img class="ui center aligned medium image brd_img" style="display: none" >
+										<div class="ui container">
+											${bo.brd_content}		
+										</div>
 									</c:if>
-									${bo.brd_content}
+									
 								</div>
 							</div>
 							<div class="extra content">
@@ -321,7 +345,6 @@
 			position: coords2
 		});
 		
-		
 		if ( ${sessionScope.SID == vo.grp_leader} ) {
 			$('.joinGrpBtn').addClass('disabled');
 		}
@@ -331,8 +354,14 @@
 			if( ${sessionScope.SID == ''} ) {
 				window.location = "login.do";
 			}
-			$('.updateGrpProfile_modal').modal('show');
-		})
+			$('.updateGrpProfile_modal')
+				.modal({
+					onShow : function() {
+						$('.updateGrpName').val($('.main_grp_name').text().trim());
+					}
+				})
+				.modal('show');
+		});
 		$('.profile_update_btn_cancel').on('click', function() {
 			$('.updateGrpProfile_modal').modal('hide');
 		})
@@ -455,15 +484,20 @@
 			console.log(idx);
 			var brd_content = $('.brd_content').eq(idx).text();
 			var brd_no = $('.brd_no').eq(idx).val();
+			
 			console.log(brd_content);
 			console.log(brd_no);
 			$('#writeFeedOnGroup').modal({
 				onShow	: function() {
+					var file = $('#file').val();
+					console.log(file);
+					
 					$('#modal_brd_no').val(brd_no);
 
 					$('#modal_grp_no').val( ${vo.grp_no} );
 					console.log($('#modal_grp_no').val());
 					$('.ui.modal > .modal_header').text('글수정');
+					$('.writeFeedOnGroup > .actions > .positive').text('수정');
 					$('#writeFeedForm').attr('action', "updateOneBoard.do");
 					$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
 					$('#textarea_content').text(brd_content.trim());
@@ -471,13 +505,14 @@
 				onHidden : function() {
 					$('#modal_brd_no').val('');
 					$('.ui.modal > .modal_header').text('글쓰기');
+					$('.writeFeedOnGroup > .actions > .positive').text('작성');
 					$('#writeFeedForm').attr('action', "writeFeedOnBoard.do");
-					$('#modal_img').attr('src', $('.brd_img').eq(idx).attr('src') );
 					$('#textarea_content').text(brd_content.trim());
 				},
 				onApprove: function() {
 					if( $('#textarea_content').val() !== '' ) {
 						console.log('bbb');
+						
 						$('#writeFeedForm').submit();
 						$('#textarea_content').val('');
 					} else {
@@ -726,9 +761,14 @@
 		$('.write_feed').on('click', function() {
 			$('#writeFeedOnGroup')
 				.modal({
-					onShow: function() {
+					onShow : function() {
 						$('#modal_grp_no').val( ${vo.grp_no} );
 						console.log($('#modal_grp_no').val());
+					},
+					onHidden : function() {
+						$('#file').val('');
+						$('#modal_img').attr('src', '');
+						$('#textarea_content').val('');
 					},
 					onApprove : function() {
 						console.log('aaa');
