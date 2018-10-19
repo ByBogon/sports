@@ -5,176 +5,166 @@
 <head>
 	<meta charset="utf-8">
 	<title>가입하기</title>
-	<!-- Bootstrap CSS -->
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
-	<!-- Bootstrap CSS -->
+	<!-- 
 	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	 -->
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css">
-	<!-- jQuery and Bootstrap -->
+	
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/semantic.min.js"></script>
 	<script src="resources/js/nav_bar.js"></script>
 </head>
 <style>
-	.box600 {
-		width	: 600px;
-		border	: 1px solid #cccccc;
-		padding	: 30px;
-		margin	: 0px auto;	
-		margin-top : 10%;	
+	.contents {
+		position:relative;
+		width: 100%;
+		height: 100%;
 	}
 </style>
 <body>
 	<div class="ui page grid">
 		<jsp:include page="nav_main.jsp"></jsp:include>
-		<div class="ui center aligned container">
-			<form action="join.do" method="post" name="join_form"
-				id="join_form" onsubmit="return subCheck();">
-				<div class="box600">
-					<hr />
-					<div class="form-inline" style="margin-bottom: 5px">
-						<div style="width: 100px">
-							<label>아이디</label>
-						</div>
-						<div style="margin-right: 10px">
-							<input type="text" name="id" id="id" class="form-control"
-								placeholder="아이디" />
-						</div>
-						<div>
-							<input type="button" class="btn btn-primary" id="btn-idcheck"
-								value="중복확인" />
-						</div>
-					</div>
-		
-					<div class="form-inline" style="margin-bottom: 5px">
-		
-						<div style="width: 100px">
-							<label>암호</label>
-						</div>
-						<div>
-							<input type="password" name="pw" class="form-control" id="pw"
-								 onkeyup="pwCheck()" />
-						</div>
-					</div>
-		
-					<div class="form-inline" style="margin-bottom: 5px">
-		
-						<div style="width: 100px">
-							<label>암호확인</label>
-						</div>
-						<div style="margin-right: 10px">
-							<input type="password" class="form-control" id="pw_chk"
-								name="pw_chk" onkeyup="pwCheck()" />
-						</div>
-						<div>
-							<label id="check"></label>
-						</div>
-					</div>
-		
-					<div class="form-inline" style="margin-bottom: 5px">
-						<div style="width: 100px">
-							<label>이름</label>
-						</div>
-						<div>
-							<input type="text" id="name" name="name" class="form-control" />
-						</div>
-					</div>
-		
-					<div class="form-inline" style="margin-bottom: 5px">
-		
-						<div style="width: 100px">
-							<label>나이</label>
-						</div>
-						<div>
-							<input type="text" id="age" name="age"class="form-control" />
-						</div>
-					</div>
-		
-					<div class="form-inline" style="margin-bottom: 5px">
-		
-						<div style="width: 100px">
-							<label>이메일</label>
-						</div>
-						<div style="margin-right: 10px">
-							<input type="text" id="email" name="email" class="form-control" />
-						</div>
-						<div style="width: 20px">
-							<label>@</label>
-						</div>
-						<div>
-							<input type="hidden" id="emails" name="emails" />
-							<select class="ui dropdown" id="drops" name="selected" onchange="dropdownChange()">
-								<option value="gmail.com" selected>gmail.com</option>
-								<option value="hanmail.com">hanmail.com</option>
-								<option value="naver.com">naver.com</option>
-								<option value="daum.net">daum.net</option>
-								<option value="select">직접 입력</option>
-							</select>
-						</div>
-					</div>
-					<div class="ui right aligned container">
-						<div class="ui input">
-							<input type="text" id="type_in" name="type_in" style="display: none;" />
+		<div class="row">
+			<div class="column padding-reset">
+				<div class="contents" style="display: table">
+			<div class="ui fluid container" style="display: table-cell; vertical-align: middle">
+				<div class="ui centered card" style="width:100%">
+					<div class="ui form content">
+					<form action="join.do" method="post" name="join_form"
+					id="join_form" onsubmit="return subCheck();">
+						<hr />
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">아이디</div>
+								<input type="text" name="id" id="id" placeholder="아이디" />
+								<div class="ui primary button" id="btn-idcheck">중복확인</div>
+							</div>
 						</div>
 						
-					</div>
-					<hr />
-					<div align="right">
-						<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
-						<a href="squash.do" class="ui black button">홈으로</a>
-					</div>
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">암호</div>
+								<input type="password" name="pw" class="form-control" id="pw" onkeyup="pwCheck()" />
+							</div>
+						</div>
+						
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">암호확인</div>
+								<input type="password" class="form-control" id="pw_chk"	name="pw_chk" onkeyup="pwCheck()" />
+							</div>
+							<div>
+								<label id="check"></label>
+							</div>
+						</div>
+						
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">이름</div>
+								<input type="text" id="name" name="name" />
+							</div>
+						</div>
+						
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">나이</div>
+								<input type="text" id="age" name="age"/>
+							</div>
+						</div>
+						
+						<div class="ui fluid container" style="margin-bottom: 5px">
+							<div class="ui fluid labeled input action">
+								<div class="ui label">이메일</div>
+								<input type="text" id="email" name="email"/>
+								<div class="ui dropdown label" id="drops" name="selected" onchange="dropdownChange()">
+									<div class="text">gmail.com</div>
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<div class="item" data-value="gmail.com">gmail.com</div>
+										<div class="item" data-value="hanmail.com">hanmail.com</div>
+										<div class="item" data-value="naver.com">naver.com</div>
+										<div class="item" data-value="daum.net">daum.net</div>
+										<div class="item" data-value="select">직접 입력</div>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="emails" name="emails" />
+						</div>
+			
+						
+						<div class="ui right aligned container">
+							<div class="ui input">
+								<input type="text" id="type_in" name="type_in" style="display: none;" />
+							</div>
+							
+						</div>
+					</form>
 				</div>
-			</form>
+				<div class="extra content">
+					<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
+					<a href="squash.do" class="ui black button">홈으로</a>
+				</div>
+			</div>
+		</div>
+		</div>
 		</div>
 	</div>
+		
+</div>
 
 </body>
+
+<!-- 
+<div class="form-inline" style="margin-bottom: 5px">
+	<div style="width: 100px">
+		<label>이메일</label>
+	</div>
+	<div style="margin-right: 10px">
+		<input type="text" id="email" name="email" class="form-control" />
+	</div>
+	<div style="width: 20px">
+		<label>@</label>
+	</div>
+	<div>
+		<input type="hidden" id="emails" name="emails" />
+		<select class="ui dropdown" id="drops" name="selected" onchange="dropdownChange()">
+			<option value="gmail.com" selected>gmail.com</option>
+			<option value="hanmail.com">hanmail.com</option>
+			<option value="naver.com">naver.com</option>
+			<option value="daum.net">daum.net</option>
+			<option value="select">직접 입력</option>
+		</select>
+	</div>
+</div>
+-->
 <script type="text/javascript">
 	$(function(){
 		$('.ui.dropdown').dropdown();
-		/* 
-		$('#submit').submit(function(e) {
-			e.preventDefault();
-			var sep = '@';
-			console.log('submit');
-			console.log($('#email').val());
-			if(($('#type_in').val()).trim() !== '') {
-				console.log('trim');
-				$('#emails').val( ($('#email').val()) + sep + ($('#type_in').val()).trim());
-			} else {
-				console.log('type_in');
-				$('#emails').val( ($('#email').val()) + sep + $('#drops').val() );
-			}
-			$('#join_form').submit();
-		}); */
 		
 		$('#id').keyup(function(){
 			var a = $('#id').val();
 			console.log(a);
 			if (a.length > 0) {
-				//doGET을 호출 {"ret":"y"}
 				console.log("if문 안");
 				$.get('ajax_id_check.do?id='+a, function(data){
 					console.log("get안");
 					if (data == 0) {
-						$('#btn-idcheck').val('사용가능');
+						$('#btn-idcheck').text('사용가능');
 						$('#btn-idcheck').attr('class', 'ui green button');
 					} else if (data > 0) {
-						$('#btn-idcheck').val('사용불가');
+						$('#btn-idcheck').text('사용불가');
 						$('#btn-idcheck').attr('class', 'ui red button');
 					}
 					console.log(data)
 				}, 'json');
 			}
 			else {
-				$('#btn-idcheck').val('중복확인');
+				$('#btn-idcheck').text('중복확인');
 				$('#btn-idcheck').attr('class', 'ui blue button');
 			}
-			
-			/* $.post('서버주소','전달할값', function(data){
-			},'json'); */
 		});
 	});
 	function pwCheck() {

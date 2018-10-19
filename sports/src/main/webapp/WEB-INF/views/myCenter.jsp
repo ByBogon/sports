@@ -35,7 +35,7 @@
 				</c:if>
 				<c:if test="${map.CENTER_NO != null}">
 					<div class="ui right aligned container">
-						<a href="#" class="ui primary button" id="editMyCenter">수정</a> 
+						<a href="#" class="ui primary button" id="editMyCenter">내 센터 수정하기</a> 
 					</div>
 				</c:if>
 			</div>

@@ -92,16 +92,16 @@ public class MemberController {
 				Sports_Member vo = new Sports_Member(id, encPw);
 				vo = mDAO.loginMember(vo);
 				if(vo != null) {
-					if(vo.getMem_check() == 1) {
+					if(vo.getMem_check() != 0) {
 						session.setAttribute("SID", vo.getMem_id());
 						session.setAttribute("SNAME", vo.getMem_name());
 					
 						//마지막 페이지 주소
 						String backUrl = (String) session.getAttribute("BACK_URL");
 						System.out.println("00:"+backUrl);
-						if(backUrl.equals("login.do")) {
+						if ( backUrl.equals("login.do") || backUrl.equals("join.do") ) {
 							backUrl = "squash.do";
-						}			
+						}
 						request.setAttribute("msg", "로그인 성공");
 						request.setAttribute("url", backUrl);
 					return "alert"; 

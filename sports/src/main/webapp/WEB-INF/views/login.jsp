@@ -6,8 +6,11 @@
 <html>
 <head>
 	<title>로그인</title>
-	<!-- Bootstrap CSS -->
     <link rel="stylesheet" href="resources/css/semantic.min.css">
+    	    
+	<script src="resources/js/jquery-3.3.1.min.js"></script>
+	<script src="resources/js/sweetalert2.js"></script>
+	<script src="resources/js/semantic.min.js"></script>
 </head>
 <style>
 	.contents {
@@ -37,15 +40,15 @@
 							<input type="submit" class="ui primary button" id="btn_login" value="로그인"/>
 							<a href="squash.do" class="ui button">홈으로</a>
 						</div>
+						<div class="center aligned content" style="margin-top:10px;">
+							아이디가 없다면, <a href="join.do">회원가입</a> 먼저 하세요
+						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	    
-	<script src="resources/js/jquery-3.3.1.min.js"></script>
-	<script src="resources/js/sweetalert2.js"></script>
-	<script src="resources/js/semantic.min.js"></script>
+
 	<script>
 	
 	$(function() {

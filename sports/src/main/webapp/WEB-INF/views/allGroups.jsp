@@ -30,19 +30,12 @@
 					</h2>
 				</div>
 			</div>
-			<div class="ui right aligned container tag example" style="margin: 20px">
-				<div class="ui fluid multiple search selection dropdown">
-					<input name="tags" type="hidden"/>
-					<i class="dropdown icon"></i>
-					<input class="search" autocomplete="off" tabindex="0"/>
-					<div class="default text">검색</div>
-					<div class="menu">
-						<div class="item" data-value="20s">20대</div>
-						<div class="item" data-value="busan">부산</div>
-						<div class="item" data-value="squash">스쿼시</div>
-					</div>
-					
+			<div class="ui fluid search" style="margin: 20px">
+				<div class="ui icon input">
+					<input class="prompt" type="text" placeholder="Common passwords...">
+						<i class="search icon"></i>
 				</div>
+				<div class="results"></div>
 			</div>
 			<div class="ui container">
 				<c:if test="${list != null}">

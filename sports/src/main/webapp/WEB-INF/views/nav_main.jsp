@@ -2,10 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page session="true"%>
-<link rel="stylesheet" href="resources/css/semantic.min.css">
 
-<script src="resources/js/jquery-3.3.1.min.js"></script>
-<script src="resources/js/semantic.min.js"></script>
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6377ffb61ec73a41b33914a1add294a0&libraries=services"></script>
  <!-- Nav Menu -->
@@ -196,6 +193,7 @@
 		$('.informingCenter_nav').on('click', function() {
 			if ('${sessionScope.SID}' === '') {
 				window.location = 'login.do';
+				return false;
 			}
 			$('#insertInformingCenterModal')
 				.modal({

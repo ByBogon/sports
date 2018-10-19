@@ -27,15 +27,15 @@
 		<div class="row">
 			<div class="column padding-reset">
 				<div class="container">
-					<img src="resources/images/squash.jpg" style="margin:auto; width: 100%; height: 70%" />
+					<img src="resources/images/squash.jpg" class="ui fluid image" style="margin:auto; width: 100%; height: 70%" />
 				</div>
 			</div>
 		</div>
 		<div class="row">
 			<!-- 후원사 로고 -->
 			<div class="column padding-reset">	
-		        <div class="container text-center">
-		            <img src="resources/images/client-logos.png" alt="client logos" class="img-fluid">
+		        <div class="container">
+		            <img src="resources/images/client-logos.png" class="ui fluid image" alt="client logos" style="margin:auto;">
 		        </div>
 			</div>
 		</div>
