@@ -21,6 +21,9 @@
 	.center.aligned.label {
 		min-width: 15%
 	}
+	.noHover {
+		pointer-events: none;
+	}
 </style>
 <body>
 	<div class="ui page grid">
@@ -33,12 +36,11 @@
 									id="join_form" onsubmit="return subCheck();">
 							<div class="ui centered card" style="width:70%">
 								<div class="ui form content">
-								
 									<div class="ui fluid container" style="margin-bottom: 5px">
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">아이디</div>
 											<input type="text" name="id" id="id" placeholder="아이디" />
-											<div class="ui icon button" id="btn-idcheck">
+											<div class="ui icon button noHover" id="btn-idcheck">
 												<i class="question icon"></i>
 											</div>
 										</div>
@@ -48,7 +50,7 @@
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">암호</div>
 											<input type="password" name="pw" id="pw" placeholder="암호" onkeyup="pwCheck()" />
-											<div class="ui icon button" id="btn-pw">
+											<div class="ui icon button noHover" id="btn-pw">
 												<i class="question icon"></i>
 											</div>
 										</div>
@@ -58,7 +60,7 @@
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">암호 확인</div>
 											<input type="password" placeholder="암호확인" id="pw_chk"	name="pw_chk" onkeyup="pwCheck()" />
-											<div class="ui icon button" id="btn-pwcheck">
+											<div class="ui icon button noHover" id="btn-pwcheck">
 												<i class="question icon"></i>
 											</div>
 										</div>
@@ -70,8 +72,8 @@
 									<div class="ui fluid container" style="margin-bottom: 5px">
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">이름</div>
-											<input type="text" id="name" name="name" placeholder="이름" />
-											<div class="ui icon button" id="btn-namecheck">
+											<input type="text" id="name" name="name" placeholder="이름" onkeyup="nameCheck()"/>
+											<div class="ui icon button noHover" id="btn-namecheck">
 												<i class="question icon"></i>
 											</div>
 										</div>
@@ -80,8 +82,8 @@
 									<div class="ui fluid container" style="margin-bottom: 5px">
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">나이</div>
-											<input type="text" id="age" name="age" placeholder="나이"/>
-											<div class="ui icon button" id="btn-agecheck">
+											<input type="text" id="age" name="age" placeholder="나이" onkeyup="ageCheck()" />
+											<div class="ui icon button noHover" id="btn-agecheck">
 												<i class="question icon"></i>
 											</div>
 										</div>
@@ -90,20 +92,13 @@
 									<div class="ui fluid container" style="margin-bottom: 5px">
 										<div class="ui fluid labeled input action">
 											<div class="ui center aligned label">이메일</div>
-											<input type="text" id="email" name="email" placeholder="example@example.com"/>
-											<div class="ui icon button" id="btn-emailcheck">
+											<input type="text" id="email" name="email" placeholder="example@example.com" onkeyup="emailCheck()"/>
+											<div class="ui icon button noHover" id="btn-emailcheck">
 												<i class="question icon"></i>
 											</div>
 										</div>
-										<input type="hidden" id="emails" name="emails" />
 									</div>
-									
-									<div class="ui right aligned container">
-										<div class="ui input">
-											<input type="text" id="type_in" name="type_in" style="display: none;" />
-										</div>
-									</div>
-							</div>
+								</div>
 							<div class="right aligned extra content">
 								<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
 								<a href="squash.do" class="ui black button">홈으로</a>
@@ -169,83 +164,96 @@
 			}
 		});
 	});
+	
+	function emailCheck() {
+		var email = document.getElementById("email").value;
+		var at = email.indexOf('@');
+		var dot = email.indexOf('.');
+		console.log(email);
+		if ( (email === '') || (at <= 0) || (at > dot) ) {
+			$('#btn-emailcheck').attr('class', 'ui red icon button');
+			$('#btn-emailcheck').children().attr('class', 'x icon');
+		} else if ( (email !== '') && (at > 0) && (at < dot) ) {
+			$('#btn-emailcheck').attr('class', 'ui green icon button');
+			$('#btn-emailcheck').children().attr('class', 'check icon');
+		}
+	}
+	
+	function ageCheck() {
+		var age = document.getElementById("age").value;
+		console.log(typeof age);
+		if ( (age === '') || (age.match(/^[0-9]+$/) == null ) ) {
+			$('#btn-agecheck').attr('class', 'ui red icon button');
+			$('#btn-agecheck').children().attr('class', 'x icon');
+		} else if ( (age !== '') && (age.match(/^[0-9]+$/) != null) ){
+			$('#btn-agecheck').attr('class', 'ui green icon button');
+			$('#btn-agecheck').children().attr('class', 'check icon');
+		}
+	}
+	
+	function nameCheck() {
+		var name = document.getElementById("name").value;
+		console.log(name);
+		if ( name === '' ) {
+			$('#btn-namecheck').attr('class', 'ui red icon button');
+			$('#btn-namecheck').children().attr('class', 'x icon');
+		} else {
+			$('#btn-namecheck').attr('class', 'ui green icon button');
+			$('#btn-namecheck').children().attr('class', 'check icon');
+		}
+	}
+	
 	function pwCheck() {
 		var pw = document.getElementById("pw").value;
 		var pw_chk = document.getElementById("pw_chk").value;
 		console.log(pw);
 		console.log(pw_chk);
 		if ( (pw === '') || (pw_chk === '') ) {
-			return false;
-		}
-		if (pw === pw_chk) {
-			document.getElementById("check").innerHTML = "암호 일치"
-		} else {
-			document.getElementById("check").innerHTML = "암호 불일치"
-		}
-	}
+			$('#btn-pw').attr('class', 'ui icon button');
+			$('#btn-pw').children().attr('class', 'question icon');
 
-	function dropdownChange() {
-		var dropDown = document.getElementById('drops');
-		var textBox = document.getElementById('type_in');
-		var elements = dropDown.options;
-		if (elements[dropDown.selectedIndex].value === "select") {
-			textBox.style.display = 'block';
-			dropDown.style.display = 'none';
-			dropDown.value = "";
-			textBox.value = "";
-		} else {
-			textBox.style.display = 'block';
-			dropDown.style.display = 'none';
+			$('#btn-pwcheck').attr('class', 'ui icon button');
+			$('#btn-pwcheck').children().attr('class', 'question icon');
+		}
+		if ( (pw === pw_chk) && pw !== '' ) {
+			$('#btn-pw').attr('class', 'ui green icon button');
+			$('#btn-pwcheck').attr('class', 'ui green icon button');
 			
-			textBox.value = elements[dropDown.selectedIndex].value;
+			$('#btn-pw').children().attr('class', 'check icon');
+			$('#btn-pwcheck').children().attr('class', 'check icon');
+		} else {
+			$('#btn-pw').attr('class', 'ui red icon button');
+			$('#btn-pwcheck').attr('class', 'ui red icon button');
+			
+			$('#btn-pw').children().attr('class', 'x icon');
+			$('#btn-pwcheck').children().attr('class', 'x icon');
 		}
 	}
 
 	function subCheck() {
-		if (document.getElementById("id").value == "") {
-			alert('ID를 입력하세요');
+		if ( !(document.getElementById("btn-idcheck").classList.contains("green")) ) {
+			alert('아이디를 다시 확인해주세요');
 			return false;
 		}
-		if (document.getElementById("pw").value == "") {
-			alert('PW를 입력하세요');
+		if ( !(document.getElementById("btn-pw").classList.contains("green")) ) {
+			alert('암호를 다시 확인해주세요');
 			return false;
 		}
-		if (document.getElementById("pw_chk").value == "") {
-			alert('암호 확인을 입력하세요');
+		if ( !(document.getElementById("btn-pwcheck").classList.contains("green")) ) {
+			alert('암호와 암호 확인이 일치하지 않습니다');
 			return false;
 		}
-		if (document.getElementById("name").value == "") {
-			alert('이름을 입력하세요');
+		if ( !(document.getElementById("btn-namecheck").classList.contains("green")) ) {
+			alert('이름을 다시 확인해주세요');
 			return false;
 		}
-		if (document.getElementById("age").value == "") {
-			alert('나이를 입력하세요');
+		if ( !(document.getElementById("btn-agecheck").classList.contains("green")) ) {
+			alert('나이를 다시 확인해주세요');
 			return false;
 		}
-		if (document.getElementById("email").value == "") {
-			alert('이메일을 입력하세요');
+		if ( !(document.getElementById("btn-emailcheck").classList.contains("green")) ) {
+			alert('이메일의 형식 및 입력을 다시 확인해주세요');
 			return false;
-		}
-		if (document.getElementById("type_in").style.display != "none") {
-			if (document.getElementById("type_in").value == "") {
-				alert('이메일 형식을 확인하세요');
-				return false
-			}
-		} else if (document.getElementById("type_in").style.display == "none") {
-			if (document.getElementById("drops").value == "") {
-				alert('이메일 형식을 확인하세요');
-				return false;
-			}
-		}
-		var sep = '@';
-		console.log('submit');
-		console.log($('#email').val());
-		if(($('#type_in').val()).trim() !== '') {
-			console.log('trim');
-			$('#emails').val( ($('#email').val()) + sep + ($('#type_in').val()).trim());
-		} else {
-			console.log('type_in');
-			$('#emails').val( ($('#email').val()) + sep + $('#drops').val() );
 		}
 	}
 </script>

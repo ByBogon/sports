@@ -42,7 +42,6 @@
 			<jsp:include page="center_location_context.jsp"></jsp:include>
 		</div>
 	</div>
-	<jsp:include page="footer.jsp"></jsp:include>
     <script>
     $(function() {
     	$(document).on('click', '.tr', function() {

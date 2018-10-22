@@ -34,7 +34,7 @@ public class MemberController {
 			@RequestParam(value="pw") String pw,
 			@RequestParam(value="name") String name,
 			@RequestParam(value="age") int age,
-			@RequestParam(value="emails") String email,
+			@RequestParam(value="email") String email,
 			HttpSession session) {
 		try {
 			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상

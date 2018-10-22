@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bybogon.sports.dao.CenterDAO;
 import com.bybogon.sports.dao.GroupDAO;
-import com.bybogon.sports.dao.MemberDAO;
 import com.bybogon.sports.vo.Sports_Grp;
 import com.bybogon.sports.vo.Sports_Infrm_Center;
-import com.bybogon.sports.vo.Sports_Member;
 
 @RestController
 public class AjaxGroupController {
@@ -31,6 +29,14 @@ public class AjaxGroupController {
 	
 	@Autowired
 	private CenterDAO cDAO;
+	
+	@RequestMapping(value = "ajaxSearchGrpByName", method = RequestMethod.GET)
+	public List<Sports_Grp> searchGrpByName(
+			@RequestParam(value = "grp_name") String grp_name) {
+		List<Sports_Grp> list = gDAO.searchGrpByName(grp_name);
+		return list;
+	}
+	
 	
 	@RequestMapping(value = "ajaxResignCurGrpMem.do", method = RequestMethod.GET)
 	public int resignGrpMem(
@@ -44,20 +50,25 @@ public class AjaxGroupController {
 	public int addExtraGrpMem(
 			@RequestParam(value="grp_no") int grp_no,
 			@RequestParam(value="extra_id") String extra_id) {
+		int ret = 0;
 		int no = gDAO.selectRecentGrpMemNo();
-		no += 1;
-		int ret = gDAO.addExtraGrpMem(no, grp_no, extra_id);
+		int chk = gDAO.selectCheckMemInGrp(grp_no, extra_id);
+		if (chk == 0) {
+			no += 1;
+			ret = gDAO.addExtraGrpMem(no, grp_no, extra_id);	
+		}
 		return ret;
 	}
 	
-	@RequestMapping(value = "makeOneGroup.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "makeOneGroup.do", method = {RequestMethod.GET, RequestMethod.POST},
+			produces = "application/json")
 	public @ResponseBody int openGroupP(
 			@RequestParam(value="grp_name") String grp_name,
 			@RequestParam(value="grp_leader") String grp_leader,
 			@RequestParam(value="grp_detail") String grp_detail,
-			@RequestParam(value="memList") String[] memList,
-			@RequestParam(value="lat", required = false) float lat,
-			@RequestParam(value="lng", required = false) float lng,
+			@RequestParam(value="memList", required = false) String[] memList,
+			@RequestParam(value="lat", required = false) Float lat,
+			@RequestParam(value="lng", required = false) Float lng,
 			@RequestParam(value="txt_set_center", 
 				required = false, defaultValue="") String center,
 			@RequestParam(value="txt_addr", 

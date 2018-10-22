@@ -21,10 +21,6 @@
 			<div class="menu">
 				<a class="item" href="myPage.do">내정보</a>
 				<a class="item" href="myGroups.do">내모임</a>
-				<!-- 
-				<div class="ui inverted divider"></div>
-				<a class="item" href="#">Something else here</a>
-				 -->
 			</div>
 		</div>
 		<div class="ui dropdown item">
@@ -32,11 +28,6 @@
 			<i class="dropdown icon"></i>
 			<div class="menu">
 				<a class="item" href="center_location.do">센터검색</a>
-				<!-- 
-				<a class="item" href="#">센터소개</a>
-				<div class="ui inverted divider"></div>
-				<a class="item" href="#">Something else here</a>
-				 -->
 			</div>
 		</div>
 		<div class="ui dropdown item">
@@ -45,10 +36,6 @@
 			<div class="menu">
 				<a class="item" href="open_group.do">모임 만들기</a>
 				<a class="item" href="allGroups.do">전체 모임보기</a>
-				<!-- 
-				<div class="ui inverted divider"></div>
-				<a class="item" href="#">Something else here</a>
-				 -->
 			</div>
 		</div>
 		<!-- 
@@ -85,10 +72,6 @@
 		</div>
 	</div>
 	<div class="ui vertical navbar menu" style="display:none">
-		<!-- 
-		<a class="item" href="#">Home </a>
-		<a class="item" href="#">관리자모드</a>
-		 -->
 		<c:if test="${sessionScope.SID eq null}">
 			<a class="item" href="join.do">회원가입</a>
 			<a class="item" href="login.do">로그인</a>
@@ -240,7 +223,7 @@
 							}
 						})
 						.done(function() {
-							window.location = "alert.do?msg=센터를 제보해주셔서 감사합니다.&url=" + window.location.href;
+							window.location = "alert.do?msg=센터를 제보해주셔서 감사합니다.<b> 추후에 업데이트가 될 예정입니다.&url=" + window.location.href;
 						})
 						
 					}

@@ -576,52 +576,16 @@
 		$('.btn-create').on('click', function(e) {
 			console.log('clicked!');
 			e.preventDefault();
+			var grp = $('#grp_name').val();
 			var txt_addr = $('#txt_addr').val();
 			var txt_name_center = $('#txt_name_center').val();
 			var txt_set_center = $('#txt_set_center').val();
 			var btn_addr = $('#btn_set_addr_center').text();
 			var btn_center = $('#btn_set_center').text();
-			if ( ( (btn_center === '확인') && !( $('#btn_set_center').hasClass('disabled') ) ) && ( (txt_set_center.trim() !== '') && 
-					( (txt_name_center.trim() === '') || (txt_addr.trim() === '') ) ) ) {
-				if( $('#first_info').hasClass('visible') ) {
-					$('#first_info').transition('tada');
-					return false;
-				} else if ( $('#first_info').hasClass('hidden') ) {
-					$('#first_info').transition('fade down');
-				}
-				if( $('#second_info').hasClass('visible') ) {
-					$('#second_info').transition('fade down');	
-				}
-			}
-			if ( ( ( (txt_name_center.trim() === '') && (txt_addr.trim() !== '') ) ||
-					( (txt_name_center.trim() !== '') && (txt_addr.trim() === '') ) ) && 
-					 (txt_set_center.trim() === '') ) {
-				if( $('#second_info').hasClass('visible') ) {
-					$('#second_info').transition('tada');
-					return false;
-				} else if ( $('#second_info').hasClass('hidden') ) {
-					$('#second_info').transition('fade down');
-				}	
-				if( $('#first_info').hasClass('visible') ) {
-					$('#first_info').transition('fade down');	
-				}
-			}
-			if ( (txt_set_center.trim() !== '') && 
-					( (txt_name_center.trim() !== '') || (txt_addr.trim() !== '') ) ) {
-				if( $('#first_info').hasClass('visible') ) {
-					$('#first_info').transition('tada');
-					return false;
-				} else if ( $('#first_info').hasClass('hidden') ) {
-					$('#first_info').transition('fade down');
-				}
-				if( $('#second_info').hasClass('visible') ) {
-					$('#second_info').transition('tada');
-					return false;
-				} else if ( $('#second_info').hasClass('hidden') ) {
-					$('#second_info').transition('fade down');
-				}
-			}
-			var grp = $('#grp_name').val();
+			console.log(grp);
+			console.log(typeof grp);
+		
+			
 			var leader = '${sessionScope.SID}';
 			if( (leader === null) || (leader.length === 0) ) {
 				//로그인 하라고 하기(로그인페이지로 리다이렉트)
@@ -641,6 +605,23 @@
 				}
 				return false;
 			}
+			
+			
+			if ( (btn_center === '확인') && (btn_addr === '확인') ) {
+				if( $('#first_info').hasClass('visible') ) {
+					$('#first_info').transition('tada');
+				} else if ( $('#first_info').hasClass('hidden') ) {
+					$('#first_info').transition('fade down');
+				}
+				if( $('#second_info').hasClass('visible') ) {
+					$('#second_info').transition('tada');
+				} else if ( $('#second_info').hasClass('hidden') ) {
+					$('#second_info').transition('fade down');
+				}
+				$('#txt_center').focus();
+				return false;
+			}
+			
 			var checkedIds = havingCardIds();
 			$.each(checkedIds, function(index, val) {
 				console.log(val);
@@ -651,25 +632,26 @@
 			
 			var form = $('#myForm').serializeArray();
 			console.log(informingCenterLat+" / "+informingCenterLng);
-			form.push(
-					{name: "memList", value: checkedIds}, 
-					{name: "lat", value: informingCenterLat}, 
-					{name: "lng", value: informingCenterLng}
-			);		
+			if( (typeof informingCenterLat === 'undefined') 
+					|| (typeof informingCenterLng === 'undefined') ) {
+				form.push({name: "memList", value: checkedIds});
+			} else {
+				form.push(
+						{name: "memList", value: checkedIds}, 
+						{name: "lat", value: informingCenterLat}, 
+						{name: "lng", value: informingCenterLng}
+				);	
+			}
+					
 			console.log(form);
-			/* var formData = new FormData(form);
-			formData.append("memList", checkedIds);
-			console.log(formData);
-			 */
-			/* var xhr = new XMLHttpRequest();
-			xhr.open("POST", "makeOneGroup.do", true);
-			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-			xhr.send(form); */
 			$.ajax({
 				type	: "POST",
 				url 	: "makeOneGroup.do",
 				data	: form,
+				dataType: 'json',
+				error	: function(e) {
+					console.log(e);
+				}
 			})
 			.done(function(data) {
 				if (data !== 0) {
@@ -686,8 +668,8 @@
 					window.location = completeURI;
 				}
 			})
-			
 		})
+	
 
 		$('#center_table').on('click', '.center_tr', function() {
 			var idx = $(this).index('.center_tr');

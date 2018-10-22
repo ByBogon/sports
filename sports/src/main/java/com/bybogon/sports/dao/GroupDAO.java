@@ -11,9 +11,36 @@ import org.apache.ibatis.annotations.SelectKey;
 import org.apache.ibatis.annotations.Update;
 
 import com.bybogon.sports.vo.Sports_Grp;
-import com.bybogon.sports.vo.Sports_Member;
 
 public interface GroupDAO {
+	
+	@Select({"SELECT ",
+		"	g.GRP_NO, GRP_DETAIL, GRP_NAME, GRP_MAINIMG, TO_CHAR(g.GRP_DATE, 'YYYYMMDD') grp_date, ",
+		"	s.SPORTS_NAME, g.GRP_LEADER, grp.cnt, ",
+		"	scm.CENTER_NAME, scm.CENTER_ADDR, scm.CENTER_LAT, scm.CENTER_LNG ",
+		"FROM ",
+		"	(SELECT " , 
+		"		GRP_NO, NVL(COUNT(GRP_NO),0) cnt ", 
+		"	FROM SPORTS_GRP_MEM ",
+		"	WHERE GRP_MEM_CHECK = 1 ", 
+		"	GROUP BY GRP_NO) grp ",
+		" INNER JOIN SPORTS_GRP g on g.GRP_NO = grp.GRP_NO ",
+		" LEFT JOIN SPORTS_CENTER_MASTER scm ON scm.CENTER_NO = g.CENTER_NO",
+		" JOIN SPORTS s ON g.SPORTS_NO = s.SPORTS_NO ",
+		" WHERE g.GRP_NAME LIKE #{grp_name}||'%' ORDER BY GRP_DATE DESC"
+	})
+	public List<Sports_Grp> searchGrpByName(@Param("grp_name") String grp_name);
+	
+	@Select({"SELECT ",
+			"	COUNT(GRP_MEM) ",
+			" FROM ",
+			" 	SPORTS_GRP_MEM ",
+			" WHERE GRP_NO = #{grp_no} AND GRP_MEM = #{extra_id} "
+	})
+	public int selectCheckMemInGrp(
+			@Param("grp_no") int grp_no,
+			@Param("extra_id") String extra_id);
+	
 
 	@Select({"SELECT ", 
 			"    MEM_NAME, b.GRP_NO, b.GRP_NAME, TO_CHAR(b.GRP_DATE, 'YYYYMMDD') grp_date, ", 
