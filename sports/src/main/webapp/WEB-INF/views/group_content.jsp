@@ -59,7 +59,7 @@
 						<div class="card">
 							<div class="content">
 								<c:if test="${vo.grp_leader == mem.GRP_MEM}">
-									<div class="ui red ribbon label">
+									<div class="ui red ribbon label" style="margin-bottom: 15px">
 										Leader
 									</div>
 								</c:if>
