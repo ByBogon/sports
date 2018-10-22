@@ -18,98 +18,100 @@
 	<script src="resources/js/nav_bar.js"></script>
 </head>
 <style>
-	.contents {
-		position:relative;
-		width: 100%;
-		height: 100%;
+	.center.aligned.label {
+		min-width: 15%
 	}
 </style>
 <body>
 	<div class="ui page grid">
 		<jsp:include page="nav_main.jsp"></jsp:include>
-		<div class="row">
+		<div class="row" style="margin-top: 150px">
 			<div class="column padding-reset">
-				<div class="contents" style="display: table">
-			<div class="ui fluid container" style="display: table-cell; vertical-align: middle">
-				<div class="ui centered card" style="width:100%">
-					<div class="ui form content">
-					<form action="join.do" method="post" name="join_form"
-					id="join_form" onsubmit="return subCheck();">
-						<hr />
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">아이디</div>
-								<input type="text" name="id" id="id" placeholder="아이디" />
-								<div class="ui primary button" id="btn-idcheck">중복확인</div>
-							</div>
-						</div>
-						
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">암호</div>
-								<input type="password" name="pw" class="form-control" id="pw" onkeyup="pwCheck()" />
-							</div>
-						</div>
-						
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">암호확인</div>
-								<input type="password" class="form-control" id="pw_chk"	name="pw_chk" onkeyup="pwCheck()" />
-							</div>
-							<div>
-								<label id="check"></label>
-							</div>
-						</div>
-						
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">이름</div>
-								<input type="text" id="name" name="name" />
-							</div>
-						</div>
-						
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">나이</div>
-								<input type="text" id="age" name="age"/>
-							</div>
-						</div>
-						
-						<div class="ui fluid container" style="margin-bottom: 5px">
-							<div class="ui fluid labeled input action">
-								<div class="ui label">이메일</div>
-								<input type="text" id="email" name="email"/>
-								<div class="ui dropdown label" id="drops" name="selected" onchange="dropdownChange()">
-									<div class="text">gmail.com</div>
-									<i class="dropdown icon"></i>
-									<div class="menu">
-										<div class="item" data-value="gmail.com">gmail.com</div>
-										<div class="item" data-value="hanmail.com">hanmail.com</div>
-										<div class="item" data-value="naver.com">naver.com</div>
-										<div class="item" data-value="daum.net">daum.net</div>
-										<div class="item" data-value="select">직접 입력</div>
+				<div class="contents" >
+					<div class="ui fluid container" >
+						<form action="join.do" method="post" name="join_form"
+									id="join_form" onsubmit="return subCheck();">
+							<div class="ui centered card" style="width:70%">
+								<div class="ui form content">
+								
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">아이디</div>
+											<input type="text" name="id" id="id" placeholder="아이디" />
+											<div class="ui icon button" id="btn-idcheck">
+												<i class="question icon"></i>
+											</div>
+										</div>
 									</div>
-								</div>
+									
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">암호</div>
+											<input type="password" name="pw" id="pw" placeholder="암호" onkeyup="pwCheck()" />
+											<div class="ui icon button" id="btn-pw">
+												<i class="question icon"></i>
+											</div>
+										</div>
+									</div>
+									
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">암호 확인</div>
+											<input type="password" placeholder="암호확인" id="pw_chk"	name="pw_chk" onkeyup="pwCheck()" />
+											<div class="ui icon button" id="btn-pwcheck">
+												<i class="question icon"></i>
+											</div>
+										</div>
+										<div>
+											<label id="check"></label>
+										</div>
+									</div>
+									
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">이름</div>
+											<input type="text" id="name" name="name" placeholder="이름" />
+											<div class="ui icon button" id="btn-namecheck">
+												<i class="question icon"></i>
+											</div>
+										</div>
+									</div>
+									
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">나이</div>
+											<input type="text" id="age" name="age" placeholder="나이"/>
+											<div class="ui icon button" id="btn-agecheck">
+												<i class="question icon"></i>
+											</div>
+										</div>
+									</div>
+									
+									<div class="ui fluid container" style="margin-bottom: 5px">
+										<div class="ui fluid labeled input action">
+											<div class="ui center aligned label">이메일</div>
+											<input type="text" id="email" name="email" placeholder="example@example.com"/>
+											<div class="ui icon button" id="btn-emailcheck">
+												<i class="question icon"></i>
+											</div>
+										</div>
+										<input type="hidden" id="emails" name="emails" />
+									</div>
+									
+									<div class="ui right aligned container">
+										<div class="ui input">
+											<input type="text" id="type_in" name="type_in" style="display: none;" />
+										</div>
+									</div>
 							</div>
-							<input type="hidden" id="emails" name="emails" />
-						</div>
-			
-						
-						<div class="ui right aligned container">
-							<div class="ui input">
-								<input type="text" id="type_in" name="type_in" style="display: none;" />
+							<div class="right aligned extra content">
+								<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
+								<a href="squash.do" class="ui black button">홈으로</a>
 							</div>
-							
 						</div>
 					</form>
 				</div>
-				<div class="extra content">
-					<input type="submit" class="ui positive button submit" id="submit" value="회원가입"	/>
-					<a href="squash.do" class="ui black button">홈으로</a>
-				</div>
 			</div>
-		</div>
-		</div>
 		</div>
 	</div>
 		
@@ -152,26 +154,30 @@
 				$.get('ajax_id_check.do?id='+a, function(data){
 					console.log("get안");
 					if (data == 0) {
-						$('#btn-idcheck').text('사용가능');
-						$('#btn-idcheck').attr('class', 'ui green button');
+						$('#btn-idcheck').attr('class', 'ui green icon button');
+						$('#btn-idcheck').children().attr('class', 'check icon');
 					} else if (data > 0) {
-						$('#btn-idcheck').text('사용불가');
-						$('#btn-idcheck').attr('class', 'ui red button');
+						$('#btn-idcheck').attr('class', 'ui red icon button');
+						$('#btn-idcheck').children().attr('class', 'x icon');
 					}
 					console.log(data)
 				}, 'json');
 			}
 			else {
-				$('#btn-idcheck').text('중복확인');
-				$('#btn-idcheck').attr('class', 'ui blue button');
+				$('#btn-idcheck').attr('class', 'ui icon button');
+				$('#btn-idcheck').children().attr('class', 'question icon');
 			}
 		});
 	});
 	function pwCheck() {
 		var pw = document.getElementById("pw").value;
 		var pw_chk = document.getElementById("pw_chk").value;
-
-		if ((pw === pw_chk)) {
+		console.log(pw);
+		console.log(pw_chk);
+		if ( (pw === '') || (pw_chk === '') ) {
+			return false;
+		}
+		if (pw === pw_chk) {
 			document.getElementById("check").innerHTML = "암호 일치"
 		} else {
 			document.getElementById("check").innerHTML = "암호 불일치"
