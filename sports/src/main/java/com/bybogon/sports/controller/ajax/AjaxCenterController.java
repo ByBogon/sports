@@ -30,7 +30,6 @@ public class AjaxCenterController {
 			@RequestParam(value="centerDetail") String centerDetail,
 			@RequestParam(value="centerLat") float centerLat,
 			@RequestParam(value="centerLng") float centerLng) {
-		
 		int ret = cDAO.insertInfrmCenterOneByMem(
 				memId, 
 				centerAddr,
@@ -38,8 +37,6 @@ public class AjaxCenterController {
 				centerDetail,
 				centerLat,
 				centerLng);
-		
-		
 		return ret;
 	}
 	
@@ -56,9 +53,10 @@ public class AjaxCenterController {
 	@RequestMapping(value = "ajax_center_searchCNT.do",
 			method = {RequestMethod.GET, RequestMethod.POST})
 	public int searchCenterCNT(
+			@RequestParam(value = "myCenterNo", required=false, defaultValue = "0") Integer myCenterNo,
 			@RequestParam(value = "addr", required=false, defaultValue=" " ) String[] addrList) {
 		System.out.println(addrList[0]);
-		int totalCnt = cDAO.searchCenterCNT(addrList);
+		int totalCnt = cDAO.searchCenterCNT(myCenterNo, addrList);
 		int total_pageCnt = (totalCnt/pageContentCNT)+1;
 		System.out.println(totalCnt);
 		System.out.println(total_pageCnt);
@@ -83,13 +81,15 @@ public class AjaxCenterController {
 			method = {RequestMethod.GET, RequestMethod.POST},
 			produces = "application/json")
 	public @ResponseBody List<Map<String, Object>> searchCenterWOMine(
+			@RequestParam(value = "myCenterNo", required=false) int myCenterNo,
 			@RequestParam(value = "addr") String addr,
 			@RequestParam(value = "page", defaultValue="1") int page) {
+		System.out.println(myCenterNo);
 		System.out.println("ADDR2: "+addr);
 		
 		int start = (page * pageContentCNT) - pageContentCNT + 1;
 		int end = (page * pageContentCNT);
-		List<Map<String, Object>> list = cDAO.searchCenterWOMine(addr, start, end);
+		List<Map<String, Object>> list = cDAO.searchCenterWOMine(myCenterNo, addr, start, end);
 		System.out.println("1: "+list);
 		System.out.println("1: "+list.size());
 		return list;

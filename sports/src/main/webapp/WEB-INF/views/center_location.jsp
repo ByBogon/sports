@@ -10,7 +10,6 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
 	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css?ver=1">
 	<!-- jQuery and Bootstrap -->
@@ -23,24 +22,29 @@
 <body>
 	<div class="ui page grid">
 		<jsp:include page="nav_main.jsp"></jsp:include>
-		<div class="ui center aligned container">
-			<div>
-				<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" />
+		<div class="row">
+			<div class="column padding-reset">
+				<div class="container">
+					<img src="resources/images/squash.jpg" style="width: 100%; height: 70%" />
+				</div>
 			</div>
 		</div>
-		<div style="width: 100%; text-align: center; margin-top: 20px">
-			<div style="margin:auto; display: inline-block; min-width: 700px">
-				<div class="input-group mb-3">
-					<input type="text" class="form-control" id="txt_search" placeholder="검색"/>
-					<div class="input-group-append">
-						<input type="button" class="btn btn-outline-secondary" id="btn_search" value="검색"/>
+		<div class="row">
+			<div class="column padding-reset">
+				<div class="container" style="margin-top: 20px">
+					<div class="ui center aligned fluid container" style="margin:auto;">
+						<div class="ui input action" style="width:100%">
+							<input type="text" id="txt_search" placeholder="센터명, 센터지역, 센터주소 검색"/>
+							<input type="button" class="ui secondary button" id="btn_search" value="검색"/>
+						</div>
+						<div id="map" class="fluid" style="width:100%; height:400px; margin: auto">
+						</div>
 					</div>
-				</div>
-				<div id="map" style="width:100%; height:400px; margin: auto">
+					<jsp:include page="center_location_context.jsp"></jsp:include>
 				</div>
 			</div>
-			<jsp:include page="center_location_context.jsp"></jsp:include>
 		</div>
+		
 	</div>
     <script>
     $(function() {
@@ -97,7 +101,7 @@
     	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
         var options = { //지도를 생성할 때 필요한 기본 옵션
         	center: new daum.maps.LatLng(35.139073, 129.100735), //지도의 중심좌표.
-        	level: 14 //지도의 레벨(확대, 축소 정도)
+        	level: 13 //지도의 레벨(확대, 축소 정도)
         };
         var map = new daum.maps.Map(container, options); //지도 생성 및 객체 리턴
 		
@@ -116,16 +120,6 @@
        			var mark = new daum.maps.Marker({
 					position : coords
 				});
-       			
-       			/* var iwContent = 
-       				'<div style="text-align:center; padding:6px 0;">'
-       					+'<div>'+position.CENTER_NAME+'</div>'
-       					+'<div>'+position.CENTER_ADDR+' / TEL: '+position.CENTER_TEL+'</div>'
-       				+'</div>';        				
-       			
-       			var infowindow = new daum.maps.InfoWindow({
-        			content : iwContent
-        		}); */      				
         		
      			var iwContent = 
        				'<div class="ui raised very padded text container segment" style="width: min-content; text-align:center; padding:6px 0;">'
@@ -139,9 +133,6 @@
      			});
 
        			daum.maps.event.addListener(mark, 'click', makeClickListener(map, mark, coords, iwContent, customOverlay) );
-       			/* daum.maps.event.addListener(mark, 'mouseover', makeOverListener(map, mark, infowindow));
-                daum.maps.event.addListener(mark, 'mouseout', makeOutListener(infowindow));
-       			 */
                 return mark;
        		});       		
             // 클러스터러에 마커들을 추가합니다
@@ -168,9 +159,7 @@
    					map.setCenter(coords);
    	   				map.panTo(coords);
    	   				console.log('2');
-   					//customOverlay.setVisible(true);
    				} else {
-   					//customOverlay.setVisible(false);
    					customOverlay.setMap(null);
    					map.setCenter(coords);
    	   				map.panTo(coords);
@@ -178,26 +167,7 @@
    				}
         	}
         }
-        
-		/* 
-     	 // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
-        function makeOverListener(map, marker, infowindow) {
-        	infowindow.close();
-            return function() {
-            	infowindow.open(map, marker);
-            };
-        };
-
-        // 인포윈도우를 닫는 클로저를 만드는 함수입니다 
-        function makeOutListener(infowindow) {
-            return function() {
-            	infowindow.close();
-            };
-        }; 
-        */
-        
     });
     </script>
-
 </body>
 </html>

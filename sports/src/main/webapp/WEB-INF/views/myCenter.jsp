@@ -35,7 +35,7 @@
 				</c:if>
 				<c:if test="${map.CENTER_NO != null}">
 					<div class="ui right aligned container">
-						<a href="#" class="ui primary button" id="editMyCenter">내 센터 수정하기</a> 
+						<a class="ui primary button" id="editMyCenter">내 센터 수정하기</a> 
 					</div>
 				</c:if>
 			</div>
@@ -56,7 +56,7 @@
 									<img class="ui avatar image" src="resources/images/molly.png">
 								</c:if>
 								<c:if test="${map.MEM_IMG != null}">
-									<img class="ui avatar image" src="${map.MEM_IMG}">
+									<img class="ui avatar image" src="${map.MEM_IMG}" onerror="this.src='resources/images/matthew.png'">
 								</c:if>
 								${map.MEM_NAME}
 							</div>
@@ -116,6 +116,8 @@
 	var mapLevel = 5;
 	var defaultPage = 1, pageNumberCNT = 10, pageContentCNT = 10;
 	var flagForSearch = 0;
+	var flagForSearched = 0;
+	var myCenterNo = '${map.CENTER_NO}';
 	var curPageNum, startPageNum, prevPageNum, nextPageNum;
 	var pageNumBtn = '';
 	var tbodyId = $('.table_modal > .modal_tbody_group_center').attr('id');
@@ -127,14 +129,15 @@
 		console.log('in:'+startPageNum);
 		console.log('in:'+prevPageNum);
 		pageNumPagination(txt, totalPageNumCNT);
-		centerSearchWOMine(txt, prevPageNum, tbodyId);
+		centerSearchWOMine('', myCenterNo, prevPageNum, tbodyId);
 	}
-	function pagePagination(txt, page, totalPageNumCNT) {
+	function nextPagePagination(txt, page, totalPageNumCNT) {
 		startPageNum = nextPageNum;
-		console.log('in:'+startPageNum);
-		console.log('in:'+prevPageNum);
+		console.log('next_in:'+startPageNum);
+		console.log('next_in:'+prevPageNum);
+		console.log('next_in page:'+page);
 		pageNumPagination(txt, totalPageNumCNT);
-		centerSearchWOMine(txt, page, tbodyId);
+		centerSearchWOMine('', myCenterNo, page, tbodyId);
 	}
 	
 	function pageNumPagination(txt, totalPageNumCNT) {
@@ -155,9 +158,14 @@
 			if(n > totalPageNumCNT) {
 				break;
 			}
-			if(flagForSearch === 0) {
-				pageNumBtn += '<a href="#" onclick="centerSearchWOMine(\''+txt+'\','+n+',\''+tbodyId+'\')" class="ui button">'+n+'</a>';	
-			} else if(flagForSearch === 1) {
+			if(flagForSearch === 1) {
+				if (flagForSearched === 1) {
+					pageNumBtn += '<a href="#" onclick="centerSearchWOMine(\''+txt+'\',\''+myCenterNo+'\','+n+',\''+tbodyId+'\')" class="ui button">'+n+'</a>';	
+				} else if (flagForSearched === 0) {
+					pageNumBtn += '<a href="#" onclick="centerSearchWOMine(\'\',\''+myCenterNo+'\','+n+',\''+tbodyId+'\')" class="ui button">'+n+'</a>';
+					
+				}	
+			} else if(flagForSearch === 0) {
 				pageNumBtn += '<a href="#" onclick="centerSearch(\''+txt+'\','+n+',\''+tbodyId+'\')" class="ui button">'+n+'</a>';
 			}
 			
@@ -171,24 +179,26 @@
 		if( ((totalPageNumCNT/10) >= 1) && 
 				( (totalPageNumCNT%10) > 0) && 
 					( ( (totalPageNumCNT - nextPageNum) + pageNumberCNT ) >= pageNumberCNT ) ) {
-			pageNumBtn += '<button class="ui icon button" onclick="pagePagination(\''+txt+'\','+nextPageNum+','+totalPageNumCNT+')">';
+			pageNumBtn += '<button class="ui icon button" onclick="nextPagePagination(\''+txt+'\','+nextPageNum+','+totalPageNumCNT+')">';
 			pageNumBtn += '<i class="right chevron icon"></i></button>';
 		}
 		pageNumBtn += '</div>';
 		$('#modal_container_pagination').html(pageNumBtn);
 	}
 	
-	function centerSearchWOMine(txt, page, tbd) {
-		$.get('ajax_center_search_except_mine.do?addr='+txt+'&page='+page, function(data) {
-			html = '';
-			var len = data.length;
-			for (var i = 0; i < len; i++) {
-				html += '<tr class="updateMyCenter_tr">';
-					html += '<td>'+data[i].CENTER_AREA_NAME+'</td>';
-					html += '<td class="center_name">'+data[i].CENTER_NAME+'</td>';
-					html += '<td class="addr">'+data[i].CENTER_ADDR+'</td>';
-					html += '<td>'+data[i].CENTER_TEL+'</td>';
-				html += '</tr>';
+	function centerSearchWOMine(txt, myCenter_No, page, tbd) {
+		console.log(myCenter_No);
+		$.get('ajax_center_search_except_mine.do?myCenterNo='+myCenter_No+'&addr='+txt+'&page='+page, 
+			function(data) {
+				html = ' ';
+				var len = data.length;
+				for (var i = 0; i < len; i++) {
+					html += '<tr class="updateMyCenter_tr">';
+						html += '<td>'+data[i].CENTER_AREA_NAME+'</td>';
+						html += '<td class="center_name">'+data[i].CENTER_NAME+'</td>';
+						html += '<td class="addr">'+data[i].CENTER_ADDR+'</td>';
+						html += '<td>'+data[i].CENTER_TEL+'</td>';
+					html += '</tr>';
 			}
 			$("#"+tbd).html(html);
 			curPageNum = page;
@@ -208,8 +218,7 @@
 				$('#context').html(html);
 				document.getElementById("table_center_popup").style.display="block";
 			}
-			
-			$('#'+tbd).empty();
+			console.log(data);
 			var tbody = '';
 			var len = data.length;
 			if(data != null) {
@@ -232,8 +241,13 @@
 	
 	function centerSearchCNT(myCenter, searchCenter) {
 		console.log(searchCenter);
+		let myCntNo = 0;
+		
+		if (flagForSearch === 1) {
+			myCntNo = myCenterNo;
+		}
 		//전체 갯수 읽어오기(txt를 안넘겨도됨)
-		$.get('ajax_center_searchCNT.do?addr='+searchCenter, function(data) {
+		$.get('ajax_center_searchCNT.do?myCenterNo='+myCntNo+'&addr='+searchCenter, function(data) {
 			//data는 page 갯수
 			console.log(data);
 			console.log(myCenter);
@@ -247,7 +261,7 @@
 	}
 	
 	$(function() {
-		var myCenterNo = '${map.CENTER_NO}';
+		
 		console.log('내센터번호: '+myCenterNo);
 		if( myCenterNo === '') {
 			var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -278,11 +292,13 @@
 				position: coords2
 			});
 		}
+		
 		var customOverlay = new daum.maps.CustomOverlay({
 			clickable: true,
    			xAnchor : 0.5,
    			yAnchor : 1.6,
 	   	});
+		
 		$(document).on('click', '.updateMyCenter_tr', function() {
 			var idx = $(this).index('.updateMyCenter_tr');
 			var addr = $('.addr').eq(idx).text();
@@ -307,13 +323,19 @@
 			prevPageNum = 0;
 			var myCenter = '${map.CENTER_ADDR}';
 			console.log(tbodyId);
-			centerSearchCNT(myCenter, '');
-			centerSearchWOMine(myCenter, defaultPage, tbodyId);
+			
 			$('#searchGrpCenterModal').modal({
+				onShow		: function() {
+					flagForSearch = 1;
+					centerSearchCNT(myCenter, '');
+					centerSearchWOMine('', myCenterNo, defaultPage, tbodyId);
+				},
 				onHidden	: function() {
 					console.log('modal fade out');
 					$('#modal_input_search_center').val('');
+					$('.modal_search_center').removeClass('error');
 					flagForSearch = 0;
+					flagForSearched = 0;
 				}
 			})
 			.modal('show');
@@ -338,9 +360,11 @@
 			} else {
 				$('.modal_search_center').removeClass('error');
 			}
+			flagForSearched = 1;
 			flagForSearch = 1;
+			$("#"+tbodyId).empty();
 			centerSearchCNT('', txt);
-			centerSearch(txt, defaultPage, tbodyId);
+			centerSearchWOMine(txt, myCenterNo, defaultPage, tbodyId);
 		});
 		
 		
@@ -351,8 +375,10 @@
 		$('.ok').on('click', function() {
 			var myCenter = '${map.CENTER_NO}';
 			if(myCenter === '') {
+				// 센터 신규 등록
 				myCenter = $('.tbody > .active > .addr').text();	
 			} else {
+				// 센터 변경
 				myCenter = $('.modal_tbody_group_center > .active > .addr').text();
 			}
 			console.log(myCenter);

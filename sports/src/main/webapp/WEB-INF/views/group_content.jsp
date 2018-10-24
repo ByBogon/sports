@@ -325,25 +325,32 @@
 			document.getElementById("joinGrpBtn").classList.add("red");
 		} 
 		memIdList.push(JSON.stringify(vo));
-		console.log(vo);
 	</c:forEach>	
-	console.log(memIdList);
 	
 	$(function() {
 		var coords2 = new daum.maps.LatLng('${vo.center_lat}', '${vo.center_lng}');
+		console.log('coords2 check: '+coords2);
+		console.log(typeof coords2);
 		var mapContainer2 = document.getElementById('map2'), // 지도를 표시할 div		
-		    mapOption2 = {
-		        center: coords2, // 지도의 중심좌표
-		        level: mapLevel // 지도의 확대 레벨
+	    mapOption2 = {
+			center: new daum.maps.LatLng(37.537183, 127.005454),
+	        level: mapLevel // 지도의 확대 레벨
 	    };	
 		//지도를 미리 생성
 		var map2 = new daum.maps.Map(mapContainer2, mapOption2);
 		map2.setZoomable(false);
 		map2.setDraggable(false);
-		var marker2 = new daum.maps.Marker({
-			map: map2,
-			position: coords2
-		});
+		
+		if(coords2.toString() === '(0, 0)') {
+			map2.setLevel(13);
+		} else {
+			map2.setCenter(coords2);
+			var marker2 = new daum.maps.Marker({
+				map: map2,
+				position: coords2
+			});
+		}
+		
 		
 		if ( ${sessionScope.SID == vo.grp_leader} ) {
 			$('.joinGrpBtn').addClass('disabled');

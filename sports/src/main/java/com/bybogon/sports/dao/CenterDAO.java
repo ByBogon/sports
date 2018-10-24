@@ -70,11 +70,13 @@ public interface CenterDAO {
 		"			a.CENTER_AREA_NAME, CENTER_NAME, CENTER_ADDR, CENTER_TEL ", 
 		"		FROM SPORTS_CENTER c ", 
 		"		JOIN SPORTS_CENTER_AREA a ON c.CENTER_AREA_NO = a.CENTER_AREA_NO ", 
-		"		WHERE CENTER_ADDR NOT LIKE '%'||#{addr}||'%' ", 
+		"		WHERE (CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%') ",
+		"	 		AND (CENTER_NO != #{myCenterNo}) ", 
 		"		ORDER BY CENTER_AREA_NAME, CENTER_NAME, CENTER_ADDR ASC) d ", 
 		"	WHERE rownum <= #{end} ) e ", 
 		"WHERE e.rnum >= #{start}"})
 	public List<Map<String, Object>> searchCenterWOMine(
+		@Param("myCenterNo") int myCenterNo,
 		@Param("addr") String addr,
 		@Param("start") int start,
 		@Param("end") int end);
@@ -87,13 +89,15 @@ public interface CenterDAO {
 			" SELECT NVL(COUNT(*), 0) ", 
 			" FROM SPORTS_CENTER c ", 
 			" JOIN SPORTS_CENTER_AREA a ON c.CENTER_AREA_NO = a.CENTER_AREA_NO ", 
-			" WHERE ",
-			" <foreach collection='addrList' item='addr' index='index' separator='AND' >",
-			" (CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%') ",
+			" WHERE (CENTER_NO != #{myCenterNo}) AND ",
+			" <foreach collection='addrList' item='addr' index='index' separator='AND'>",
+			" ( CENTER_ADDR LIKE '%'||#{addr}||'%' OR CENTER_NAME LIKE '%'||#{addr}||'%' ) ",
 			" </foreach>",
 			"</script>"
 	})
-	public int searchCenterCNT(@Param("addrList") String[] addrList);
+	public int searchCenterCNT(
+		@Param("myCenterNo") int myCenterNo,
+		@Param("addrList") String[] addrList);
 	
 	@Select({"<script>",
 			" SELECT ", 

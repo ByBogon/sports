@@ -53,13 +53,6 @@
 		var myFilePath = '';
 		
 		$('.ui.dropdown').dropdown();
-		$(document).on('click', '.ui.dropdown.label', function() {
-			console.log("ccccccccccc");
-			$(this).dropdown('show');
-			
-			$('#mem_email2').val($(this).dropdown('get text'));
-			console.log($('#mem_email2').val());
-		})
 		
 		$(document).on('click', '.ui.button.update', function(e) {
 			e.preventDefault();
@@ -84,7 +77,6 @@
 				xhr.onload = function(e) {
 					if(xhr.readyState === 4) { // 4가 DONE
 						console.log(xhr.responseText);
-						$('#mem_email2').val($('.email_last.text').text());
 						var upform = $('#update_form').serializeArray();
 						console.log(upform);
 						upform.push({name: "mem_img", value: xhr.responseText});
@@ -229,9 +221,6 @@
 								} else {
 									detail = datas.MEM_DETAIL;
 								}
-								if ( !(email.includes('@')) ) {
-									email = email+'@gmail.com';
-								}
 								$('.ui.container.context').empty();
 								html += '<form id="update_form" action="myPage.do" method="post" enctype="multipart/form-data">';
 								html += '<div class="ui two column vertically padded grid">';
@@ -242,7 +231,7 @@
 												html += '<div class="content"> <div class="center">';
 												html += '<div class="ui inverted button" id="profile">이미지 변경</div>';
 											    html += '</div></div></div>';
-									    		html += '<img name="img" id="img" src="'+img+'" onerror="this.src=\'resources/images/elyse.png\'"></div>';
+									    		html += '<img name="img" id="img" src="'+img+'" onerror="this.src=\'resources/images/matthew.png\'"></div>';
 									    		html += '<input type="file" name="profile_img" id="file" style="display: none"/>';
 												html += '<div class="floating ui teal label">Default</div>';
 											   	html += '<div class="content">';
@@ -275,20 +264,9 @@
 											  	html += '<input type="text" class="ui large input" id="mem_age" name="mem_age" value="'+datas.MEM_AGE+'"/>';
 											  	html += '<div class="ui center aligned label">세</div></div></div>';
 										  	html += '<div class="item">';
-											  	html += '<div class="ui right labeled fluid input">';
-												  	html += '<input type="text" class="ui large input" id="mem_email" name="mem_email1" value="'+email.substring(0, email.indexOf("@", 0))+'"/>';
-												  	html += '<div class="ui dropdown center aligned label">';
-													  	html += '<div class="email_last text" >'+email.substring(email.indexOf("@"), email.length)+'</div>';
-													  	html += '<input type="hidden" id="mem_email2" name="mem_email2" value="'+email.substring(email.indexOf("@"), email.length)+'"/>'
-													  	html += '<i class="dropdown icon"></i>';
-														  	html += '<div class="menu">';
-															  	html += '<div class="item">@gmail.com</div>';
-															  	html += '<div class="item">@naver.com</div>';
-															  	html += '<div class="item">@daum.net</div>';
-															  	html += '<div class="item">@hanmail.net</div>';
-															  	html += '<div class="item">@yahoo.com</div>';
-														  	html += '</div>';
-												  	html += '</div>';
+											  	html += '<div class="ui fluid input">';
+												  	html += '<input type="text" class="ui large input" id="mem_email" name="mem_email" placeholder="example@example.com" value="'+email+'"/>';
+												  	
 											  	html += '</div>';
 										  	html += '</div>';
 										  	html += '<div class="item">';
@@ -303,7 +281,7 @@
 									  	
 
 								var btn = '';
-								btn += '<input type="submit" class="ui green button update" id="update_btn"value="수정하기"/>';
+								btn += '<input type="submit" class="ui green button update" id="update_btn" value="수정하기"/>';
 								
 								$('.btn-container').html(btn);
 								$('.ui.container.context').html(html);

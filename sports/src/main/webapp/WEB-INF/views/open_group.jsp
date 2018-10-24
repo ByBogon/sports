@@ -126,7 +126,7 @@
 					</div>
 					
 					<div class="ui container" style="margin-top: 20px">
-						<label>직접 입력</label>
+						<label>센터 직접 찾기</label>
 						<div class="ui fluid action input addr_container">
 							<input type="text" id="txt_addr" name="txt_addr" autocomplete="off" readonly/>
 							<div class="ui button secondary btn-search-addr" onclick="daumPostcode()">주소검색</div>

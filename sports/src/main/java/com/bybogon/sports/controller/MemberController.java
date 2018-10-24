@@ -149,34 +149,33 @@ public class MemberController {
 	public String mypageP(@RequestParam(value="mem_name") String name,
 			@RequestParam(value="mem_age") int age,
 			@RequestParam(value="mem_detail") String detail,
-			@RequestParam(value="mem_email1") String email1,
-			@RequestParam(value="mem_email2") String email2,
+			@RequestParam(value="mem_email") String email,
 			@RequestParam(value="mem_pw") String pw,
+			@RequestParam(value="mem_img", required=false, defaultValue="null") String img,
 			HttpSession session) {
 		try {
+			if (img.equals("null")) {
+				img = null;
+			}
 			Sports_Member vo;
 			String id = (String) session.getAttribute("SID");
 			int ret;
 			System.out.println(pw);
-			if((pw.trim() == "") || ((pw.trim()).equals("")) || (pw == null)) {
-				vo = new Sports_Member(id, null, name, age, email1+email2, null, detail);
+			if( ((pw.trim()).equals("")) || (pw == null)) {
+				vo = new Sports_Member(id, null, name, age, email, img, detail);
 				System.out.println(vo.getMem_pw());
-				ret = mDAO.ajaxUpdateMemOne(vo);
-				if (ret > 0) {
-					return "myPage";
-				} else {
-					return "null";
-				}
+				
+			} else {
+				String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
+				AES256Encrypt aes256 = new AES256Encrypt(key);
+				String encPw = aes256.aesEncode(pw);
+				System.out.println(encPw);
+				
+				vo = new Sports_Member(id, encPw, name, age, email, img, detail);
 			}
-			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
-			AES256Encrypt aes256 = new AES256Encrypt(key);
-			String encPw = aes256.aesEncode(pw);
-			System.out.println(encPw);
-			
-			vo = new Sports_Member(
-					id, encPw, name, age, email1+email2, null, detail);
 			
 			ret = mDAO.ajaxUpdateMemOne(vo);
+			
 			if(ret > 0) {
 				return "myPage";
 			} else {

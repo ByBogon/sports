@@ -162,8 +162,7 @@ public class AjaxMemberController {
 			@RequestParam(value="mem_pw") String pw,
 			@RequestParam(value="mem_age") int age,
 			@RequestParam(value="mem_detail") String detail,
-			@RequestParam(value="mem_email1") String email1,
-			@RequestParam(value="mem_email2") String email2,
+			@RequestParam(value="mem_email", required=false) String email,
 			@RequestParam(value="mem_img", required=false, defaultValue="null") String img,
 			HttpSession session) {
 		try {
@@ -179,7 +178,7 @@ public class AjaxMemberController {
 			System.out.println(img);
 			System.out.println(pw);
 			if( (pw.trim() == "") || ((pw.trim()).equals("")) || (pw == null) ) {
-				vo = new Sports_Member(id, null, name, age, email1+email2, img, detail);
+				vo = new Sports_Member(id, null, name, age, email, img, detail);
 				System.out.println(vo.getMem_pw());
 				ret = mDAO.ajaxUpdateMemOne(vo);
 				if (ret > 0) {
@@ -189,7 +188,7 @@ public class AjaxMemberController {
 				}
 			} else {
 				vo = new Sports_Member(
-						id, encPw, name, age, email1+email2, img, detail);
+						id, encPw, name, age, email, img, detail);
 				ret = mDAO.ajaxUpdateMemOne(vo);
 				if (ret > 0) {
 					return "success";

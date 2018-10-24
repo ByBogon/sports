@@ -46,15 +46,11 @@
 						<div class="ui link card">
 							<div class="blurring dimmable image">
 								<div class="ui dimmer">
-									<div class="content">
-										<div class="center">
-											<div class="ui inverted button joinGrpDirectly">참가하기</div>
-										</div>
-									</div>
+									<div class="ui inverted button joinGrpDirectly">참가하기</div>
 								</div>
 	                    		<img src="${vo.grp_mainimg}" onerror="this.src='resources/images/molly.png'"/>
 							</div>
-							<div class="content">
+							<div class="content main_content">
 								<input type="hidden" class="grp_no" value="${vo.grp_no}">
 								<div class="header">${vo.grp_name}</div>
 								<div class="meta">${vo.grp_leader}</div>
@@ -112,7 +108,7 @@
 		function searchGrpByName() {
 			var grpName = document.getElementById("searchGrpName").value;
 			console.log(grpName);
-			
+			$('.groupsCard').empty();
 			$.ajax({
 				url		: 'ajaxSearchGrpByName.do',
 				data	: {grp_name : grpName},
@@ -125,15 +121,11 @@
 							html += '<div class="ui link card">';
 							html += '<div class="blurring dimmable image">';
 							html += '<div class="ui dimmer">';
-							html += '<div class="content">';
-							html += '<div class="center">';
 							html += '<div class="ui inverted button joinGrpDirectly">참가하기</div>';
-							html += '</div>';
-							html += '</div>';
 							html += '</div>';
 							html += '<img src="'+data[i].grp_mainimg+'" onerror="this.src=\'resources/images/molly.png\'"/>';
 							html += '</div>';
-							html += '<div class="content">';
+							html += '<div class="content main_content">';
 							html += '<input type="hidden" class="grp_no" value="'+data[i].grp_no+'">';
 							html += '<div class="header">'+data[i].grp_name+'</div>';
 							html += '<div class="meta">'+data[i].grp_leader+'</div>';
@@ -151,17 +143,20 @@
                    			html += '</div>';
                    			html += '</div>';
 						}
-						$('.groupsCard').html(html);
+						$('.groupsCard').append(html);
 						$('.groupsCard')
 							.transition('slide down', '200ms')
 							.transition('slide down', '200ms');	
+						$('.special.cards .image').dimmer({
+							  on: 'hover'
+						});
 					}
 				}
 			})
 		}
 		
 		$(function() {
-			$(document).on('click', '.groupsCard > .joinGrpDirectly', function() {
+			$(document).on('click', '.groupsCard > .card > .dimmable.image > .dimmer > .joinGrpDirectly', function() {
 				var curId = '${sessionScope.SID}';
 				if (curId === '') {
 					window.location = 'login.do';
@@ -180,6 +175,7 @@
 						$('.grpMemAdd_modal > .content').text('해당 모임에 참가 하시겠습니까?');
 					},
 					onApprove : function() {
+						
 						$.ajax({
 							url		: "ajaxAddExtraGrpMem.do",
 							data	: {
@@ -191,24 +187,21 @@
 								if (data === 0) {
 									window.location = 'alert.do?msg=이미 가입한 모임 입니다.<br>해당 모임화면으로 이동합니다. &url=group_content.do?grp_no='+grp_no;
 								} else {
+									$('#searchGrpName').val('');
 									window.location = 'alert.do?msg=가입하였습니다.<br>해당 모임화면으로 이동합니다. &url=group_content.do?grp_no='+grp_no;
 									
 								}
 							}
-						})
-						.done(function(data) {
-							
 						})
 					}
 				})
 				.modal('show');
 			})
 			
-			$('.cards').on('click', '.card > .content', function() {
-				var idx = $(this).index();
-				var grp_no = JSON.parse(list[idx]).grp_no;
-				console.log(idx);
-				console.log(grp_no);
+			$(document).on('click', '.groupsCard > .card > .main_content', function() {
+				var idx = $(this).index('.main_content');
+				var grp_no = $('.grp_no').eq(idx).val();
+				$('#searchGrpName').val('');
 				window.location.href = "group_content.do?grp_no="+grp_no+"";
 			})
 			
