@@ -10,11 +10,44 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectKey;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bybogon.sports.vo.Sports_Infrm_Center;
 
 public interface CenterDAO {
+	
+	@Select({"SELECT * FROM SPORTS_INFORMING_CENTER WHERE INFRM_CENTER_NO = #{center_no}"	})
+	public Sports_Infrm_Center selectInformingCenterByAdmin(@Param("center_no") int center_no);
+	
+	@Options(useGeneratedKeys=false)
+	@Update({"UPDATE SPORTS_CENTER_MASTER SET ",
+			" 	CENTER_NAME = #{vo.infrm_center_name}, ",
+			"	CENTER_ADDR = #{vo.infrm_center_addr}, ",
+			" 	CENTER_TEL = #{vo.infrm_center_tel}, ",
+			" 	CENTER_DETAIL = #{vo.infrm_center_detail}, ",
+			" 	CENTER_UPDATED_CHECK = 1 ",
+			" WHERE CENTER_NO = #{vo.infrm_center_no} ",
+	})
+	public int updateMasterCenterByAdmin(@Param("vo") Sports_Infrm_Center vo);
+	
+	@Options(useGeneratedKeys=false)
+	@Update({"UPDATE SPORTS_INFORMING_CENTER SET ",
+			" 	INFRM_CENTER_NAME = #{vo.infrm_center_name}, ",
+			"	INFRM_CENTER_ADDR = #{vo.infrm_center_addr}, ",
+			" 	INFRM_CENTER_TEL = #{vo.infrm_center_tel}, ",
+			" 	INFRM_CENTER_DETAIL = #{vo.infrm_center_detail}, ",
+			" 	INFRM_CENTER_UPDATED_CHECK = 1 ",
+			" WHERE INFRM_CENTER_NO = #{vo.infrm_center_no} ",
+	})
+	public int updateCenterByAdmin(@Param("vo") Sports_Infrm_Center vo);
+	
+	@Select({"SELECT ",
+			" m.MEM_NAME, c.* FROM SPORTS_INFORMING_CENTER c ", 
+			" LEFT JOIN SPORTS_MEMBER m ON m.MEM_ID = c.MEM_ID ", 
+			" ORDER BY INFRM_CENTER_UPDATED_CHECK, INFRM_CENTER_NO ASC"
+	})
+	public List<Sports_Infrm_Center> selectUpdatableCenters();
 	
 	@Options(useGeneratedKeys=false)
 	@Insert({"INSERT ALL ",

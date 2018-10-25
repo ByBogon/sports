@@ -9,15 +9,17 @@
 <body>
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/sweetalert2.js"></script>
+	<script src="resources/js/promise.min.js"></script>
 	<script>
+	
 	$(function(){
 		swal({
 			type	: 'info',
 			title	: '${msg}',
 			showConfirmButton : false,
 			timer	: 1000
-		}).then((result) => {
-			window.location.href='${url}';
+		}).then(function(result) {
+		     window.location = '/sports/${url}'; 
 		});
 	});
 	</script>

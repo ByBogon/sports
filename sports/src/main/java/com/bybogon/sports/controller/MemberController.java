@@ -35,7 +35,7 @@ public class MemberController {
 			@RequestParam(value="name") String name,
 			@RequestParam(value="age") int age,
 			@RequestParam(value="email") String email,
-			HttpSession session) {
+			HttpSession session, HttpServletRequest request) {
 		try {
 			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
 			AES256Encrypt aes256 = new AES256Encrypt(key);
@@ -43,8 +43,11 @@ public class MemberController {
 			System.out.println(encPw);
 			Sports_Member vo = new Sports_Member(id, encPw, name, age, email);
 			int ret = mDAO.joinMember(vo);
+			
 			if (ret == 1) {
-				return "redirect:squash.do";
+				request.setAttribute("msg", "가입에 성공하였습니다. ");
+				request.setAttribute("url", "squash.do");
+				return "alert"; 
 			}
 			return "redirect:squash.do";
 		} catch (Exception e) {
@@ -52,6 +55,7 @@ public class MemberController {
 			return null;
 		}
 	}
+	
 	
 	@RequestMapping(value="logout.do",
 			method = {RequestMethod.GET, RequestMethod.POST})
@@ -95,6 +99,7 @@ public class MemberController {
 					if(vo.getMem_check() != 0) {
 						session.setAttribute("SID", vo.getMem_id());
 						session.setAttribute("SNAME", vo.getMem_name());
+						session.setAttribute("SLEVEL", vo.getMem_check());
 					
 						//마지막 페이지 주소
 						String backUrl = (String) session.getAttribute("BACK_URL");

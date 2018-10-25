@@ -18,7 +18,6 @@ public class Sports_Member {
 	
 	public Sports_Member() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Sports_Member(String mem_id, String mem_pw) {
@@ -58,7 +57,6 @@ public class Sports_Member {
 		this.mem_age = mem_age;
 		this.mem_email = mem_email;
 	}
-
 
 	public int getMcnt() {
 		return mcnt;

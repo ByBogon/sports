@@ -9,11 +9,10 @@
 	<title>내 모임</title>
 	<meta name=viewport content="width=device-width, initial-scale=1">
 	<meta name="mobile-web-app-capable" content="yes">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css">
-	<!-- jQuery and Bootstrap -->
+	
 	<script src="resources/js/jquery-3.3.1.min.js"></script>
 	<script src="resources/js/semantic.min.js"></script>
 	<script src="resources/js/nav_bar.js"></script>

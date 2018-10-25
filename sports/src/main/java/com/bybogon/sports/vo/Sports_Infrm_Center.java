@@ -12,7 +12,23 @@ public class Sports_Infrm_Center {
 	private int infrm_center_reg_check = 0;
 	private int sports_no = 0;
 	private String infrm_center_reg_date = null;
+
+	private String mem_id = null;
+	private int infrm_center_updated_check = 0;
 	
+	private String mem_name = null;
+	
+	public Sports_Infrm_Center(int infrm_center_no, String infrm_center_name, String infrm_center_addr,
+			String infrm_center_tel, String infrm_center_detail, int infrm_center_updated_check) {
+		super();
+		this.infrm_center_no = infrm_center_no;
+		this.infrm_center_name = infrm_center_name;
+		this.infrm_center_addr = infrm_center_addr;
+		this.infrm_center_tel = infrm_center_tel;
+		this.infrm_center_detail = infrm_center_detail;
+		this.infrm_center_updated_check = infrm_center_updated_check;
+	}
+
 	public Sports_Infrm_Center() {
 		super();
 	}
@@ -39,8 +55,31 @@ public class Sports_Infrm_Center {
 		this.infrm_center_addr = infrm_center_addr;
 		this.infrm_center_detail = infrm_center_detail;
 	}
+	
 
+	public String getMem_name() {
+		return mem_name;
+	}
 
+	public void setMem_name(String mem_name) {
+		this.mem_name = mem_name;
+	}
+
+	public int getInfrm_center_updated_check() {
+		return infrm_center_updated_check;
+	}
+
+	public void setInfrm_center_updated_check(int infrm_center_updated_check) {
+		this.infrm_center_updated_check = infrm_center_updated_check;
+	}
+
+	public String getMem_id() {
+		return mem_id;
+	}
+
+	public void setMem_id(String mem_id) {
+		this.mem_id = mem_id;
+	}
 
 	public int getInfrm_center_no() {
 		return infrm_center_no;

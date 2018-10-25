@@ -13,7 +13,6 @@
 		
 		<!-- 
 		<a class="item" href="#">Home </a>
-		<a class="item" href="#">관리자모드</a>
 		 -->
 		<div class="ui dropdown item">
 			마이페이지
@@ -51,6 +50,10 @@
 		</div>
 		 -->
 		<div class="right menu">
+			<c:if test="${sessionScope.SLEVEL == 2}">
+				<a class="item" href="admin.do">관리자모드</a>
+			</c:if>
+			
 			<a class="item informingCenter_nav">센터 제보</a>
 			<c:if test="${sessionScope.SID eq null}">
 				<a class="item" href="join.do">회원가입</a>
@@ -72,10 +75,14 @@
 		</div>
 	</div>
 	<div class="ui vertical navbar menu" style="display:none">
+		<c:if test="${sessionScope.SLEVEL == 2}">
+			<a class="item" href="admin.do">관리자모드</a>
+		</c:if>
 		<c:if test="${sessionScope.SID eq null}">
 			<a class="item" href="join.do">회원가입</a>
 			<a class="item" href="login.do">로그인</a>
 		</c:if>
+		
 		<div class="item">
 			<div class="header">마이페이지</div>
 			<div class="menu">
