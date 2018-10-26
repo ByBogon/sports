@@ -7,12 +7,7 @@
 			flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 	<h4>센터관리</h4>
 </div>
-<!-- 
-<div align="right" style="margin-top: 5px; margin-bottom: 15px">
-	<input type="button" id="btn_member_update_batch" class="btn btn-outline-primary" value="전체수정"/>
-</div>
 
- -->
 <div>
 	<table class="table table-hover table-sm">
 		<thead>

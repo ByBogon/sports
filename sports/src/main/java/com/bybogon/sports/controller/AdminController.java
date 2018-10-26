@@ -25,7 +25,7 @@ public class AdminController {
 			Model model) {
 		
 		if (menu == 0) {
-			
+			model.addAttribute("menu", menu);
 		} else if (menu == 1) {
 			
 		} else if (menu == 2) {

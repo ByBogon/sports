@@ -28,66 +28,9 @@ public class AjaxMemberController {
 	@Autowired
 	private MemberDAO mDAO;
 	
-	@Autowired
-	private AdminDAO aDAO;
-	
-	@RequestMapping(value = "ajaxAdminMemCntByDay.do", method = RequestMethod.GET)
-	public Map<String, Object> selectAdminMemCntByDay() {
-		//Map map = new HashMap<String, Object>();
-		List<Map<String, Object>> list = aDAO.selectAdminMemCntByDay();
-		List<Map<String, Object>> brdList = aDAO.selectAdminBrdCntByDay();
-		int[] memCnt = new int[list.size()];
-		int[] brdCnt = new int[brdList.size()];
-		String[] day = new String[list.size()+brdList.size()];
-		int mlsize = list.size(), blsize = brdList.size();
-		
-		for (int i=0; i<mlsize; i++) {
-			System.out.println(list.get(i));
-			memCnt[i] = (Integer) list.get(i).get("cnt");
-			day[i] = (String) list.get(i).get("MEM_DATE");
-		}
-
-		for (int i=0; i<blsize; i++) {
-			System.out.println(brdList.get(i));
-			brdCnt[i] = (Integer) brdList.get(i).get("cnt");
-			day[i+mlsize] = (String) brdList.get(i).get("BRD_DATE");
-		}
-		for (int i=0; i<day.length; i++) {
-			System.out.println(day[i]);
-		}
-		if (day.length > 0) {
-			Arrays.sort(day);
-			Arrays.toString(day);
-		}
-		for (int i=0; i<day.length; i++) {
-			System.out.println("after Sorting"+day[i]);
-		}
-		
-		int tmp = 1;
-		for (int i=1; i < day.length; i++) {
-			System.out.println("removing duplicated: "+day[i]);
-			if( !(day[i-1].equals(day[i])) ) {
-				day[tmp++] = day[i];
-				System.out.println(tmp);
-			} 
-			System.out.println(tmp);
-		}
-		
-		String[] tmps = new String[tmp];
-		for (int i=0; i<tmps.length; i++) {
-			tmps[i] = day[i];
-			System.out.println("after removing duplicated"+tmps[i]);
-		}
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("memCnt", memCnt);
-		map.put("brdCnt", brdCnt);
-		map.put("day", tmps);
-		return map;
-	}
 	
 	@RequestMapping(value = "ajax_block_account.do", method = RequestMethod.POST)
-	public int blockAccount(
+	public int resignAccount(
 			@RequestParam(value = "id") String id,
 			@RequestParam(value = "pw") String pw,
 			HttpSession session) {

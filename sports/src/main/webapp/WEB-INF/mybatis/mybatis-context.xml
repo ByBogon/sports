@@ -50,6 +50,5 @@
 	
 	<!-- 추가하면 Controller에서 MapperScan을 할 필요가 없음 -->
 	<mybatis-spring:scan base-package="com.bybogon.sports.dao"/>
-	<mybatis-spring:scan base-package="com.bybogon.sports.dao.impl"/>
  
 </beans>

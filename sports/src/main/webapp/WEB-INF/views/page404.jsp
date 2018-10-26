@@ -4,6 +4,7 @@
 <html>
 <head>
 	<title>페이지 오류</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
 	<link rel="stylesheet" href="resources/css/bootstrap.min.css" />
 </head>
 <body>

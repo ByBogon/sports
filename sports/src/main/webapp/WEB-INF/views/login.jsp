@@ -6,6 +6,7 @@
 <html>
 <head>
 	<title>로그인</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
     <link rel="stylesheet" href="resources/css/semantic.min.css">
     	    
 	<script src="resources/js/jquery-3.3.1.min.js"></script>

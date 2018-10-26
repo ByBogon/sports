@@ -5,6 +5,8 @@
 <html>
 <head>
 	<title>관리자 페이지</title>
+    <link rel="shortcut icon" href="resources/images/favicon.ico">
+    
 	<link rel="stylesheet" href="resources/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="resources/css/dashboard.css" />
 	
@@ -38,43 +40,126 @@
 	</div>
 
 	<script type="text/javascript">
-		var ctx, myLineChart;
+		var ctx, barCtx, myLineChart, barCenterChart;
 		window.onload = function() {
-			ctx = document.getElementById('myLineChart').getContext('2d');
-			$.get('ajaxAdminMemCntByDay.do', function(data) {
-				console.log(data);
-				myLineChart = new Chart(ctx, {
-				    type: 'line',
-				    data: {
-						labels : data.day,
-						datasets : [{
-							label : '신규 회원',
-							backgroundColor : window.chartColors.blue,
-							borderColor : window.chartColors.blue,
-							data : data.memCnt,
-							fill : false,
-						}, {
-							label : '신규 게시글',
-							backgroundColor : window.chartColors.red,
-							borderColor : window.chartColors.red,
-							data : data.brdCnt,
-							fill : false,
-						}]	
-					},
-				    options: {
-						responsive : true,
-						title : {
-							display : true,
-							text : '일별 신규 회원/게시글 수'
-						},
-						elements : {
-							line : {
-								tension : 0.000001
-							}
+			console.log(${menu});
+			if ( (${menu} === 0) || (${menu} === null)) {
+				$.get('ajaxAdminCenterTotalCnt.do', function(data) {
+					console.log(data);
+					//$('.allCenters').text(data.MEMCNT);
+					for (let i=0; i<data.length; i++) {
+						console.log(data[i].CNT);
+						if (i === 0) {
+							$('.mostCenters').text(data[i].CNT);
+							$('.mostCenterArea').text(data[i].AREA_NAME);
+						} else if (i === 1) {
+							$('.secondMostCenters').text(data[i].CNT);
+							$('.secondMostCenterArea').text(data[i].AREA_NAME);
+						} else if (i === 2) {
+							$('.leastCenters').text(data[i].CNT);
+							$('.leastCenterArea').text(data[i].AREA_NAME);
 						}
-				    }
-				});
-			})
+						
+					}
+				})
+				
+				barCtx = document.getElementById('barCenterChart').getContext('2d');
+				$.get('ajaxAdminCenterCntByArea.do', function(data) {
+					console.log(data);
+					
+					barCenterChart = new Chart(barCtx, {
+					    type: 'bar',
+					    data: {
+							labels : data.areaName,
+							datasets : [{
+								label : '센터 수',
+								backgroundColor : window.chartColors.blue,
+								borderColor : window.chartColors.blue,
+								data : data.centerCnt,
+								fill : false,
+							}]	
+						},
+					    options: {
+							responsive : true,
+							legend : {
+								position : 'top',
+							},
+							title : {
+								display : true,
+								text : '행정 구역 별 센터 현황'
+							},
+							scales : {
+								xAxes: [{
+									ticks : {
+										fontSize: 12,
+										autoSkip: false,
+					                    maxRotation: 90,
+					                    minRotation: 90
+									}
+								}]
+							}
+					    }
+					});
+				})
+				$.get('ajaxAdminTotalCnt.do', function(data) {
+					$('.allMems').text(data.MEMCNT);
+					$('.allBoards').text(data.BRDCNT);
+					$('.allGroups').text(data.GRPCNT);
+				})
+				
+				ctx = document.getElementById('myLineChart').getContext('2d');
+				$.get('ajaxAdminCntDayByDay.do', function(data) {
+					console.log(data);
+					myLineChart = new Chart(ctx, {
+					    type: 'line',
+					    data: {
+							labels : data.day,
+							datasets : [{
+								label : '신규 회원',
+								backgroundColor : window.chartColors.blue,
+								borderColor : window.chartColors.blue,
+								data : data.memCnt,
+								fill : false,
+							}, {
+								label : '신규 게시글',
+								backgroundColor : window.chartColors.red,
+								borderColor : window.chartColors.red,
+								data : data.brdCnt,
+								fill : false,
+							}, {
+								label : '신규 모임',
+								backgroundColor : window.chartColors.green,
+								borderColor : window.chartColors.green,
+								data : data.grpCnt,
+								fill : false,
+							}]	
+						},
+					    options: {
+							responsive : true,
+							title : {
+								display : true,
+								text : '일별 신규 회원/게시글/모임 수'
+							},
+							elements : {
+								line : {
+									tension : 0.000001
+								}
+							},
+							scales : {
+								xAxes: [{
+									ticks: {
+										fontSize: 10,
+										autoSkip: false,
+					                    maxRotation: 90,
+					                    minRotation: 90
+									}
+								}]
+							}
+					    }
+					});
+				})
+
+			}
 		}
 			
 		$(function() {

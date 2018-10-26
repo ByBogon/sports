@@ -12,6 +12,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 	<meta http-equiv="Pragma" content="no-cache" />
 	<meta http-equiv="Expires" content="0" />
+	
     <link rel="shortcut icon" href="resources/images/favicon.ico">
 	<link rel="stylesheet" href="resources/css/semantic.min.css">
 	<link rel="stylesheet" href="resources/css/nav_bar.css?ver=1">
