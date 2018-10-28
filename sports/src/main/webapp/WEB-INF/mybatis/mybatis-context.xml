@@ -7,11 +7,6 @@
 		http://mybatis.org/schema/mybatis-spring
 		http://mybatis.org/schema/mybatis-spring-1.2.xsd">
 
-	<!--
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassname("oracle.jdbc.driver.OracleDriver");
-	  -->
-
 	<bean id="dataSource"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" 
@@ -48,7 +43,6 @@
 		<constructor-arg ref="sqlSessionFactory" />
 	</bean>
 	
-	<!-- 추가하면 Controller에서 MapperScan을 할 필요가 없음 -->
 	<mybatis-spring:scan base-package="com.bybogon.sports.dao"/>
  
 </beans>
