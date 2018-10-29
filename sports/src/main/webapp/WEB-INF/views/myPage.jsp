@@ -77,7 +77,7 @@
 				xhr.send(formData);
 				xhr.onload = function(e) {
 					if(xhr.readyState === 4) { // 4가 DONE
-						console.log(xhr.responseText);
+						console.log('xhr: '+xhr.responseText);
 						var upform = $('#update_form').serializeArray();
 						console.log(upform);
 						upform.push({name: "mem_img", value: xhr.responseText});

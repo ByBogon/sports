@@ -75,8 +75,6 @@ public class AjaxCenterController {
 			produces="application/json")
 	public @ResponseBody List<Map<String, Object>> selectLocations() {
 		List<Map<String, Object>> list = cDAO.selectCenterLocations();
-		System.out.println(list);
-		System.out.println(list.size());
 		return list;
 	}
 	
@@ -85,11 +83,8 @@ public class AjaxCenterController {
 	public int searchCenterCNT(
 			@RequestParam(value = "myCenterNo", required=false, defaultValue = "0") Integer myCenterNo,
 			@RequestParam(value = "addr", required=false, defaultValue=" " ) String[] addrList) {
-		System.out.println(addrList[0]);
 		int totalCnt = cDAO.searchCenterCNT(myCenterNo, addrList);
 		int total_pageCnt = (totalCnt/pageContentCNT)+1;
-		System.out.println(totalCnt);
-		System.out.println(total_pageCnt);
 		return total_pageCnt;
 	}
 	
@@ -99,12 +94,9 @@ public class AjaxCenterController {
 	public @ResponseBody List<Map<String, Object>> searchCenter(
 			@RequestParam(value = "addr") String[] addrList,
 			@RequestParam(value = "page", defaultValue="1") int page) {
-		System.out.println("ADDR: "+addrList[0] );
 		int start = (page * pageContentCNT) - pageContentCNT + 1;
 		int end = (page * pageContentCNT);
 		List<Map<String, Object>> list = cDAO.searchCenter(addrList, start, end);
-		System.out.println(list);
-		System.out.println(list.size());
 		return list;
 	}
 	@RequestMapping(value = "ajax_center_search_except_mine.do",
@@ -114,14 +106,9 @@ public class AjaxCenterController {
 			@RequestParam(value = "myCenterNo", required=false) int myCenterNo,
 			@RequestParam(value = "addr") String addr,
 			@RequestParam(value = "page", defaultValue="1") int page) {
-		System.out.println(myCenterNo);
-		System.out.println("ADDR2: "+addr);
-		
 		int start = (page * pageContentCNT) - pageContentCNT + 1;
 		int end = (page * pageContentCNT);
 		List<Map<String, Object>> list = cDAO.searchCenterWOMine(myCenterNo, addr, start, end);
-		System.out.println("1: "+list);
-		System.out.println("1: "+list.size());
 		return list;
 	}
 	
@@ -131,7 +118,6 @@ public class AjaxCenterController {
 	public @ResponseBody Map<String, Object> selectCenterOne(
 			@RequestParam(value="addr") String addr) {
 		Map<String, Object> map = cDAO.selectCenterOne(addr);
-		System.out.println(map.size());
 		return map;
 	}
 	

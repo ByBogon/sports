@@ -89,9 +89,10 @@ public interface MemberDAO {
 			 "	MEM_AGE = #{vo.mem_age}, ",
 			 "	MEM_EMAIL = #{vo.mem_email}, ",
 			 "	MEM_DETAIL = #{vo.mem_detail} ",
+			 " <if test=\"vo.mem_img neq null\">",
 			 "	, MEM_IMG = #{vo.mem_img} ",
-			 " WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK = 1 ",
-			 
+			 " </if>",
+			 " WHERE MEM_ID = #{vo.mem_id} AND MEM_CHECK NOT IN (0) ",
 	"</script>"})
 	public int ajaxUpdateMemOne(@Param("vo") Sports_Member vo);
 	

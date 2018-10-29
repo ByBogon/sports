@@ -166,23 +166,19 @@ public class AjaxMemberController {
 			@RequestParam(value="mem_age") int age,
 			@RequestParam(value="mem_detail") String detail,
 			@RequestParam(value="mem_email", required=false) String email,
-			@RequestParam(value="mem_img", required=false, defaultValue="null") String img,
+			@RequestParam(value="mem_img", required=false) String img,
 			HttpSession session) {
 		try {
 			Sports_Member vo;
 			String id = (String) session.getAttribute("SID");
 			int ret;
-			System.out.println(pw);
 			String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
 			AES256Encrypt aes256 = new AES256Encrypt(key);
 			String encPw = aes256.aesEncode(pw);
 			
 			img = amazonUrl+img;
-			System.out.println(img);
-			System.out.println(pw);
 			if( (pw.trim() == "") || ((pw.trim()).equals("")) || (pw == null) ) {
 				vo = new Sports_Member(id, null, name, age, email, img, detail);
-				System.out.println(vo.getMem_pw());
 				ret = mDAO.ajaxUpdateMemOne(vo);
 				if (ret > 0) {
 					return "myPage";

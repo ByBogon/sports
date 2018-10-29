@@ -52,11 +52,7 @@ public class AjaxBoardController {
 			@RequestParam(value="brd_no") int brd_no,
 			@RequestParam(value="rpl_content") String rpl_content,
 			@RequestParam(value="rpl_writer") String rpl_writer) {
-		System.out.println(brd_no);
-		System.out.println(rpl_content);
-		System.out.println(rpl_writer);
 		int ret = bDAO.insertCommentOnBoard(brd_no, rpl_content, rpl_writer);
-		System.out.println(ret);
 		return ret;
 	}
 	

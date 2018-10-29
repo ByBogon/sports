@@ -135,7 +135,6 @@ public class MemberController {
 			System.out.println(e.getMessage());
 			request.setAttribute("msg", "알수없는 에러 입니다");
 			request.setAttribute("url", "login.do");
-			System.out.println("에러입니다");
 			return "alert";
 		}
 	}
@@ -165,17 +164,12 @@ public class MemberController {
 			Sports_Member vo;
 			String id = (String) session.getAttribute("SID");
 			int ret;
-			System.out.println(pw);
 			if( ((pw.trim()).equals("")) || (pw == null)) {
 				vo = new Sports_Member(id, null, name, age, email, img, detail);
-				System.out.println(vo.getMem_pw());
-				
 			} else {
 				String key = "1z2x3cqawsedrf5tgbvh"; //키는 16자리 이상
 				AES256Encrypt aes256 = new AES256Encrypt(key);
 				String encPw = aes256.aesEncode(pw);
-				System.out.println(encPw);
-				
 				vo = new Sports_Member(id, encPw, name, age, email, img, detail);
 			}
 			

@@ -38,11 +38,15 @@
 							</div>
 						</div>
 						<div class="content" style="margin-top:10px; text-align:right">
+							
 							<input type="submit" class="ui primary button" id="btn_login" value="로그인"/>
 							<a href="squash.do" class="ui button">홈으로</a>
 						</div>
 						<div class="center aligned content" style="margin-top:10px;">
 							아이디가 없다면, <a href="join.do">회원가입</a> 먼저 하세요
+						</div>
+						<div class="right aligned content" style="margin-top:10px">
+							<a class="ui toggle button adminLogin">관리자 로그인</a>
 						</div>
 					</form>
 				</div>
@@ -53,6 +57,21 @@
 	<script>
 	
 	$(function() {
+		$('.adminLogin').on('click', function() {
+			let adminbtn = $('.adminLogin');
+			let id = $('#id');
+			let pw = $('#pw');
+			if ( adminbtn.hasClass('active') ) {
+				adminbtn.removeClass('active');
+				id.val('');
+				pw.val('');
+			} else {
+				adminbtn.addClass('active');
+				id.val('admin');
+				pw.val('admin');
+			}
+		})
+		
 		$('.ui.cards').transition('slide up');
 		
 		$('#btn_login').on("click", function() {

@@ -135,7 +135,6 @@ public class GroupsController {
 		if (id == null) {
 			return "redirect:login.do";
 		} else {
-			
 			List<Sports_Grp> list = gDAO.selectAllGroups();
 			model.addAttribute("list", list);
 			return "allGroups";

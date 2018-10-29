@@ -22,7 +22,6 @@ public class AjaxAdminController {
 	@RequestMapping(value = "ajaxAdminCenterTotalCnt.do", method = RequestMethod.GET)
 	public List<Map<String, Object>> selectAdminCenterTotalCnt() {
 		List<Map<String, Object>> list = aDAO.selectAdminCenterTotalCnt();
-		
 		return list;
 	}
 	

@@ -76,7 +76,6 @@ public class AjaxGroupController {
 			@RequestParam(value="txt_name_center", 
 				required = false, defaultValue="") String name_center,
 			HttpServletRequest request, HttpSession session) {
-		System.out.println("grp_detail: "+grp_detail);
 		int ret = 0;
 		int centerNo;
 		grp_leader = (String) session.getAttribute("SID");
@@ -106,11 +105,9 @@ public class AjaxGroupController {
 			cDAO.insertInfrmCenterOneByGrp(cVO);
 			centerNo = cVO.getInfrm_center_no();
 
-			System.out.println("CENTER NO1: "+centerNo);
 		} else {
 			Map<String, Object> map = cDAO.selectCenterOne(center);
 			centerNo = (Integer) (map.get("CENTER_NO"));
-			System.out.println("CENTER NO2: "+centerNo);
 		}
 		vo = new Sports_Grp(grp_name, grp_leader, grp_detail, final_center, centerNo);
 
@@ -122,7 +119,6 @@ public class AjaxGroupController {
 		while(it.hasNext()) {
 			String mem = it.next();
 			System.out.println(i++);
-			System.out.println(mem);
 			no++;
 			if( it.hasNext() ) {
 				ret = gDAO.makeGrpMems(mem, no, grp_no);

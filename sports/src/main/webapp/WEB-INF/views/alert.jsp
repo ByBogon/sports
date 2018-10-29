@@ -20,7 +20,7 @@
 			showConfirmButton : false,
 			timer	: 1000
 		}).then(function(result) {
-		     window.location = '/sports/${url}'; 
+		     window.location = '${url}'; 
 		});
 	});
 	</script>

@@ -23,7 +23,6 @@ public class AdminController {
 	public String admin(
 			@RequestParam(value="menu", defaultValue="0") int menu,
 			Model model) {
-		
 		if (menu == 0) {
 			model.addAttribute("menu", menu);
 		} else if (menu == 1) {
@@ -31,6 +30,7 @@ public class AdminController {
 		} else if (menu == 2) {
 			List<Sports_Infrm_Center> list = cDAO.selectUpdatableCenters();
 			model.addAttribute("mList", list);
+			model.addAttribute("menu", menu);
 		
 		} else if (menu == 3) {
 			
