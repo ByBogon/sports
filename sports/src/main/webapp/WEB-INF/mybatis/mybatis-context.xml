@@ -7,18 +7,13 @@
 		http://mybatis.org/schema/mybatis-spring
 		http://mybatis.org/schema/mybatis-spring-1.2.xsd">
 
-	<!--
-		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassname("oracle.jdbc.driver.OracleDriver");
-	  -->
-
 	<bean id="dataSource"
 		class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" 
 			value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@bybogon.czb4awyz3ywk.ap-northeast-2.rds.amazonaws.com:1521:ORCL" />
-		<property name="username" value="bybogon" />
-		<property name="password" value="parkbogon1!" />
+		<property name="url" value="" />
+		<property name="username" value="" />
+		<property name="password" value="" />
 		<!-- <property name="validationQuery" 
 			value="${jdbc.validationQuery}" /> DB 활성화-->
 	</bean>
@@ -48,7 +43,6 @@
 		<constructor-arg ref="sqlSessionFactory" />
 	</bean>
 	
-	<!-- 추가하면 Controller에서 MapperScan을 할 필요가 없음 -->
 	<mybatis-spring:scan base-package="com.bybogon.sports.dao"/>
  
 </beans>
